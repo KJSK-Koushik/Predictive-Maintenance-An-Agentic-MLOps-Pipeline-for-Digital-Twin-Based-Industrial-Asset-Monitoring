@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.venv/
+venv/
+
+# Environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local data and generated MLOps artifacts
+/Data/
+/data/
+/artifacts/
+/mlruns/
+/models/
+/reports/
+/features/
+/processed/
+
+# Local service state
+/supabase/.branches/
+/supabase/.temp/
+/airflow/logs/
+/airflow/airflow.db
+
+# Graphify is not part of the project architecture
+/graphify-out/
+
