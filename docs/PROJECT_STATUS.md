@@ -2,15 +2,15 @@
 
 ## Current control state
 
-| Field                     | Value                                                     |
-| ------------------------- | --------------------------------------------------------- |
-| Current phase             | 0                                                         |
-| Phase name                | Project foundation and architecture                       |
-| State                     | IN_PROGRESS                                               |
-| Started                   | 2026-07-23                                                |
-| Authorized by             | Explicit `START PHASE 0` command                          |
-| Approval                  | Not requested                                             |
-| Next permitted transition | Complete Phase 0 evidence, then request `APPROVE PHASE 0` |
+| Field                     | Value                                                    |
+| ------------------------- | -------------------------------------------------------- |
+| Current phase             | 0                                                        |
+| Phase name                | Project foundation and architecture                      |
+| State                     | AWAITING_APPROVAL                                        |
+| Started                   | 2026-07-23                                               |
+| Authorized by             | Explicit `START PHASE 0` command                         |
+| Approval                  | `APPROVE PHASE 0` requested in the completion handoff    |
+| Next permitted transition | Owner issues `APPROVE PHASE 0`; then stop and await plan |
 
 ## Bootstrap record
 
@@ -28,21 +28,21 @@ feature or initializing a cloud service.
 
 ## Current evidence
 
-| Evidence                  | Status                                              |
-| ------------------------- | --------------------------------------------------- |
-| Source-of-truth documents | Complete for Phase 0                                |
-| Phase 0 ADRs              | 12 accepted ADRs                                    |
-| Foundation tests          | Passed locally: 11                                  |
-| Integration tests         | Passed locally: 5                                   |
-| Local quality checks      | Passed on 2026-07-23; see completion report         |
-| Docker validation         | Not applicable: no runnable service in Phase 0      |
-| GitHub remote             | `origin` configured and read access validated       |
-| Code ownership            | `@KJSK-Koushik` recorded in `.github/CODEOWNERS`    |
-| Repository license        | Apache-2.0                                          |
-| GitHub authentication     | Confirmed for `KJSK-Koushik`                        |
-| GitHub Actions run        | Pending initial push                                |
-| Branch protection         | Blocked: repository must receive its initial commit |
-| Critical/high issues      | None identified by Phase 0 checks                   |
+| Evidence                  | Status                                               |
+| ------------------------- | ---------------------------------------------------- |
+| Source-of-truth documents | Complete for Phase 0                                 |
+| Phase 0 ADRs              | 12 accepted ADRs                                     |
+| Foundation tests          | Passed locally: 11                                   |
+| Integration tests         | Passed locally: 5                                    |
+| Local quality checks      | Passed on 2026-07-23; see completion report          |
+| Docker validation         | Not applicable: no runnable service in Phase 0       |
+| GitHub remote             | `origin/main` created at commit `6c968e0`            |
+| Code ownership            | `@KJSK-Koushik` recorded in `.github/CODEOWNERS`     |
+| Repository license        | Apache-2.0                                           |
+| GitHub authentication     | Confirmed for `KJSK-Koushik`                         |
+| GitHub Actions run        | Passed: run `30040721136`, job `Phase 0 quality`     |
+| Branch protection         | Required CI, PR, conversations; destructive refs off |
+| Critical/high issues      | None identified by Phase 0 checks                    |
 
 ## Repository observations
 
@@ -53,14 +53,14 @@ feature or initializing a cloud service.
 - The separate ML-Agent-Factory repository is outside project scope and has not
   been accessed.
 
-## Open owner actions
+## Open owner action
 
-1. Enable GitHub Actions and required branch protection after the workflow is
-   pushed.
+Issue `APPROVE PHASE 0` to accept the completed phase. Do not plan Phase 1
+until that approval is recorded and the owner later issues `PLAN PHASE 1`.
 
 ## Phase history
 
-| Phase | State                                   | Evidence                                      |
-| ----- | --------------------------------------- | --------------------------------------------- |
-| 0     | IN_PROGRESS (external evidence pending) | `docs/phases/phase-00/COMPLETION_REPORT.md`   |
-| 1-10  | NOT_PLANNED                             | Await approval and explicit planning commands |
+| Phase | State             | Evidence                                      |
+| ----- | ----------------- | --------------------------------------------- |
+| 0     | AWAITING_APPROVAL | `docs/phases/phase-00/COMPLETION_REPORT.md`   |
+| 1-10  | NOT_PLANNED       | Await approval and explicit planning commands |

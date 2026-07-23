@@ -13,14 +13,14 @@ files, or completion reports.
 - [x] Confirm repository visibility: public.
 - [x] Provide the GitHub user/team that should own changes.
 - [x] Authenticate GitHub CLI with `gh auth login`.
-- [ ] Confirm GitHub Actions is enabled.
-- [ ] Configure branch protection after the first workflow is pushed:
+- [x] Confirm GitHub Actions is enabled.
+- [x] Configure branch protection after the first workflow is pushed:
   - require a pull request;
   - require the Phase 0 quality job;
   - prevent merging when it fails;
   - require conversation resolution; and
   - restrict bypass permission to named owners.
-- [ ] Provide a successful GitHub Actions run URL or grant access to inspect it.
+- [x] Provide a successful GitHub Actions run URL or grant access to inspect it.
 
 The repository starts with Python 3.11.9, Git, `uv`, and Docker available
 locally. Development tools are installed from the lockfile rather than assumed

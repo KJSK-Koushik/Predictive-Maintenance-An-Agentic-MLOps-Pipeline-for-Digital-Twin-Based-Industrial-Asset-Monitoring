@@ -95,12 +95,14 @@ def test_pull_request_ci_contains_no_release_or_cloud_mutation() -> None:
 
 
 @pytest.mark.integration
-def test_phase_acceptance_requires_remote_ci_evidence() -> None:
+def test_phase_acceptance_records_remote_ci_evidence() -> None:
     criteria = (ROOT / "docs/phases/phase-00/ACCEPTANCE_CRITERIA.md").read_text(
         encoding="utf-8"
     )
     status = (ROOT / "docs/PROJECT_STATUS.md").read_text(encoding="utf-8")
 
-    assert "- [ ] GitHub Actions required workflow passes on GitHub." in criteria
+    assert "- [x] GitHub Actions required workflow passes on GitHub." in criteria
     assert "GitHub Actions run" in status
-    assert "Blocked" in status
+    assert "Passed: run `30040721136`" in status
+    assert "Branch protection" in status
+    assert "destructive refs off" in status
