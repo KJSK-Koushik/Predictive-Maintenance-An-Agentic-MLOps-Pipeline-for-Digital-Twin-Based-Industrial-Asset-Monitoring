@@ -33,8 +33,8 @@
 
 - [x] Pull-request CI is verification-only and least-privilege.
 - [x] CI and deployment/model promotion are architecturally separate.
-- [ ] GitHub Actions required workflow passes on GitHub.
-- [ ] Required branch protection is configured and evidenced.
+- [x] GitHub Actions required workflow passes on GitHub.
+- [x] Required branch protection is configured and evidenced.
 - [x] Repository license is selected.
 - [x] `CODEOWNERS` identifies the approved GitHub user/team.
 
@@ -43,7 +43,7 @@
 - [x] `COMPLETION_REPORT.md` records exact local commands and results.
 - [x] No critical or high-severity issue remains unresolved.
 - [x] Docker validation is documented as not applicable in Phase 0.
-- [ ] `PROJECT_STATUS.md` is updated to `AWAITING_APPROVAL`.
-- [ ] The owner is asked for `APPROVE PHASE 0`.
+- [x] `PROJECT_STATUS.md` is updated to `AWAITING_APPROVAL`.
+- [x] The completion handoff asks the owner for `APPROVE PHASE 0`.
 
 Unchecked criteria prevent Phase 0 completion.
