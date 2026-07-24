@@ -42,5 +42,4 @@ Thumbs.db
 /airflow/airflow.db
 
 # Graphify is not part of the project architecture
-/graphify-out/
-
+**/graphify-out/

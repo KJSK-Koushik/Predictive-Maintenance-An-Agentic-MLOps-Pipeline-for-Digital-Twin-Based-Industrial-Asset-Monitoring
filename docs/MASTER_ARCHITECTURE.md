@@ -2,9 +2,9 @@
 
 ## Status
 
-This is the Phase 0 target architecture. Only Phase 0 foundation artifacts
-exist. Components assigned to later phases are designs, not working
-integrations.
+This is the master target architecture. Phase 0 foundation artifacts exist and
+Phase 1 is planned but not started. Components assigned to later phases are
+designs, not working integrations.
 
 ## Architectural principles
 
