@@ -43,7 +43,8 @@
 - [x] `COMPLETION_REPORT.md` records exact local commands and results.
 - [x] No critical or high-severity issue remains unresolved.
 - [x] Docker validation is documented as not applicable in Phase 0.
-- [x] `PROJECT_STATUS.md` is updated to `AWAITING_APPROVAL`.
+- [x] `PROJECT_STATUS.md` was updated to `AWAITING_APPROVAL` at completion.
 - [x] The completion handoff asks the owner for `APPROVE PHASE 0`.
+- [x] Explicit owner approval is recorded after the completion handoff.
 
 Unchecked criteria prevent Phase 0 completion.

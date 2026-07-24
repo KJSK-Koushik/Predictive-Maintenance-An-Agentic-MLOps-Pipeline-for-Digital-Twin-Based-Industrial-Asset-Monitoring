@@ -2,7 +2,7 @@
 
 ## Status
 
-**COMPLETE - awaiting owner approval.**
+**COMPLETE AND OWNER-APPROVED.**
 
 ## Scope delivered
 
@@ -75,5 +75,6 @@ is known. External completion blockers are not waived.
 
 ## Approval
 
-Phase 0 is complete and no later phase work is authorized. Owner: issue
-`APPROVE PHASE 0` to accept this phase.
+The owner explicitly issued `APPROVE PHASE 0` on 2026-07-24. Phase 0 is closed,
+and no later-phase planning or implementation is authorized until the owner
+issues the next required command.
