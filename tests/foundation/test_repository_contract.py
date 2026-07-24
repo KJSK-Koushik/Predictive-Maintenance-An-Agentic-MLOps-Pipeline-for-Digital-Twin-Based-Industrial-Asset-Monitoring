@@ -71,13 +71,19 @@ def test_required_foundation_files_are_non_empty() -> None:
 @pytest.mark.foundation
 def test_phase_zero_is_the_single_active_phase() -> None:
     status = (ROOT / "docs/PROJECT_STATUS.md").read_text(encoding="utf-8")
-    phase_match = re.search(r"\|\s*Current phase\s*\|\s*(\d+)\s*\|", status)
+    phase_match = re.search(r"\|\s*Current phase\s*\|\s*([^|]+?)\s*\|", status)
     state_match = re.search(r"\|\s*State\s*\|\s*([A-Z_]+)\s*\|", status)
 
     assert phase_match is not None, "Current phase is not declared"
-    assert phase_match.group(1) == "0"
     assert state_match is not None, "Phase state is not declared"
     assert state_match.group(1) in PERMITTED_PHASE_STATES
+    current_phase = phase_match.group(1).strip()
+
+    if current_phase == "None":
+        assert state_match.group(1) == "APPROVED"
+        assert re.search(r"\|\s*Last completed phase\s*\|\s*0:", status)
+    else:
+        assert current_phase == "0"
 
     phase_directories = sorted((ROOT / "docs/phases").glob("phase-*"))
     assert [path.name for path in phase_directories] == ["phase-00"]

@@ -11,9 +11,9 @@ The project will address:
 - cycle-level asset-health state monitoring; and
 - bounded AI-assisted model and maintenance decision support.
 
-The repository is currently in **Phase 0: Project foundation and architecture**.
-It contains no feature implementation, cloud resources, trained models, or
-deployable services.
+**Phase 0: Project foundation and architecture** is complete and owner-approved.
+No phase is currently active. The repository contains no feature
+implementation, cloud resources, trained models, or deployable services.
 
 ## Claim boundaries
 

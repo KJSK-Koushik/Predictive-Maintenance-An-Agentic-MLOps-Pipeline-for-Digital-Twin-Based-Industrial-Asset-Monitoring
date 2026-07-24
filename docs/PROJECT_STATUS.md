@@ -2,15 +2,14 @@
 
 ## Current control state
 
-| Field                     | Value                                                    |
-| ------------------------- | -------------------------------------------------------- |
-| Current phase             | 0                                                        |
-| Phase name                | Project foundation and architecture                      |
-| State                     | AWAITING_APPROVAL                                        |
-| Started                   | 2026-07-23                                               |
-| Authorized by             | Explicit `START PHASE 0` command                         |
-| Approval                  | `APPROVE PHASE 0` requested in the completion handoff    |
-| Next permitted transition | Owner issues `APPROVE PHASE 0`; then stop and await plan |
+| Field                     | Value                                                |
+| ------------------------- | ---------------------------------------------------- |
+| Current phase             | None                                                 |
+| Last completed phase      | 0: Project foundation and architecture               |
+| State                     | APPROVED                                             |
+| Started                   | 2026-07-23                                           |
+| Approved                  | 2026-07-24 by explicit `APPROVE PHASE 0` command     |
+| Next permitted transition | Wait for the owner's explicit `PLAN PHASE 1` command |
 
 ## Bootstrap record
 
@@ -53,14 +52,14 @@ feature or initializing a cloud service.
 - The separate ML-Agent-Factory repository is outside project scope and has not
   been accessed.
 
-## Open owner action
+## Next owner-controlled action
 
-Issue `APPROVE PHASE 0` to accept the completed phase. Do not plan Phase 1
-until that approval is recorded and the owner later issues `PLAN PHASE 1`.
+Phase 0 is closed. No phase is active, and Phase 1 has not been planned. The
+only permitted transition is the owner's explicit `PLAN PHASE 1` command.
 
 ## Phase history
 
-| Phase | State             | Evidence                                      |
-| ----- | ----------------- | --------------------------------------------- |
-| 0     | AWAITING_APPROVAL | `docs/phases/phase-00/COMPLETION_REPORT.md`   |
-| 1-10  | NOT_PLANNED       | Await approval and explicit planning commands |
+| Phase | State       | Evidence                                    |
+| ----- | ----------- | ------------------------------------------- |
+| 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
+| 1-10  | NOT_PLANNED | Await explicit planning commands            |
