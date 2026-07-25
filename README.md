@@ -12,8 +12,9 @@ The project will address:
 - bounded AI-assisted model and maintenance decision support.
 
 **Phase 0: Project foundation and architecture** is complete and owner-approved.
-No phase is currently active. The repository contains no feature
-implementation, cloud resources, trained models, or deployable services.
+**Phase 1: Local dataset ingestion and data contract** is planned but not
+started. The repository still contains no feature implementation, cloud
+resources, trained models, or deployable services.
 
 ## Claim boundaries
 
@@ -36,6 +37,7 @@ maintenance decisions.
 - [Data contract](docs/DATA_CONTRACT.md)
 - [Architecture decision records](docs/adr/README.md)
 - [Phase 0 plan](docs/phases/phase-00/PLAN.md)
+- [Phase 1 plan](docs/phases/phase-01/PLAN.md)
 
 ## Development
 

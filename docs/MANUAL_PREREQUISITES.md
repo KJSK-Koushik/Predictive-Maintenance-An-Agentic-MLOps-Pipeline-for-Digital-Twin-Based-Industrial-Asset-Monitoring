@@ -28,11 +28,12 @@ globally.
 
 ## Phase 1 prerequisites
 
-- [ ] Confirm the authoritative NASA C-MAPSS download source and attribution.
-- [ ] Confirm the existing `Data/` files are the intended source copy.
-- [ ] Preserve the original archive if available.
-- [ ] Do not rename, normalize, or edit the source files manually.
-- [ ] Approve which files are in Phase 1 scope; the default is FD001 only.
+- [x] Record the authoritative NASA C-MAPSS repository and attribution.
+- [x] Confirm the existing `Data/` files are the intended working source copy.
+- [x] Record that no original archive is currently present in `Data/`; if one
+  becomes available, preserve it without replacing the extracted files.
+- [x] Do not rename, normalize, or edit the source files manually.
+- [x] Limit Phase 1 data scope to FD001.
 
 Phase 1 will compute checksums and inspect content. Phase 0 deliberately does
 not.

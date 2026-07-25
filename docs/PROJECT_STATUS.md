@@ -2,14 +2,14 @@
 
 ## Current control state
 
-| Field                     | Value                                                |
-| ------------------------- | ---------------------------------------------------- |
-| Current phase             | None                                                 |
-| Last completed phase      | 0: Project foundation and architecture               |
-| State                     | APPROVED                                             |
-| Started                   | 2026-07-23                                           |
-| Approved                  | 2026-07-24 by explicit `APPROVE PHASE 0` command     |
-| Next permitted transition | Wait for the owner's explicit `PLAN PHASE 1` command |
+| Field                     | Value                                                 |
+| ------------------------- | ----------------------------------------------------- |
+| Current phase             | 1: Local dataset ingestion and data contract          |
+| Last completed phase      | 0: Project foundation and architecture                |
+| State                     | PLANNED                                               |
+| Planned                   | 2026-07-24 by explicit `PLAN PHASE 1` command         |
+| Started                   | Not started                                           |
+| Next permitted transition | Wait for the owner's explicit `START PHASE 1` command |
 
 ## Bootstrap record
 
@@ -31,6 +31,7 @@ feature or initializing a cloud service.
 | ------------------------- | ---------------------------------------------------- |
 | Source-of-truth documents | Complete for Phase 0                                 |
 | Phase 0 ADRs              | 12 accepted ADRs                                     |
+| Phase 1 planning set      | Complete; implementation not started                 |
 | Foundation tests          | Passed locally: 11                                   |
 | Integration tests         | Passed locally: 5                                    |
 | Local quality checks      | Passed on 2026-07-23; see completion report          |
@@ -52,14 +53,16 @@ feature or initializing a cloud service.
 - The separate ML-Agent-Factory repository is outside project scope and has not
   been accessed.
 
-## Next owner-controlled action
+## Phase 1 planning boundary
 
-Phase 0 is closed. No phase is active, and Phase 1 has not been planned. The
-only permitted transition is the owner's explicit `PLAN PHASE 1` command.
+Phase 1 planning is complete. No FD001 file has been parsed, hashed, copied, or
+transformed during planning. No ingestion code or cloud resource exists. The
+only permitted transition is the owner's explicit `START PHASE 1` command.
 
 ## Phase history
 
 | Phase | State       | Evidence                                    |
 | ----- | ----------- | ------------------------------------------- |
 | 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
-| 1-10  | NOT_PLANNED | Await explicit planning commands            |
+| 1     | PLANNED     | `docs/phases/phase-01/PLAN.md`              |
+| 2-10  | NOT_PLANNED | Await prior-phase approval and planning     |

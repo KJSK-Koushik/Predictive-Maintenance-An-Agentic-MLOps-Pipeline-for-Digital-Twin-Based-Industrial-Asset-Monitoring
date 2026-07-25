@@ -2,10 +2,10 @@
 
 ## Status
 
-**Phase 0 architecture draft.** The executable FD001 contract, source checksum,
-column schema, semantic thresholds, labels, and exploration evidence belong to
-Phase 1. This document intentionally does not claim that the user-provided data
-has been inspected or validated.
+**Phase 1 planning specification.** The executable FD001 contract, source
+checksums, verified columns, validation results, labels, and exploration
+evidence require `START PHASE 1`. This document does not claim that the
+user-provided data has been parsed or validated.
 
 ## Purpose
 
@@ -60,22 +60,21 @@ physical limits.
 
 ### RUL regression
 
-Phase 1 will define the uncapped target from the trajectory endpoint and decide
-whether a capped target is justified. If capped, both the cap and the rationale
-must be versioned. Training and evaluation targets must not be inferred using
-information unavailable at the prediction cycle.
+The uncapped target is canonical. A capped target, if later justified, is a
+separate configured derivation with a versioned cap and rationale; it may not
+silently replace uncapped RUL. Training and evaluation targets must not be
+inferred using information unavailable at the prediction cycle.
 
 ### Failure-risk classification
 
-Failure risk will be derived from a declared RUL horizon:
+Failure risk will be derived from a declared RUL horizon. Phase 1 uses 30 cycles
+as the primary classification horizon and reports 15- and 45-cycle sensitivity:
 
 ```text
-failure_risk = 1 when RUL <= approved_horizon, otherwise 0
+failure_risk_30 = 1 when RUL <= 30, otherwise 0
 ```
 
-The horizon is undecided in Phase 0. It must be selected and sensitivity-tested
-in Phase 1. This is a derived label, not an independently observed failure
-event.
+This is a derived label, not an independently observed failure event.
 
 ### Health state and anomaly
 
