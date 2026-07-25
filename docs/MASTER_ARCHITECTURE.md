@@ -2,8 +2,8 @@
 
 ## Status
 
-This is the master target architecture. Phase 0 foundation artifacts exist and
-Phase 1 is in progress. Components assigned to later phases are
+This is the master target architecture. Phase 0 is approved and Phase 1 is
+complete, awaiting owner approval. Components assigned to later phases are
 designs, not working integrations.
 
 ## Architectural principles

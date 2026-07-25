@@ -2,14 +2,14 @@
 
 ## Current control state
 
-| Field                     | Value                                            |
-| ------------------------- | ------------------------------------------------ |
-| Current phase             | 1: Local dataset ingestion and data contract     |
-| Last completed phase      | 0: Project foundation and architecture           |
-| State                     | IN_PROGRESS                                      |
-| Planned                   | 2026-07-24 by explicit `PLAN PHASE 1` command    |
-| Started                   | 2026-07-25 by explicit `START PHASE 1` command   |
-| Next permitted transition | Complete Phase 1 evidence, then request approval |
+| Field                     | Value                                          |
+| ------------------------- | ---------------------------------------------- |
+| Current phase             | 1: Local dataset ingestion and data contract   |
+| Last completed phase      | 0: Project foundation and architecture         |
+| State                     | AWAITING_APPROVAL                              |
+| Planned                   | 2026-07-24 by explicit `PLAN PHASE 1` command  |
+| Started                   | 2026-07-25 by explicit `START PHASE 1` command |
+| Next permitted transition | Wait for explicit `APPROVE PHASE 1`            |
 
 ## Bootstrap record
 
@@ -27,24 +27,24 @@ feature or initializing a cloud service.
 
 ## Current evidence
 
-| Evidence                  | Status                                                |
-| ------------------------- | ----------------------------------------------------- |
-| Source-of-truth documents | Phase 1 implementation updates in progress            |
-| Accepted ADRs             | 14                                                    |
-| Phase 1 implementation    | Local FD001 pipeline implemented and under validation |
-| Unit/contract tests       | Passed locally: 46                                    |
-| Integration tests         | Passed locally: 9                                     |
-| Actual FD001 test         | Passed locally: 1                                     |
-| Product coverage          | 92.63% branch-aware                                   |
-| Docker validation         | Not applicable: no runnable service in Phase 1        |
-| GitHub remote             | `origin/main` created at commit `6c968e0`             |
-| Code ownership            | `@KJSK-Koushik` recorded in `.github/CODEOWNERS`      |
-| Repository license        | Apache-2.0                                            |
-| GitHub authentication     | Confirmed for `KJSK-Koushik`                          |
-| GitHub Actions run        | Passed: run `30040721136`, job `Phase 0 quality`      |
-| Branch protection         | Required CI, PR, conversations; destructive refs off  |
-| Phase 1 GitHub Actions    | Pending implementation-branch run                     |
-| Critical/high issues      | None identified by current local checks               |
+| Evidence                  | Status                                               |
+| ------------------------- | ---------------------------------------------------- |
+| Source-of-truth documents | Complete for Phase 1                                 |
+| Accepted ADRs             | 14                                                   |
+| Phase 1 implementation    | Complete; awaiting owner approval                    |
+| Unit/contract tests       | Passed locally: 46                                   |
+| Integration tests         | Passed locally: 9                                    |
+| Actual FD001 test         | Passed locally: 1                                    |
+| Product coverage          | 92.63% branch-aware                                  |
+| Docker validation         | Not applicable: no runnable service in Phase 1       |
+| GitHub remote             | `origin/main` created at commit `6c968e0`            |
+| Code ownership            | `@KJSK-Koushik` recorded in `.github/CODEOWNERS`     |
+| Repository license        | Apache-2.0                                           |
+| GitHub authentication     | Confirmed for `KJSK-Koushik`                         |
+| GitHub Actions run        | Passed: run `30040721136`, job `Phase 0 quality`     |
+| Branch protection         | Required CI, PR, conversations; destructive refs off |
+| Phase 1 GitHub Actions    | Passed: run `30153128943`, job `Phase 0 quality`     |
+| Critical/high issues      | None identified by current local checks              |
 
 ## Repository observations
 
@@ -65,8 +65,8 @@ dashboard work remain outside the active phase.
 
 ## Phase history
 
-| Phase | State       | Evidence                                    |
-| ----- | ----------- | ------------------------------------------- |
-| 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
-| 1     | IN_PROGRESS | `docs/phases/phase-01/PLAN.md`              |
-| 2-10  | NOT_PLANNED | Await prior-phase approval and planning     |
+| Phase | State             | Evidence                                    |
+| ----- | ----------------- | ------------------------------------------- |
+| 0     | APPROVED          | `docs/phases/phase-00/COMPLETION_REPORT.md` |
+| 1     | AWAITING_APPROVAL | `docs/phases/phase-01/COMPLETION_REPORT.md` |
+| 2-10  | NOT_PLANNED       | Await prior-phase approval and planning     |

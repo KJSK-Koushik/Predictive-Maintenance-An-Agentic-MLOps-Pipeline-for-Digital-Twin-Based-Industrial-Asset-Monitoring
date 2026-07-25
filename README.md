@@ -12,9 +12,9 @@ The project will address:
 - bounded AI-assisted model and maintenance decision support.
 
 **Phase 0: Project foundation and architecture** is complete and owner-approved.
-**Phase 1: Local dataset ingestion and data contract** is in progress under the
-owner's explicit authorization. The repository still contains no cloud
-resources, trained models, or deployable services.
+**Phase 1: Local dataset ingestion and data contract** is complete and awaiting
+owner approval. The repository still contains no cloud resources, trained
+models, or deployable services.
 
 ## Phase 1 local validation
 
