@@ -1,4 +1,4 @@
-"""Phase 0 repository and documentation contract tests."""
+"""Cross-phase repository and documentation contract tests."""
 
 from __future__ import annotations
 
@@ -36,6 +36,7 @@ REQUIRED_FILES = (
     "docs/phases/phase-01/PLAN.md",
     "docs/phases/phase-01/ACCEPTANCE_CRITERIA.md",
     "docs/phases/phase-01/TEST_PLAN.md",
+    "docs/phases/phase-01/DATA_EXPLORATION.md",
     "docs/phases/phase-01/COMPLETION_REPORT.md",
 )
 
@@ -86,7 +87,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
 
     if current_phase == "None":
         assert state_match.group(1) == "APPROVED"
-        assert re.search(r"\|\s*Last completed phase\s*\|\s*0:", status)
+        assert re.search(r"\|\s*Last completed phase\s*\|\s*1:", status)
     else:
         assert current_phase.startswith(("0", "1"))
 
@@ -150,10 +151,26 @@ def test_local_dataset_is_ignored() -> None:
 
 
 @pytest.mark.foundation
-def test_no_later_phase_implementation_roots_exist() -> None:
-    prohibited = ("src", "airflow", "supabase", "dashboard", "services", "models")
+def test_no_post_phase_one_implementation_roots_exist() -> None:
+    prohibited = ("airflow", "supabase", "dashboard", "services", "models")
     present = [name for name in prohibited if (ROOT / name).exists()]
     assert not present, f"Later-phase implementation roots present: {present}"
+
+    permitted_source = ROOT / "src/predictive_maintenance/data"
+    source_files = {
+        path.name for path in permitted_source.glob("*.py") if path.is_file()
+    }
+    assert source_files == {
+        "__init__.py",
+        "cli.py",
+        "contract.py",
+        "exploration.py",
+        "integrity.py",
+        "labels.py",
+        "parser.py",
+        "pipeline.py",
+        "validation.py",
+    }
 
 
 @pytest.mark.foundation

@@ -35,8 +35,8 @@ globally.
 - [x] Do not rename, normalize, or edit the source files manually.
 - [x] Limit Phase 1 data scope to FD001.
 
-Phase 1 will compute checksums and inspect content. Phase 0 deliberately does
-not.
+Phase 1 computed checksums and inspected only the confirmed FD001 logical
+files. The raw source and generated local evidence remain ignored by Git.
 
 ## Phase 2 Supabase prerequisites
 

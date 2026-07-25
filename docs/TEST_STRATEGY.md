@@ -24,7 +24,7 @@
 | Performance       | Evaluate latency, throughput, and resource objectives        | Representative load            |
 | Security          | Secrets, dependencies, permissions, auth, input abuse        | Scanners and adversarial cases |
 
-## Phase 0 suite
+## Foundation suite
 
 ### Foundation contract tests
 
@@ -34,7 +34,7 @@
 - local data paths are ignored;
 - `.env.example` contains placeholders rather than credentials;
 - no dependency or path references the separate repository;
-- no later-phase implementation directory is introduced; and
+- no post-Phase 1 implementation root is introduced; and
 - Markdown links to local source-of-truth documents resolve.
 
 ### Integration contract tests
@@ -45,35 +45,40 @@
 - the workflow uses immutable action references; and
 - Phase 0 status, plan, acceptance criteria, and workflow agree.
 
-### Phase 0 commands
+### Phase 1 commands
 
 ```shell
 uv sync --locked --dev
 uv lock --check
 uv run ruff format --check .
 uv run ruff check .
-uv run mypy tests
-uv run pytest
-uv run pytest --cov=tests --cov-branch --cov-report=term-missing
+uv run mypy src tests
+uv run pytest -m "not integration and not dataset"
+uv run pytest -m "integration and not dataset"
+uv run pytest -m dataset
+uv run pytest -m "not dataset" --cov=src/predictive_maintenance --cov-branch --cov-report=term-missing --cov-fail-under=90
 uv run mdformat --check README.md CONTRIBUTING.md docs
 uv run yamllint .
 uv run pip-audit
 ```
 
-Coverage in Phase 0 describes foundation test modules and is informational. A
-product-code threshold becomes meaningful in Phase 1 and will be introduced
-there.
+The `dataset` command requires the ignored owner-provided FD001 files and is
+local-real-data evidence. CI runs committed synthetic fixtures and excludes
+that marker. Product source has a 90% branch-aware coverage gate.
 
 ## Phase growth
 
-### Phase 1
+### Phase 1 implemented coverage
 
 - parser and checksum unit tests;
 - schema and semantic property tests;
 - label boundary tests;
 - corrupt, missing, duplicate, and reordered input tests;
 - a temporary-directory ingestion integration test; and
-- a minimum product-code coverage threshold.
+- a minimum product-code coverage threshold;
+- stable structured rule IDs and bounded-example checks;
+- byte-for-byte snapshot, reuse, changed-input, and tampering checks; and
+- a separate actual FD001 contract test.
 
 ### Phase 2
 

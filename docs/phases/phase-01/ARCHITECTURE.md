@@ -48,12 +48,14 @@ the snapshot from being reported as accepted.
 
 | Module        | Responsibility                                                      |
 | ------------- | ------------------------------------------------------------------- |
+| `contract`    | Stable filenames, columns, versions, citation, errors               |
 | `integrity`   | Stream hashes, copy exact bytes, verify destination, write manifest |
-| `cmapss`      | Define FD001 filenames/columns and parse whitespace-separated rows  |
+| `parser`      | Parse whitespace-separated telemetry and terminal RUL               |
 | `validation`  | Run Pandera schema checks and project-owned semantic invariants     |
 | `labels`      | Derive train/test RUL and horizon-based failure-risk labels         |
 | `exploration` | Produce aggregate, reproducible dataset observations                |
-| `cli`         | Compose the modules without owning domain logic                     |
+| `pipeline`    | Compose accepted in-memory Phase 1 outputs                          |
+| `cli`         | Write ignored local evidence without owning domain logic            |
 
 The package remains a modular monolith. Interfaces are ordinary typed Python
 functions and immutable data classes; no repository abstraction or plugin
@@ -63,7 +65,8 @@ system is needed for local files.
 
 - Source files are opened read-only and never modified.
 - SHA-256 is computed over exact bytes using bounded-memory streaming.
-- The destination path includes the digest and original basename.
+- The destination path includes the source-set snapshot digest; files retain
+  their original logical basenames within it.
 - Copy creation is exclusive; overwrite and upsert are prohibited.
 - The destination digest is verified after copying.
 - An existing exact destination is idempotently reused only after verification.
@@ -88,7 +91,8 @@ validation requires exactly 26 numeric columns. Semantic validation covers:
 
 - positive integral engine identifiers and cycles;
 - unique `(engine_id, cycle)` keys;
-- strictly increasing cycles within each engine in source order;
+- cycles starting at 1 and increasing by one within each engine in source
+  order;
 - finite settings and sensor values;
 - no missing values;
 - required train/test/RUL file relationships; and
@@ -138,10 +142,18 @@ while preserving engine ID, source cycle, snapshot ID, and row provenance.
 
 ## Failure outputs
 
-Validation failures produce a project-owned structured report with stable rule
-IDs, severity, affected logical file, counts, and sanitized examples. Reports
-must not contain credentials, private URLs, absolute workstation paths, or an
-unbounded copy of raw rows.
+Validation failures produce project-owned structured issues with stable rule
+IDs, error severity, affected logical file, counts, and at most five sanitized
+examples. Reports must not contain credentials, private URLs, absolute
+workstation paths, or an unbounded copy of raw rows.
+
+## Exercised implementation
+
+The local pipeline was exercised on the owner-provided files and accepted
+20,631 train rows and 13,096 test rows across 100 engines in each partition.
+The source-set identity and aggregate findings are recorded in
+`docs/DATA_CONTRACT.md` and `DATA_EXPLORATION.md`. This is local evidence; it is
+not a cloud integration.
 
 ## Explicit exclusions
 

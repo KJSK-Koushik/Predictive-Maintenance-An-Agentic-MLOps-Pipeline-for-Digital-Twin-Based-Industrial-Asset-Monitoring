@@ -60,7 +60,7 @@ does not commit raw rows or absolute workstation paths.
 
 ## Quality commands
 
-The implementation phase will finalize exact commands. The intended gates are:
+The implemented gates are:
 
 ```shell
 uv sync --locked --dev
@@ -69,16 +69,17 @@ uv run ruff format --check .
 uv run ruff check .
 uv run mypy src tests
 uv run pytest -m "not integration and not dataset"
-uv run pytest -m integration
-uv run pytest --cov=src/predictive_maintenance --cov-branch --cov-fail-under=90
+uv run pytest -m "integration and not dataset"
+uv run pytest -m dataset
+uv run pytest -m "not dataset" --cov=src/predictive_maintenance --cov-branch --cov-report=term-missing --cov-fail-under=90
 uv run mdformat --check README.md CONTRIBUTING.md docs
 uv run yamllint .
 uv run pip-audit
 ```
 
-The real-data test marker is local-only unless an approved, immutable dataset
-source is deliberately made available to CI. It is never silently skipped in
-the completion report.
+The real-data `dataset` marker is local-only unless an approved, immutable
+dataset source is deliberately made available to CI. It is explicitly excluded
+from CI and separately recorded in the completion report.
 
 ## Failure and security tests
 

@@ -3,7 +3,7 @@
 ## Authorization
 
 Planning was authorized on 2026-07-24 by explicit `PLAN PHASE 1`.
-Implementation is not authorized until the owner issues `START PHASE 1`.
+Implementation was authorized on 2026-07-25 by explicit `START PHASE 1`.
 
 ## Objective
 
@@ -11,7 +11,7 @@ Implement and exercise local FD001 integrity, immutable raw snapshotting,
 parsing, validation, labels, and aggregate exploration with reproducible
 evidence and no cloud dependency.
 
-## Work breakdown after start authorization
+## Implemented work breakdown
 
 1. Reconfirm repository status and source-file inventory without changing data.
 1. Add the minimal runtime dependencies: Pandera with its pandas backend.
@@ -41,17 +41,17 @@ src/predictive_maintenance/
   __init__.py
   data/
     __init__.py
-    cmapss.py
+    contract.py
     integrity.py
+    parser.py
     validation.py
     labels.py
     exploration.py
+    pipeline.py
     cli.py
 tests/
   fixtures/cmapss/
-  unit/data/
-  contract/data/
-  integration/data/
+  data/
 docs/phases/phase-01/
   ARCHITECTURE.md
   PLAN.md
@@ -61,13 +61,13 @@ docs/phases/phase-01/
   COMPLETION_REPORT.md
 ```
 
-Existing files expected to change during implementation include
+Existing files changed during implementation include
 `pyproject.toml`, `uv.lock`, `.gitignore`, `.github/workflows/ci.yml`,
 `docs/DATA_CONTRACT.md`, `docs/MASTER_ARCHITECTURE.md`,
 `docs/TEST_STRATEGY.md`, `docs/MANUAL_PREREQUISITES.md`, and
 `docs/PROJECT_STATUS.md`.
 
-The exact module list may be reduced if responsibilities remain clear. No
+The final module list follows these responsibilities. No
 generic framework, database adapter, event broker, notebook-only pipeline, or
 service tree is planned.
 
@@ -87,7 +87,7 @@ with an unrecorded original archive checksum.
 
 ## CI growth
 
-The Phase 1 workflow will add:
+The Phase 1 workflow adds:
 
 - typing for product source and tests;
 - fixture-based parser, contract, semantic, and label tests;

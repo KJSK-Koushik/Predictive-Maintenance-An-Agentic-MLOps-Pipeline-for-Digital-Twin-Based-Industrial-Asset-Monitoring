@@ -30,6 +30,8 @@ and Verification.
 | [0010](0010-agent-authority.md)              | Agent authority and audit boundary        | Accepted |
 | [0011](0011-monitoring-retraining.md)        | Monitoring and retraining semantics       | Accepted |
 | [0012](0012-digital-shadow.md)               | Digital-shadow state and replay semantics | Accepted |
+| [0013](0013-fd001-raw-identity.md)           | FD001 raw identity and overwrite denial   | Accepted |
+| [0014](0014-fd001-label-semantics.md)        | RUL and risk-label semantics              | Accepted |
 
 New ADRs use the next four-digit identifier. Existing ADR content is not
 rewritten to hide a changed decision; create a superseding ADR instead.
