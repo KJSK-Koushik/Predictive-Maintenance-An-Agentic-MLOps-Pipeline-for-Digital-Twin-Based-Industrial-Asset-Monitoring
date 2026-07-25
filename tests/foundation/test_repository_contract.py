@@ -38,6 +38,11 @@ REQUIRED_FILES = (
     "docs/phases/phase-01/TEST_PLAN.md",
     "docs/phases/phase-01/DATA_EXPLORATION.md",
     "docs/phases/phase-01/COMPLETION_REPORT.md",
+    "docs/phases/phase-02/ARCHITECTURE.md",
+    "docs/phases/phase-02/PLAN.md",
+    "docs/phases/phase-02/ACCEPTANCE_CRITERIA.md",
+    "docs/phases/phase-02/TEST_PLAN.md",
+    "docs/phases/phase-02/COMPLETION_REPORT.md",
 )
 
 ADR_REQUIRED_HEADINGS = (
@@ -89,10 +94,14 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         assert state_match.group(1) == "APPROVED"
         assert re.search(r"\|\s*Last completed phase\s*\|\s*1:", status)
     else:
-        assert current_phase.startswith(("0", "1"))
+        assert current_phase.startswith(("0", "1", "2"))
 
     phase_directories = sorted((ROOT / "docs/phases").glob("phase-*"))
-    assert [path.name for path in phase_directories] == ["phase-00", "phase-01"]
+    assert [path.name for path in phase_directories] == [
+        "phase-00",
+        "phase-01",
+        "phase-02",
+    ]
 
 
 @pytest.mark.foundation

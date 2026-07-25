@@ -2,9 +2,9 @@
 
 ## Status
 
-This is the master target architecture. Phases 0 and 1 are approved. No later
-phase is active. Components assigned to later phases are designs, not working
-integrations.
+This is the master target architecture. Phases 0 and 1 are approved. Phase 2 is
+planned but not started. Components assigned to Phase 2 or later are designs,
+not working integrations.
 
 ## Architectural principles
 
@@ -94,15 +94,18 @@ execution systems.
 The logical zones are:
 
 ```text
-raw/<dataset>/<source-version>/<sha256>/<filename>
+raw/<dataset>/<snapshot-id>/<sha256>/<filename>
 processed/<dataset>/<contract-version>/<snapshot-id>/...
 features/<dataset>/<feature-set-version>/<snapshot-id>/...
 models/<registered-name>/<model-version>/...
 reports/<report-type>/<run-or-window-id>/...
 ```
 
-The final bucket layout is decided in Phase 2. Logical zones do not imply AWS
-S3. Supabase Storage's S3 protocol is an adapter option.
+Phase 2 plans two private Supabase Storage buckets: one raw bucket and one
+derived bucket. The derived bucket reserves processed and feature prefixes but
+contains no production derived data until Phase 3. Logical zones do not imply
+AWS S3, and the Supabase S3 protocol is deferred in favor of the standard
+Storage API.
 
 Raw immutability is application-enforced:
 

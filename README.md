@@ -13,8 +13,9 @@ The project will address:
 
 **Phase 0: Project foundation and architecture** is complete and owner-approved.
 **Phase 1: Local dataset ingestion and data contract** is complete and
-owner-approved. No later phase is active. The repository still contains no
-cloud resources, trained models, or deployable services.
+owner-approved. **Phase 2: Cloud data foundation** is planned but not started.
+The repository still contains no cloud resources, trained models, or deployable
+services.
 
 ## Phase 1 local validation
 
@@ -52,6 +53,7 @@ maintenance decisions.
 - [Architecture decision records](docs/adr/README.md)
 - [Phase 0 plan](docs/phases/phase-00/PLAN.md)
 - [Phase 1 plan](docs/phases/phase-01/PLAN.md)
+- [Phase 2 plan](docs/phases/phase-02/PLAN.md)
 
 ## Development
 
@@ -61,7 +63,7 @@ The foundation environment uses Python 3.11 and `uv`.
 uv sync --locked --dev
 uv run ruff format --check .
 uv run ruff check .
-uv run mypy tests
+uv run mypy src tests
 uv run pytest
 uv run mdformat --check README.md CONTRIBUTING.md docs
 uv run yamllint .

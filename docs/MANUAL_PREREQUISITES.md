@@ -40,20 +40,32 @@ files. The raw source and generated local evidence remain ignored by Git.
 
 ## Phase 2 Supabase prerequisites
 
-Perform these only after Phase 1 approval and Phase 2 planning:
+Phase 2 is planned but not started. A read-only connector check found one
+inactive project in the connected account. It does not match the private
+project URL supplied earlier. No project reference or private endpoint is
+recorded in this repository.
 
-- [ ] Approve any expected cost and choose a Supabase organization/project.
-- [ ] Choose project region and retention expectations.
-- [ ] Create separate development/test resources or an approved test namespace.
-- [ ] Record the project URL and database/storage credentials only in local
-  environment configuration or approved secret stores.
-- [ ] Enable S3 protocol access only if the selected adapter needs it.
-- [ ] Store S3 access keys server-side; they bypass Storage RLS.
-- [ ] Approve an object backup and recovery method because database backups do
-  not by themselves protect Storage object bytes.
-- [ ] Decide whether the Data API is disabled. If enabled, expose only a
-  dedicated API schema with explicit grants and RLS.
+- [ ] Confirm which exact Supabase project is the Phase 2 development/test
+  target and resolve the mismatch above.
+- [ ] Confirm that the target has no valuable or production data that Phase 2
+  could affect.
+- [ ] Explicitly approve any project activation, expected cost, and cloud
+  mutation.
+- [ ] Confirm the project region and retention expectations.
+- [ ] Approve configurable names for one private raw bucket and one private
+  derived bucket. Suggested names are `pm-raw` and `pm-derived`.
+- [ ] Approve uploading the accepted FD001 raw snapshot after synthetic cloud
+  tests pass.
+- [ ] Record the project URL, direct database URL, secret key, and database
+  credentials only in ignored local configuration or approved secret stores.
+- [ ] Keep the private `ops` schema outside the Data API. If the Data API is
+  enabled elsewhere, do not expose `ops`.
+- [ ] Approve separate database and object-byte backup and recovery methods.
 - [ ] Identify who may execute and approve database migrations.
+- [ ] Confirm that cloud integration cleanup is limited to a generated
+  `_integration/<run-id>/` prefix in the derived bucket.
+- [x] Defer Supabase S3 protocol access and S3 credentials. The planned primary
+  adapter uses the standard Storage API.
 
 Never provide a Supabase secret/service-role key to browser code.
 
