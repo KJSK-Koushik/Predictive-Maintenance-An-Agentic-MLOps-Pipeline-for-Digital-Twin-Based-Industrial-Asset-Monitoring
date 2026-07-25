@@ -82,11 +82,15 @@ that marker. Product source has a 90% branch-aware coverage gate.
 
 ### Phase 2
 
-- migration up/down or clean-apply validation;
-- PostgreSQL constraint and RLS tests;
-- object-store idempotency and overwrite-denial tests;
-- local substitute tests; and
-- separate, credentialed Supabase integration evidence.
+- forward-only migration clean-apply, reset, and history validation;
+- PostgreSQL constraint, grant, role, and RLS tests;
+- filesystem and Supabase object-contract tests;
+- idempotency, concurrency, overwrite-denial, partial-failure, and
+  reconciliation tests;
+- PostgreSQL 17 and filesystem local-integration evidence;
+- separate, credentialed Supabase integration evidence;
+- database and object-byte backup/recovery evidence; and
+- Supabase Security and Performance Advisor results.
 
 ### Phase 3
 

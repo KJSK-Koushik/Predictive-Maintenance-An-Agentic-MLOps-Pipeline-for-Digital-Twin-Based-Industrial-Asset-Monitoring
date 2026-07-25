@@ -4,11 +4,12 @@
 
 | Field                     | Value                                        |
 | ------------------------- | -------------------------------------------- |
-| Current phase             | None                                         |
+| Current phase             | 2: Cloud data foundation                     |
 | Last completed phase      | 1: Local dataset ingestion and data contract |
-| State                     | APPROVED                                     |
-| Approved                  | 2026-07-25 by explicit `APPROVE PHASE 1`     |
-| Next permitted transition | Wait for explicit `PLAN PHASE 2`             |
+| State                     | PLANNED                                      |
+| Planned                   | 2026-07-25 by explicit `PLAN PHASE 2`        |
+| Started                   | Not started                                  |
+| Next permitted transition | Resolve prerequisites, then `START PHASE 2`  |
 
 ## Bootstrap record
 
@@ -26,24 +27,28 @@ feature or initializing a cloud service.
 
 ## Current evidence
 
-| Evidence                  | Status                                               |
-| ------------------------- | ---------------------------------------------------- |
-| Source-of-truth documents | Complete for Phase 1                                 |
-| Accepted ADRs             | 14                                                   |
-| Phase 1 implementation    | Complete and owner-approved                          |
-| Unit/contract tests       | Passed locally: 46                                   |
-| Integration tests         | Passed locally: 9                                    |
-| Actual FD001 test         | Passed locally: 1                                    |
-| Product coverage          | 92.63% branch-aware                                  |
-| Docker validation         | Not applicable: no runnable service in Phase 1       |
-| GitHub remote             | `origin/main` created at commit `6c968e0`            |
-| Code ownership            | `@KJSK-Koushik` recorded in `.github/CODEOWNERS`     |
-| Repository license        | Apache-2.0                                           |
-| GitHub authentication     | Confirmed for `KJSK-Koushik`                         |
-| GitHub Actions run        | Passed: run `30040721136`, job `Phase 0 quality`     |
-| Branch protection         | Required CI, PR, conversations; destructive refs off |
-| Phase 1 GitHub Actions    | Passed: run `30153263553`, job `Phase 0 quality`     |
-| Critical/high issues      | None identified by current local checks              |
+| Evidence                  | Status                                                 |
+| ------------------------- | ------------------------------------------------------ |
+| Source-of-truth documents | Phase 2 plan added; implementation not started         |
+| Accepted ADRs             | 14; Phase 2 decisions remain planned                   |
+| Phase 1 implementation    | Complete and owner-approved                            |
+| Unit/contract tests       | Phase 1 evidence: passed locally, 46                   |
+| Integration tests         | Phase 1 evidence: passed locally, 9                    |
+| Actual FD001 test         | Phase 1 evidence: passed locally, 1                    |
+| Product coverage          | Phase 1 evidence: 92.63% branch-aware                  |
+| Docker validation         | Not yet applicable to Phase 2 planning                 |
+| GitHub remote             | `origin/main` created at commit `6c968e0`              |
+| Code ownership            | `@KJSK-Koushik` recorded in `.github/CODEOWNERS`       |
+| Repository license        | Apache-2.0                                             |
+| GitHub authentication     | Confirmed for `KJSK-Koushik`                           |
+| GitHub Actions run        | Passed: run `30040721136`, job `Phase 0 quality`       |
+| Branch protection         | Required CI, PR, conversations; destructive refs off   |
+| Phase 1 GitHub Actions    | Passed: run `30153263553`, job `Phase 0 quality`       |
+| Phase 2 planning tests    | Local: 46 unit/contract and 9 integration passed       |
+| Planning quality checks   | Format, lint, typing, lock, YAML, audit passed         |
+| Phase 2 cloud evidence    | Not run; planning cannot prove a cloud integration     |
+| Supabase target           | Blocked pending owner confirmation of project mismatch |
+| Critical/high issues      | None identified by current planning review             |
 
 ## Repository observations
 
@@ -55,12 +60,17 @@ feature or initializing a cloud service.
 - The separate ML-Agent-Factory repository is outside project scope and has not
   been accessed.
 
-## Phase 1 approved boundary
+## Phase 2 planned boundary
 
-Phase 1 is complete and approved. No phase is active. Cloud storage, databases,
-orchestration, modelling, serving, monitoring, agents, and dashboard work
-remain outside the approved implementation until their phase is separately
-planned and started.
+Phase 2 planning is complete, but implementation has not started. The planned
+scope is private Supabase Storage zones, a private PostgreSQL `ops` schema,
+idempotent publication of the accepted Phase 1 snapshot, metadata and lineage,
+local substitutes, and separately recorded real-cloud verification.
+
+No Supabase resource, migration, dependency, container, or cloud object may be
+created until the owner confirms the exact development/test target and sends
+`START PHASE 2`. Airflow, transformations, models, serving, monitoring, agents,
+and the dashboard remain outside the Phase 2 boundary.
 
 ## Phase history
 
@@ -68,4 +78,5 @@ planned and started.
 | ----- | ----------- | ------------------------------------------- |
 | 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
 | 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
-| 2-10  | NOT_PLANNED | Await explicit `PLAN PHASE 2`               |
+| 2     | PLANNED     | `docs/phases/phase-02/PLAN.md`              |
+| 3-10  | NOT_PLANNED | Outside the current authorization           |
