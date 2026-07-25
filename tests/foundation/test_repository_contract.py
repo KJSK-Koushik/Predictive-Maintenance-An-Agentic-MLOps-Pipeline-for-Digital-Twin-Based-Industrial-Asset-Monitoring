@@ -87,7 +87,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
 
     if current_phase == "None":
         assert state_match.group(1) == "APPROVED"
-        assert re.search(r"\|\s*Last completed phase\s*\|\s*0:", status)
+        assert re.search(r"\|\s*Last completed phase\s*\|\s*1:", status)
     else:
         assert current_phase.startswith(("0", "1"))
 

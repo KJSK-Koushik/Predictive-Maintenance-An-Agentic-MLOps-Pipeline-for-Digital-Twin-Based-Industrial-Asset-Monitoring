@@ -2,14 +2,13 @@
 
 ## Current control state
 
-| Field                     | Value                                          |
-| ------------------------- | ---------------------------------------------- |
-| Current phase             | 1: Local dataset ingestion and data contract   |
-| Last completed phase      | 0: Project foundation and architecture         |
-| State                     | AWAITING_APPROVAL                              |
-| Planned                   | 2026-07-24 by explicit `PLAN PHASE 1` command  |
-| Started                   | 2026-07-25 by explicit `START PHASE 1` command |
-| Next permitted transition | Wait for explicit `APPROVE PHASE 1`            |
+| Field                     | Value                                        |
+| ------------------------- | -------------------------------------------- |
+| Current phase             | None                                         |
+| Last completed phase      | 1: Local dataset ingestion and data contract |
+| State                     | APPROVED                                     |
+| Approved                  | 2026-07-25 by explicit `APPROVE PHASE 1`     |
+| Next permitted transition | Wait for explicit `PLAN PHASE 2`             |
 
 ## Bootstrap record
 
@@ -31,7 +30,7 @@ feature or initializing a cloud service.
 | ------------------------- | ---------------------------------------------------- |
 | Source-of-truth documents | Complete for Phase 1                                 |
 | Accepted ADRs             | 14                                                   |
-| Phase 1 implementation    | Complete; awaiting owner approval                    |
+| Phase 1 implementation    | Complete and owner-approved                          |
 | Unit/contract tests       | Passed locally: 46                                   |
 | Integration tests         | Passed locally: 9                                    |
 | Actual FD001 test         | Passed locally: 1                                    |
@@ -43,7 +42,7 @@ feature or initializing a cloud service.
 | GitHub authentication     | Confirmed for `KJSK-Koushik`                         |
 | GitHub Actions run        | Passed: run `30040721136`, job `Phase 0 quality`     |
 | Branch protection         | Required CI, PR, conversations; destructive refs off |
-| Phase 1 GitHub Actions    | Passed: run `30153128943`, job `Phase 0 quality`     |
+| Phase 1 GitHub Actions    | Passed: run `30153263553`, job `Phase 0 quality`     |
 | Critical/high issues      | None identified by current local checks              |
 
 ## Repository observations
@@ -56,17 +55,17 @@ feature or initializing a cloud service.
 - The separate ML-Agent-Factory repository is outside project scope and has not
   been accessed.
 
-## Phase 1 implementation boundary
+## Phase 1 approved boundary
 
-Phase 1 implementation is authorized for local FD001 integrity handling,
-parsing, validation, label derivation, exploration, and their tests. Cloud
-storage, databases, orchestration, modelling, serving, monitoring, agents, and
-dashboard work remain outside the active phase.
+Phase 1 is complete and approved. No phase is active. Cloud storage, databases,
+orchestration, modelling, serving, monitoring, agents, and dashboard work
+remain outside the approved implementation until their phase is separately
+planned and started.
 
 ## Phase history
 
-| Phase | State             | Evidence                                    |
-| ----- | ----------------- | ------------------------------------------- |
-| 0     | APPROVED          | `docs/phases/phase-00/COMPLETION_REPORT.md` |
-| 1     | AWAITING_APPROVAL | `docs/phases/phase-01/COMPLETION_REPORT.md` |
-| 2-10  | NOT_PLANNED       | Await prior-phase approval and planning     |
+| Phase | State       | Evidence                                    |
+| ----- | ----------- | ------------------------------------------- |
+| 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
+| 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
+| 2-10  | NOT_PLANNED | Await explicit `PLAN PHASE 2`               |

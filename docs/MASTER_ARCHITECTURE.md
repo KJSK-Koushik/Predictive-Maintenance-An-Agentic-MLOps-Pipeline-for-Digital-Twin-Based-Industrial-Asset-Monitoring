@@ -2,9 +2,9 @@
 
 ## Status
 
-This is the master target architecture. Phase 0 is approved and Phase 1 is
-complete, awaiting owner approval. Components assigned to later phases are
-designs, not working integrations.
+This is the master target architecture. Phases 0 and 1 are approved. No later
+phase is active. Components assigned to later phases are designs, not working
+integrations.
 
 ## Architectural principles
 

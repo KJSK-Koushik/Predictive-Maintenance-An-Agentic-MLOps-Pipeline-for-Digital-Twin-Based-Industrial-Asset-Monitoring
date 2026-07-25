@@ -2,7 +2,7 @@
 
 ## Status
 
-**COMPLETE — AWAITING OWNER APPROVAL.**
+**COMPLETE — OWNER APPROVED.**
 
 ## Authorization and scope
 
@@ -106,4 +106,5 @@ No unresolved critical or high-severity issue was found. The unavailable
 archive checksum and legacy protected-context name are documented limitations,
 not hidden validation claims. Every Phase 1 acceptance criterion is satisfied.
 
-Phase 1 must not advance until the owner sends `APPROVE PHASE 1`.
+The owner sent `APPROVE PHASE 1` on 2026-07-25. No later phase is planned or
+active. The only permitted next transition is explicit `PLAN PHASE 2`.
