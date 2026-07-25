@@ -12,9 +12,23 @@ The project will address:
 - bounded AI-assisted model and maintenance decision support.
 
 **Phase 0: Project foundation and architecture** is complete and owner-approved.
-**Phase 1: Local dataset ingestion and data contract** is planned but not
-started. The repository still contains no feature implementation, cloud
+**Phase 1: Local dataset ingestion and data contract** is in progress under the
+owner's explicit authorization. The repository still contains no cloud
 resources, trained models, or deployable services.
+
+## Phase 1 local validation
+
+After placing the confirmed FD001 files in the ignored `Data/` directory:
+
+```shell
+uv sync --locked --dev
+uv run validate-fd001 --source-dir Data
+```
+
+The command verifies exact source bytes, creates or reuses an ignored
+content-addressed raw snapshot, enforces the executable contract, derives
+labels, and writes aggregate reports under ignored `artifacts/`. It does not
+upload data or contact a cloud service.
 
 ## Claim boundaries
 

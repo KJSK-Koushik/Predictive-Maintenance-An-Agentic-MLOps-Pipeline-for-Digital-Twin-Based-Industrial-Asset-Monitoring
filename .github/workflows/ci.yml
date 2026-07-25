@@ -1,4 +1,4 @@
-name: phase-0-quality
+name: quality-gates
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: phase-0-quality-${{ github.ref }}
+  group: quality-gates-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -45,16 +45,21 @@ jobs:
         run: uv run ruff check .
 
       - name: Check static types
-        run: uv run mypy tests
+        run: uv run mypy src tests
 
-      - name: Run foundation tests
-        run: uv run pytest -m "not integration"
+      - name: Run unit and contract tests
+        run: uv run pytest -m "not integration and not dataset"
 
-      - name: Run integration contract tests
-        run: uv run pytest -m integration
+      - name: Run integration tests
+        run: uv run pytest -m "integration and not dataset"
 
-      - name: Record foundation coverage
-        run: uv run pytest --cov=tests --cov-branch --cov-report=term-missing
+      - name: Enforce product coverage
+        run: >-
+          uv run pytest -m "not dataset"
+          --cov=src/predictive_maintenance
+          --cov-branch
+          --cov-report=term-missing
+          --cov-fail-under=90
 
       - name: Check Markdown formatting
         run: uv run mdformat --check README.md CONTRIBUTING.md docs

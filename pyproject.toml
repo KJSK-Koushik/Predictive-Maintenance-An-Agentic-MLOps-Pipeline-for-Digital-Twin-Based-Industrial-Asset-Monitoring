@@ -4,19 +4,26 @@ build-backend = "hatchling.build"
 
 [project]
 name = "predictive-maintenance-mlops"
-version = "0.0.0"
+version = "0.1.0"
 description = "Human-governed MLOps research prototype for C-MAPSS predictive maintenance"
 readme = "README.md"
 requires-python = ">=3.11,<3.12"
 license = "Apache-2.0"
 authors = [{ name = "Project maintainers" }]
-dependencies = []
+dependencies = [
+  "pandas>=2.2,<3",
+  "pandera[pandas]>=0.24,<1",
+]
+
+[project.scripts]
+validate-fd001 = "predictive_maintenance.data.cli:main"
 
 [dependency-groups]
 dev = [
   "mdformat>=0.7.22,<0.8",
   "mdformat-gfm>=0.4.1,<0.5",
   "mypy>=1.15,<2",
+  "pandas-stubs>=2.2,<3",
   "pip-audit>=2.8,<3",
   "pytest>=8.3,<10",
   "pytest-cov>=6,<8",
@@ -25,9 +32,6 @@ dev = [
   "types-pyyaml>=6.0.12,<7",
   "yamllint>=1.37,<2",
 ]
-
-[tool.uv]
-package = false
 
 [tool.ruff]
 target-version = "py311"
@@ -52,14 +56,19 @@ exclude = ["^Data/", "^data/"]
 addopts = "--strict-config --strict-markers -ra"
 testpaths = ["tests"]
 markers = [
+  "dataset: tests that require the ignored owner-provided FD001 dataset",
   "foundation: repository architecture and governance contract tests",
   "integration: integration tests that span repository configuration artifacts",
 ]
 
 [tool.coverage.run]
 branch = true
-source = ["tests"]
+source = ["predictive_maintenance"]
 
 [tool.coverage.report]
 show_missing = true
 skip_covered = false
+fail_under = 90
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/predictive_maintenance"]

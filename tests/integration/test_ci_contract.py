@@ -1,4 +1,4 @@
-"""Integration tests spanning Phase 0 workflow and governance artifacts."""
+"""Integration tests spanning the current workflow and governance artifacts."""
 
 from __future__ import annotations
 
@@ -50,17 +50,18 @@ def test_actions_are_pinned_to_full_commit_shas() -> None:
 
 
 @pytest.mark.integration
-def test_workflow_runs_all_phase_zero_quality_gates() -> None:
+def test_workflow_runs_all_phase_one_quality_gates() -> None:
     workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
     required_commands = (
         "uv sync --locked --dev",
         "uv lock --check",
         "ruff format --check",
         "ruff check",
-        "mypy tests",
-        'pytest -m "not integration"',
-        "pytest -m integration",
-        "pytest --cov=tests",
+        "mypy src tests",
+        'pytest -m "not integration and not dataset"',
+        'pytest -m "integration and not dataset"',
+        "--cov=src/predictive_maintenance",
+        "--cov-fail-under=90",
         "mdformat --check",
         "yamllint",
         "pip-audit",
@@ -95,7 +96,7 @@ def test_pull_request_ci_contains_no_release_or_cloud_mutation() -> None:
 
 
 @pytest.mark.integration
-def test_phase_acceptance_records_remote_ci_evidence() -> None:
+def test_approved_phase_zero_records_remote_ci_evidence() -> None:
     criteria = (ROOT / "docs/phases/phase-00/ACCEPTANCE_CRITERIA.md").read_text(
         encoding="utf-8"
     )
