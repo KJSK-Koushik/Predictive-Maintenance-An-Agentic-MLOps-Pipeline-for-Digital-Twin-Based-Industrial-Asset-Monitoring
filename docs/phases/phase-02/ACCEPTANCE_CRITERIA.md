@@ -73,12 +73,12 @@
 
 - [x] Core publication logic remains typed and independent of vendor SDK types.
 - [x] Product source maintains at least 90% branch-aware coverage.
-- [ ] Formatting, linting, strict typing, Markdown, YAML, lock, dependency,
+- [x] Formatting, linting, strict typing, Markdown, YAML, lock, dependency,
   migration, secret, and security checks pass.
 - [x] Pull-request CI remains least-privilege and contains no cloud credential,
   deployment, or production mutation.
-- [ ] The required GitHub Actions workflow passes on the Phase 2 commit.
-- [ ] Required branch protection is verified for the current quality context.
+- [x] The required GitHub Actions workflow passes on the Phase 2 commit.
+- [x] Required branch protection is verified for the current quality context.
 - [ ] No critical or high-severity issue remains unresolved.
 
 ## Documentation and completion

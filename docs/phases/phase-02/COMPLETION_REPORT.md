@@ -2,7 +2,7 @@
 
 ## Status
 
-**IN PROGRESS — hosted Supabase and GitHub CI evidence remain blocked.**
+**IN PROGRESS — hosted Supabase evidence remains blocked.**
 
 ## Authorization
 
@@ -47,6 +47,8 @@ model, service, monitoring job, agent, or dashboard was added.
 | Lock/YAML              | `uv lock --check` and yamllint passed                         |
 | Dependency audit       | No known vulnerabilities; local project itself skipped        |
 | Secret/target scan     | Repository contract test passed                               |
+| GitHub Actions         | Run `30213355431`, job `Phase 0 quality`, passed              |
+| Branch protection      | Strict required CI/PR/review; destructive refs disabled       |
 
 The Supabase adapter tests use an in-memory SDK boundary. They prove adapter
 logic, not hosted Supabase behavior. The filesystem substitute and local
@@ -59,9 +61,7 @@ PostgreSQL are also reported only as local evidence.
   idempotency, reconciliation, and cleanup results;
 - hosted migration-history comparison;
 - Supabase Security and Performance Advisor results;
-- owner-approved hosted database and object backup method;
-- GitHub Actions pass for the Phase 2 commit; and
-- branch-protection verification for that commit.
+- owner-approved hosted database and object backup method.
 
 ## Current blockers
 
@@ -70,13 +70,19 @@ PostgreSQL are also reported only as local evidence.
 1. Activation/cost and cloud mutation must be explicitly approved.
 1. Safe target contents, region, bucket names, Data API posture, migration
    authority, and hosted backup method must be confirmed.
-1. The implementation must be pushed before GitHub Actions and current branch
-   protection can be verified.
+
+## GitHub CI defect found and resolved
+
+The first Phase 2 run failed because a concurrent filesystem reader could see
+the winning file after exclusive creation but before its bytes were complete.
+Publication now verifies a same-directory temporary file and creates the final
+name with an atomic hard link. Ten repeated local concurrency runs passed, and
+the complete follow-up GitHub Actions run `30213355431` passed.
 
 ## Severity and limitations
 
 No critical or high-severity issue was found in the completed local checks.
-Phase 2 cannot be completed while the hosted and GitHub evidence above is
-missing. Raw overwrite denial is application-enforced and is not WORM. The
-local PostgreSQL and filesystem substitutes are not treated as proof of hosted
-Supabase behavior.
+Phase 2 cannot be completed while the hosted evidence above is missing. Raw
+overwrite denial is application-enforced and is not WORM. The local PostgreSQL
+and filesystem substitutes are not treated as proof of hosted Supabase
+behavior.

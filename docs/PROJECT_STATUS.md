@@ -49,9 +49,11 @@ feature or initializing a cloud service.
 | Local quality checks      | Format, lint, typing, lock, YAML, audit passed          |
 | Actual FD001 publication  | Local filesystem + PostgreSQL publication passed        |
 | Backup/recovery           | `pg_dump`, restore, object restore, reconcile passed    |
+| Phase 2 GitHub Actions    | Passed: run `30213355431`, job `Phase 0 quality`        |
+| Phase 2 branch protection | Strict required CI/PR/review; destructive refs disabled |
 | Phase 2 cloud evidence    | Not run; local/mocked evidence is not cloud evidence    |
 | Supabase target           | Blocked pending owner confirmation of project mismatch  |
-| Critical/high issues      | None identified by current planning review              |
+| Critical/high issues      | None identified by completed local and CI checks        |
 
 ## Repository observations
 
