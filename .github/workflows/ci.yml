@@ -17,9 +17,10 @@ concurrency:
 
 jobs:
   quality:
+    # Keep this context stable because branch protection requires it.
     name: Phase 0 quality
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
 
     steps:
       - name: Check out repository
@@ -48,15 +49,34 @@ jobs:
       - name: Check static types
         run: uv run mypy src tests
 
+      - name: Validate Docker Compose configuration
+        run: docker compose config --quiet
+
+      - name: Start disposable PostgreSQL
+        run: docker compose up -d --wait postgres
+
       - name: Run unit and contract tests
-        run: uv run pytest -m "not integration and not dataset"
+        run: >-
+          uv run pytest
+          -m "not integration and not dataset and not postgres and not cloud"
 
       - name: Run integration tests
-        run: uv run pytest -m "integration and not dataset"
+        run: >-
+          uv run pytest
+          -m "integration and not dataset and not postgres and not cloud"
+
+      - name: Run PostgreSQL migration and recovery tests
+        env:
+          PM_POSTGRES_DSN: >-
+            postgresql://postgres:phase2-local-only@127.0.0.1:55432/predictive_maintenance
+        run: uv run pytest -m "postgres and not dataset and not cloud"
 
       - name: Enforce product coverage
+        env:
+          PM_POSTGRES_DSN: >-
+            postgresql://postgres:phase2-local-only@127.0.0.1:55432/predictive_maintenance
         run: >-
-          uv run pytest -m "not dataset"
+          uv run pytest -m "not dataset and not cloud"
           --cov=src/predictive_maintenance
           --cov-branch
           --cov-report=term-missing
@@ -70,3 +90,7 @@ jobs:
 
       - name: Audit Python dependencies
         run: uv run pip-audit
+
+      - name: Stop disposable PostgreSQL
+        if: always()
+        run: docker compose down --volumes

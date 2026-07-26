@@ -32,6 +32,9 @@ and Verification.
 | [0012](0012-digital-shadow.md)               | Digital-shadow state and replay semantics | Accepted |
 | [0013](0013-fd001-raw-identity.md)           | FD001 raw identity and overwrite denial   | Accepted |
 | [0014](0014-fd001-label-semantics.md)        | RUL and risk-label semantics              | Accepted |
+| [0015](0015-phase-2-object-storage.md)       | Phase 2 object-storage layout             | Accepted |
+| [0016](0016-phase-2-postgres-security.md)    | Private operational PostgreSQL            | Accepted |
+| [0017](0017-phase-2-publication-recovery.md) | Publication and recovery behavior         | Accepted |
 
 New ADRs use the next four-digit identifier. Existing ADR content is not
 rewritten to hide a changed decision; create a superseding ADR instead.

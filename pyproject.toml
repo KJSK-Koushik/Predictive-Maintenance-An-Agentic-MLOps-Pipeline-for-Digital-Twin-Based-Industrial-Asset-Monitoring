@@ -13,9 +13,12 @@ authors = [{ name = "Project maintainers" }]
 dependencies = [
   "pandas>=2.2,<3",
   "pandera[pandas]>=0.24,<1",
+  "psycopg[binary]>=3.3.4,<4",
+  "supabase>=2.31,<3",
 ]
 
 [project.scripts]
+publish-fd001 = "predictive_maintenance.cloud.cli:main"
 validate-fd001 = "predictive_maintenance.data.cli:main"
 
 [dependency-groups]
@@ -56,9 +59,11 @@ exclude = ["^Data/", "^data/"]
 addopts = "--strict-config --strict-markers -ra"
 testpaths = ["tests"]
 markers = [
+  "cloud: tests that require the explicitly approved hosted Supabase project",
   "dataset: tests that require the ignored owner-provided FD001 dataset",
   "foundation: repository architecture and governance contract tests",
   "integration: integration tests that span repository configuration artifacts",
+  "postgres: tests that require the local PostgreSQL 17 container",
 ]
 
 [tool.coverage.run]

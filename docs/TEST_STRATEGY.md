@@ -92,6 +92,29 @@ that marker. Product source has a 90% branch-aware coverage gate.
 - database and object-byte backup/recovery evidence; and
 - Supabase Security and Performance Advisor results.
 
+The implemented local commands are:
+
+```shell
+docker compose config --quiet
+docker compose up -d --wait postgres
+uv run pytest -m "not integration and not dataset and not postgres and not cloud"
+uv run pytest -m "integration and not dataset and not postgres and not cloud"
+PM_POSTGRES_DSN=<local-test-dsn> uv run pytest -m "postgres and not dataset and not cloud"
+PM_POSTGRES_DSN=<local-test-dsn> uv run pytest -m "dataset and not cloud"
+PM_POSTGRES_DSN=<local-test-dsn> uv run pytest -m "not cloud" --cov=src/predictive_maintenance --cov-branch --cov-fail-under=90
+docker compose down --volumes
+```
+
+On PowerShell, set `PM_POSTGRES_DSN` with
+`$env:PM_POSTGRES_DSN='<local-test-dsn>'` before running the command. The local
+DSN is documented in the Phase 2 test plan and CI because it is valid only for
+the loopback-bound disposable container.
+
+Hosted tests require `APP_ENV=cloud`, ignored credentials, and the exact
+`PM_CLOUD_TEST_APPROVAL` phrase defined in the test module. They remain marked
+`cloud` and excluded from ordinary CI. A skipped or mocked hosted test is not
+cloud evidence.
+
 ### Phase 3
 
 - pure ETL tests outside Airflow;

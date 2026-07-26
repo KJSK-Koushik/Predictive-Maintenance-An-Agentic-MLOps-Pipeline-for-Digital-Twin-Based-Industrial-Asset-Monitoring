@@ -6,10 +6,10 @@
 | ------------------------- | -------------------------------------------- |
 | Current phase             | 2: Cloud data foundation                     |
 | Last completed phase      | 1: Local dataset ingestion and data contract |
-| State                     | PLANNED                                      |
+| State                     | IN_PROGRESS                                  |
 | Planned                   | 2026-07-25 by explicit `PLAN PHASE 2`        |
-| Started                   | Not started                                  |
-| Next permitted transition | Resolve prerequisites, then `START PHASE 2`  |
+| Started                   | 2026-07-26 by explicit `START PHASE 2`       |
+| Next permitted transition | Complete Phase 2 acceptance and validation   |
 
 ## Bootstrap record
 
@@ -27,28 +27,31 @@ feature or initializing a cloud service.
 
 ## Current evidence
 
-| Evidence                  | Status                                                 |
-| ------------------------- | ------------------------------------------------------ |
-| Source-of-truth documents | Phase 2 plan added; implementation not started         |
-| Accepted ADRs             | 14; Phase 2 decisions remain planned                   |
-| Phase 1 implementation    | Complete and owner-approved                            |
-| Unit/contract tests       | Phase 1 evidence: passed locally, 46                   |
-| Integration tests         | Phase 1 evidence: passed locally, 9                    |
-| Actual FD001 test         | Phase 1 evidence: passed locally, 1                    |
-| Product coverage          | Phase 1 evidence: 92.63% branch-aware                  |
-| Docker validation         | Not yet applicable to Phase 2 planning                 |
-| GitHub remote             | `origin/main` created at commit `6c968e0`              |
-| Code ownership            | `@KJSK-Koushik` recorded in `.github/CODEOWNERS`       |
-| Repository license        | Apache-2.0                                             |
-| GitHub authentication     | Confirmed for `KJSK-Koushik`                           |
-| GitHub Actions run        | Passed: run `30040721136`, job `Phase 0 quality`       |
-| Branch protection         | Required CI, PR, conversations; destructive refs off   |
-| Phase 1 GitHub Actions    | Passed: run `30153263553`, job `Phase 0 quality`       |
-| Phase 2 planning tests    | Local: 46 unit/contract and 9 integration passed       |
-| Planning quality checks   | Format, lint, typing, lock, YAML, audit passed         |
-| Phase 2 cloud evidence    | Not run; planning cannot prove a cloud integration     |
-| Supabase target           | Blocked pending owner confirmation of project mismatch |
-| Critical/high issues      | None identified by current planning review             |
+| Evidence                  | Status                                                  |
+| ------------------------- | ------------------------------------------------------- |
+| Source-of-truth documents | Phase 2 plan active; implementation started             |
+| Accepted ADRs             | 17; Phase 2 decisions recorded                          |
+| Phase 1 implementation    | Complete and owner-approved                             |
+| Unit/contract tests       | Phase 1 evidence: passed locally, 46                    |
+| Integration tests         | Phase 1 evidence: passed locally, 9                     |
+| Actual FD001 test         | Phase 1 evidence: passed locally, 1                     |
+| Phase 1 product coverage  | Phase 1 evidence: 92.63% branch-aware                   |
+| Docker validation         | PostgreSQL 17 clean start/reset/recovery passed locally |
+| GitHub remote             | `origin/main` created at commit `6c968e0`               |
+| Code ownership            | `@KJSK-Koushik` recorded in `.github/CODEOWNERS`        |
+| Repository license        | Apache-2.0                                              |
+| GitHub authentication     | Confirmed for `KJSK-Koushik`                            |
+| GitHub Actions run        | Passed: run `30040721136`, job `Phase 0 quality`        |
+| Branch protection         | Required CI, PR, conversations; destructive refs off    |
+| Phase 1 GitHub Actions    | Passed: run `30153263553`, job `Phase 0 quality`        |
+| Phase 2 local tests       | 124 passed; 2 hosted-cloud tests deliberately skipped   |
+| Product coverage          | Phase 2 local evidence: 90.50% branch-aware             |
+| Local quality checks      | Format, lint, typing, lock, YAML, audit passed          |
+| Actual FD001 publication  | Local filesystem + PostgreSQL publication passed        |
+| Backup/recovery           | `pg_dump`, restore, object restore, reconcile passed    |
+| Phase 2 cloud evidence    | Not run; local/mocked evidence is not cloud evidence    |
+| Supabase target           | Blocked pending owner confirmation of project mismatch  |
+| Critical/high issues      | None identified by current planning review              |
 
 ## Repository observations
 
@@ -60,17 +63,24 @@ feature or initializing a cloud service.
 - The separate ML-Agent-Factory repository is outside project scope and has not
   been accessed.
 
-## Phase 2 planned boundary
+## Phase 2 active boundary
 
-Phase 2 planning is complete, but implementation has not started. The planned
-scope is private Supabase Storage zones, a private PostgreSQL `ops` schema,
-idempotent publication of the accepted Phase 1 snapshot, metadata and lineage,
-local substitutes, and separately recorded real-cloud verification.
+Phase 2 implementation is active. The approved scope is private Supabase
+Storage zones, a private PostgreSQL `ops` schema, idempotent publication of the
+accepted Phase 1 snapshot, metadata and lineage, local substitutes, and
+separately recorded real-cloud verification.
 
-No Supabase resource, migration, dependency, container, or cloud object may be
-created until the owner confirms the exact development/test target and sends
-`START PHASE 2`. Airflow, transformations, models, serving, monitoring, agents,
-and the dashboard remain outside the Phase 2 boundary.
+Local implementation, migrations, dependencies, containers, and tests are
+authorized. No hosted Supabase resource, schema, bucket, or cloud object may be
+changed until the owner confirms the exact development/test target and approves
+any activation or cost. Airflow, transformations, models, serving, monitoring,
+agents, and the dashboard remain outside the Phase 2 boundary.
+
+The local implementation now includes a pinned PostgreSQL 17 container, one
+CLI-generated forward migration, filesystem and Supabase Storage adapters,
+direct PostgreSQL metadata access, idempotent publication, lineage,
+reconciliation, and a guarded hosted-test suite. Only the filesystem and local
+PostgreSQL paths have been exercised against real infrastructure.
 
 ## Phase history
 
@@ -78,5 +88,5 @@ and the dashboard remain outside the Phase 2 boundary.
 | ----- | ----------- | ------------------------------------------- |
 | 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
 | 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
-| 2     | PLANNED     | `docs/phases/phase-02/PLAN.md`              |
+| 2     | IN_PROGRESS | `docs/phases/phase-02/PLAN.md`              |
 | 3-10  | NOT_PLANNED | Outside the current authorization           |

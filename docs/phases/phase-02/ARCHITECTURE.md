@@ -43,7 +43,7 @@ The application service owns ordering and failure behavior. Storage and
 PostgreSQL adapters do not redefine snapshot identity or the Phase 1 data
 contract.
 
-## Planned package boundaries
+## Implemented package boundaries
 
 ```text
 src/predictive_maintenance/cloud/
@@ -95,8 +95,9 @@ features/<dataset>/<feature-set-version>/<snapshot-id>/...
 _integration/<run-id>/...
 ```
 
-Phase 2 must not publish real processed or feature objects. Their data format
-belongs to Phase 3.
+Phase 2 does not publish real processed or feature objects. Their data format
+belongs to Phase 3. The local substitute stores only raw publication evidence;
+the derived namespace is reserved for a guarded hosted integration probe.
 
 All buckets are private. Public URLs, signed URLs, object updates, and raw
 deletion are absent from the normal publication interface.

@@ -13,9 +13,14 @@ The project will address:
 
 **Phase 0: Project foundation and architecture** is complete and owner-approved.
 **Phase 1: Local dataset ingestion and data contract** is complete and
-owner-approved. **Phase 2: Cloud data foundation** is planned but not started.
-The repository still contains no cloud resources, trained models, or deployable
-services.
+owner-approved. **Phase 2: Cloud data foundation** is in progress. Hosted
+Supabase changes remain blocked pending target confirmation. The repository
+still contains no trained models or deployable services.
+
+Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
+filesystem Storage substitute. The Supabase adapter and guarded hosted tests
+are present, but hosted behavior is not claimed until the approved project is
+exercised.
 
 ## Phase 1 local validation
 

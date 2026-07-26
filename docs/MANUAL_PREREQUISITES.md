@@ -40,10 +40,11 @@ files. The raw source and generated local evidence remain ignored by Git.
 
 ## Phase 2 Supabase prerequisites
 
-Phase 2 is planned but not started. A read-only connector check found one
-inactive project in the connected account. It does not match the private
-project URL supplied earlier. No project reference or private endpoint is
-recorded in this repository.
+Phase 2 is in progress for local implementation. A read-only connector check
+still finds one inactive project in the connected account. It does not match
+the private project URL supplied earlier. No project reference or private
+endpoint is recorded in this repository. Hosted changes remain blocked until
+the target and cost questions below are resolved.
 
 - [ ] Confirm which exact Supabase project is the Phase 2 development/test
   target and resolve the mismatch above.
@@ -68,6 +69,66 @@ recorded in this repository.
   adapter uses the standard Storage API.
 
 Never provide a Supabase secret/service-role key to browser code.
+
+### Phase 2 local validation
+
+The local database is disposable and binds only to loopback port `55432`.
+PowerShell commands are:
+
+```powershell
+docker compose config --quiet
+docker compose up -d --wait postgres
+$env:PM_POSTGRES_DSN = "postgresql://postgres:phase2-local-only@127.0.0.1:55432/predictive_maintenance"
+uv run pytest -m "not cloud"
+docker compose down --volumes
+Remove-Item Env:PM_POSTGRES_DSN
+```
+
+`docker compose down --volumes` permanently removes only this container's
+disposable test metadata. FD001 source files and ignored Phase 1 artifacts are
+not mounted into the database container and are not removed.
+
+The local recovery exercise uses this procedure:
+
+1. publish a snapshot to the filesystem substitute and local PostgreSQL;
+1. export `ops` rows with `pg_dump --data-only --schema=ops`;
+1. create a disposable restore database and apply the repository migration;
+1. restore the database dump;
+1. copy each object byte stream to a new local object root while rechecking its
+   SHA-256 and size;
+1. reconcile the restored database and objects; and
+1. drop only the disposable restore database.
+
+For hosted recovery, the owner must approve the provider database backup
+method and a separate Storage object export. A database backup alone does not
+contain Storage bytes.
+
+### Phase 2 hosted validation gate
+
+After confirming the exact project and costs, place values only in an ignored
+local `.env` or process environment:
+
+```text
+APP_ENV=cloud
+SUPABASE_URL=<approved-project-url>
+SUPABASE_SECRET_KEY=<server-only-secret>
+SUPABASE_DB_URL=<direct-postgresql-url>
+PM_RAW_BUCKET=pm-raw
+PM_DERIVED_BUCKET=pm-derived
+PM_CLOUD_TEST_APPROVAL=I_CONFIRM_THIS_IS_THE_APPROVED_PHASE_2_TEST_PROJECT
+```
+
+The approval phrase is an accidental-execution guard, not a credential. It
+does not replace the explicit project and cost approval in this checklist.
+After the migration is deliberately applied to the confirmed project, run:
+
+```powershell
+uv run pytest -m cloud
+```
+
+Then run the Supabase Security and Performance Advisors and provide the
+sanitized results. Do not copy project references, endpoints, credentials, or
+signed URLs into the completion report.
 
 ## Phase 4 MLflow prerequisites
 
