@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import os
 import shutil
+import tempfile
 from collections.abc import Iterator
 from pathlib import Path
 from typing import BinaryIO, Protocol
@@ -103,39 +104,48 @@ class FilesystemObjectRepository:
         return candidate
 
     def put_verified(self, source: Path, expected: ObjectIdentity) -> ObjectPutResult:
-        """Copy exact bytes once and verify a concurrent existing winner."""
+        """Publish complete bytes atomically or verify the existing winner."""
         source_sha256, source_size = inspect_path(source)
         _verify_expected_bytes(source_sha256, source_size, expected)
         destination = self._path(expected.bucket_name, expected.object_key)
         destination.parent.mkdir(parents=True, exist_ok=True)
 
-        created = False
+        temporary_path: Path | None = None
         try:
+            descriptor, temporary_name = tempfile.mkstemp(
+                dir=destination.parent,
+                prefix=".phase2-",
+                suffix=".partial",
+            )
+            temporary_path = Path(temporary_name)
             with (
+                os.fdopen(descriptor, "wb") as temporary_stream,
                 source.open("rb") as source_stream,
-                destination.open("xb") as destination_stream,
             ):
-                created = True
-                shutil.copyfileobj(
-                    source_stream,
-                    destination_stream,
-                    _CHUNK_SIZE,
-                )
-        except FileExistsError:
-            created = False
+                shutil.copyfileobj(source_stream, temporary_stream, _CHUNK_SIZE)
+                temporary_stream.flush()
+                os.fsync(temporary_stream.fileno())
+            temporary_sha256, temporary_size = inspect_path(temporary_path)
+            _verify_expected_bytes(temporary_sha256, temporary_size, expected)
+            try:
+                os.link(temporary_path, destination)
+                reused = False
+            except FileExistsError:
+                reused = True
         except OSError as error:
-            if created:
-                destination.unlink(missing_ok=True)
             raise CloudFoundationError(
                 "object.write_failed",
                 "The local object could not be written.",
             ) from error
+        finally:
+            if temporary_path is not None:
+                temporary_path.unlink(missing_ok=True)
 
         actual_sha256, actual_size = inspect_path(destination)
         _verify_expected_bytes(actual_sha256, actual_size, expected)
         source_after_sha256, source_after_size = inspect_path(source)
         _verify_expected_bytes(source_after_sha256, source_after_size, expected)
-        return ObjectPutResult(expected, reused=not created)
+        return ObjectPutResult(expected, reused=reused)
 
     def read(self, bucket_name: str, object_key: str) -> bytes:
         """Read a bounded local object."""

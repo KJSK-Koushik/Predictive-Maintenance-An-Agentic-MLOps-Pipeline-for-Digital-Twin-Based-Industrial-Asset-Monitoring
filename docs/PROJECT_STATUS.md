@@ -45,7 +45,7 @@ feature or initializing a cloud service.
 | Branch protection         | Required CI, PR, conversations; destructive refs off    |
 | Phase 1 GitHub Actions    | Passed: run `30153263553`, job `Phase 0 quality`        |
 | Phase 2 local tests       | 124 passed; 2 hosted-cloud tests deliberately skipped   |
-| Product coverage          | Phase 2 local evidence: 90.50% branch-aware             |
+| Product coverage          | Phase 2 CI-compatible evidence: 90.82% branch-aware     |
 | Local quality checks      | Format, lint, typing, lock, YAML, audit passed          |
 | Actual FD001 publication  | Local filesystem + PostgreSQL publication passed        |
 | Backup/recovery           | `pg_dump`, restore, object restore, reconcile passed    |

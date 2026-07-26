@@ -27,6 +27,10 @@ disable upsert. Bind raw file keys to the Phase 1 snapshot ID, file SHA-256,
 and logical filename. Verify every accepted object by downloading and
 rehashing it. The normal object interface exposes no update or delete method.
 
+The filesystem substitute writes and verifies a same-directory temporary file,
+then creates the final name with one atomic hard-link operation. A concurrent
+loser can therefore observe only complete bytes before verifying the winner.
+
 These controls are application-enforced overwrite denial, not WORM.
 
 ## Consequences

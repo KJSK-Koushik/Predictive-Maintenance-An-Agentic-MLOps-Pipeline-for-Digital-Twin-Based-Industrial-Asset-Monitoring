@@ -42,7 +42,7 @@ model, service, monitoring job, agent, or dashboard was added.
 | PostgreSQL integration | 18 passed                                                     |
 | Clean reset/reapply    | Equivalent schema fingerprints passed                         |
 | Recovery               | `pg_dump`, restore database, object restore, reconcile passed |
-| Coverage               | 90.50% branch-aware                                           |
+| Coverage               | 90.82% branch-aware using the CI-compatible selector          |
 | Formatting/lint/typing | Ruff and strict mypy passed                                   |
 | Lock/YAML              | `uv lock --check` and yamllint passed                         |
 | Dependency audit       | No known vulnerabilities; local project itself skipped        |
