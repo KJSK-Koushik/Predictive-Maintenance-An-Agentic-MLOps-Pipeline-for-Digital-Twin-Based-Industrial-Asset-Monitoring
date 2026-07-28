@@ -167,9 +167,18 @@ requirements until their owning phase exercises them.
 - The local PostgreSQL password is explicitly test-only, binds to
   `127.0.0.1`, and protects only a disposable `tmpfs` database.
 
-The hosted service secret still bypasses Storage RLS. It must remain in an
-ignored local environment or approved secret store and must never be provided
-to a browser. No hosted credential has been added to CI.
+The hosted service secret bypasses Storage RLS. It remains in an ignored local
+environment and must never be provided to a browser. No hosted credential was
+added to CI. The approved hosted run confirmed both buckets are private,
+different-byte overwrite fails closed, `ops` has no `PUBLIC`, `anon`, or
+`authenticated` grants, all five operational tables have RLS enabled, and no
+project object was added to `auth`, `storage`, or `realtime`.
+
+The hosted Storage API currently reports a duplicate standard upload with
+status `409`; the adapter accepts both the older wrapped `400` and current
+`409` duplicate forms only when the error also identifies an existing object.
+It then downloads and rehashes the stored bytes before reuse. Other upload
+errors remain sanitized failures.
 
 PostgreSQL backup and Storage-object backup are separate. A successful database
 backup does not prove object-byte recovery. The local recovery test exports

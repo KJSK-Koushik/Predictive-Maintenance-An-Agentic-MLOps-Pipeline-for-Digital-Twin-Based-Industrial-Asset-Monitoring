@@ -3,9 +3,9 @@
 ## Status
 
 This is the master target architecture. Phases 0 and 1 are approved. Phase 2 is
-in progress. Components assigned to Phase 3 or later are designs, not working
-integrations. Phase 2 local components have passed their recorded tests; the
-Supabase-hosted integration remains unverified.
+complete and awaiting owner approval. Components assigned to Phase 3 or later
+are designs, not working integrations. Phase 2 local and approved hosted
+Supabase evidence has passed the recorded checks.
 
 ## Architectural principles
 
@@ -104,11 +104,11 @@ reports/<report-type>/<run-or-window-id>/...
 
 Phase 2 defines two private Storage buckets: one raw bucket and one derived
 bucket. Local tests use a filesystem substitute with the same narrow
-put-if-absent contract. The Supabase adapter uses the standard Storage API, but
-has not yet been exercised against the approved hosted project. The derived
-bucket reserves processed and feature prefixes but contains no production
-derived data until Phase 3. Logical zones do not imply AWS S3, and the Supabase
-S3 protocol remains deferred.
+put-if-absent contract. The Supabase adapter uses the standard Storage API and
+has been exercised against the approved hosted development/test project. The
+derived bucket reserves processed and feature prefixes but contains no
+production derived data until Phase 3. Logical zones do not imply AWS S3, and
+the Supabase S3 protocol remains deferred.
 
 Raw immutability is application-enforced:
 

@@ -206,6 +206,14 @@ The real FD001 raw snapshot may remain as the durable Phase 2 artifact after
 owner approval. A fixture pass or local substitute is never reported as cloud
 verification.
 
+The approved hosted run exercised Storage over HTTPS with the real Python
+adapter. This workstation could not reach Supabase's IPv6 direct database
+endpoint or the IPv4 Supavisor ports, so hosted PostgreSQL migration, catalog,
+security, metadata, lineage, idempotency, and reconciliation checks were
+executed through the authenticated project-scoped Supabase SQL tools. The
+Python direct-PostgreSQL adapter remains exercised against PostgreSQL 17 in the
+local integration suite; it is not claimed as a hosted adapter test.
+
 ## Security boundaries
 
 - Project URL, database URL, secret key, and any S3 credentials stay in ignored

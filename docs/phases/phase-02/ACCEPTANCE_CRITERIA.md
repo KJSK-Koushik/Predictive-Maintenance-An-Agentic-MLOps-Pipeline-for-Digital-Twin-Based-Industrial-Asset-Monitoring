@@ -2,17 +2,17 @@
 
 ## Authorization and target safety
 
-- [ ] The exact Supabase development/test project is owner-confirmed.
-- [ ] Any activation, plan cost, region, and cloud mutation are explicitly
+- [x] The exact Supabase development/test project is owner-confirmed.
+- [x] Any activation, plan cost, region, and cloud mutation are explicitly
   approved.
-- [ ] A preflight proves the target contains no unapproved production data.
+- [x] A preflight proves the target contains no unapproved production data.
 - [x] Credentials exist only in ignored local files or approved secret stores.
 - [x] Reports contain no project reference, private endpoint, credential, or
   signed URL.
 
 ## Storage foundation
 
-- [ ] Raw and derived buckets exist and are private.
+- [x] Raw and derived buckets exist and are private.
 - [x] Bucket names are configurable and documented.
 - [x] Raw object keys bind snapshot ID, SHA-256, and logical filename.
 - [x] Uploads explicitly disable upsert.
@@ -39,7 +39,7 @@
 - [x] No custom table or function is created in `auth`, `storage`, or
   `realtime`.
 - [x] The `ops` schema is not exposed through the Data API.
-- [ ] Migration history matches the repository.
+- [x] Migration history matches the repository.
 
 ## Idempotency, lineage, and recovery
 
@@ -53,7 +53,7 @@
   reconciliation.
 - [x] Inconsistent state blocks downstream use and is not silently repaired.
 - [x] Error records use stable codes and sanitized bounded details.
-- [ ] The approved database and object backup procedure is documented.
+- [x] The approved database and object backup procedure is documented.
 - [x] At least one test metadata/object recovery exercise passes.
 
 ## Local and cloud evidence
@@ -63,10 +63,10 @@
 - [x] Docker Compose PostgreSQL startup, health, migration, and cleanup pass.
 - [x] Filesystem and Supabase adapters pass the same core object contract.
 - [x] The actual owner-provided FD001 snapshot passes local publication logic.
-- [ ] A real approved Supabase project passes bucket, upload, download,
+- [x] A real approved Supabase project passes bucket, upload, download,
   overwrite-denial, database, lineage, idempotency, and reconciliation checks.
 - [x] Fixture, local substitute, and cloud evidence are reported separately.
-- [ ] Supabase Security and Performance Advisors are recorded and all
+- [x] Supabase Security and Performance Advisors are recorded and all
   introduced critical/high findings are resolved.
 
 ## Engineering and CI evidence
@@ -79,7 +79,7 @@
   deployment, or production mutation.
 - [x] The required GitHub Actions workflow passes on the Phase 2 commit.
 - [x] Required branch protection is verified for the current quality context.
-- [ ] No critical or high-severity issue remains unresolved.
+- [x] No critical or high-severity issue remains unresolved.
 
 ## Documentation and completion
 
@@ -88,9 +88,9 @@
 - [x] Storage, migration, security, backup, and partial-failure decisions are
   recorded in ADRs.
 - [x] Manual prerequisites and exact evidence commands are updated.
-- [ ] `COMPLETION_REPORT.md` records local, Docker, cloud, advisor, backup, CI,
+- [x] `COMPLETION_REPORT.md` records local, Docker, cloud, advisor, backup, CI,
   limitation, and severity evidence.
-- [ ] `docs/PROJECT_STATUS.md` is updated to `AWAITING_APPROVAL`.
-- [ ] The completion handoff asks for `APPROVE PHASE 2`.
+- [x] `docs/PROJECT_STATUS.md` is updated to `AWAITING_APPROVAL`.
+- [x] The completion handoff asks for `APPROVE PHASE 2`.
 
 Unchecked criteria prevent Phase 2 completion.

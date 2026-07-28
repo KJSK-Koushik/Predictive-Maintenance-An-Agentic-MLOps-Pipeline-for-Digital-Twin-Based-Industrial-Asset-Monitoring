@@ -40,30 +40,30 @@ files. The raw source and generated local evidence remain ignored by Git.
 
 ## Phase 2 Supabase prerequisites
 
-Phase 2 is in progress for local implementation. A read-only connector check
-still finds one inactive project in the connected account. It does not match
-the private project URL supplied earlier. No project reference or private
-endpoint is recorded in this repository. Hosted changes remain blocked until
-the target and cost questions below are resolved.
+Phase 2 hosted prerequisites were completed on 2026-07-28. The exact
+development/test project was confirmed through both the dashboard and the
+project-scoped connector. A read-only preflight found no application tables,
+Storage buckets or objects, Auth users, or migration history. The project was
+healthy on the Free plan in Singapore (`ap-southeast-1`); no paid resource or
+IPv4 add-on was provisioned. No project reference or private endpoint is
+recorded in this repository.
 
-- [ ] Confirm which exact Supabase project is the Phase 2 development/test
-  target and resolve the mismatch above.
-- [ ] Confirm that the target has no valuable or production data that Phase 2
-  could affect.
-- [ ] Explicitly approve any project activation, expected cost, and cloud
-  mutation.
-- [ ] Confirm the project region and retention expectations.
-- [ ] Approve configurable names for one private raw bucket and one private
-  derived bucket. Suggested names are `pm-raw` and `pm-derived`.
-- [ ] Approve uploading the accepted FD001 raw snapshot after synthetic cloud
-  tests pass.
-- [ ] Record the project URL, direct database URL, secret key, and database
+- [x] Confirm the exact Supabase development/test target.
+- [x] Confirm that the target contains no valuable or production data.
+- [x] Approve phase-scoped cloud mutation with no paid provisioning.
+- [x] Confirm the project region and retain the accepted raw snapshot until a
+  separately approved retention operation.
+- [x] Approve `pm-raw` and `pm-derived` as configurable private bucket names.
+- [x] Approve uploading the accepted FD001 raw snapshot after the synthetic
+  Storage probe passed.
+- [x] Record the project URL, database URL, secret key, and database
   credentials only in ignored local configuration or approved secret stores.
-- [ ] Keep the private `ops` schema outside the Data API. If the Data API is
+- [x] Keep the private `ops` schema outside the Data API. If the Data API is
   enabled elsewhere, do not expose `ops`.
-- [ ] Approve separate database and object-byte backup and recovery methods.
-- [ ] Identify who may execute and approve database migrations.
-- [ ] Confirm that cloud integration cleanup is limited to a generated
+- [x] Approve separate database-metadata and object-byte backup methods.
+- [x] The project owner approves migrations; the implementation owner executes
+  only the reviewed repository migration during an active phase.
+- [x] Confirm that cloud integration cleanup is limited to a generated
   `_integration/<run-id>/` prefix in the derived bucket.
 - [x] Defer Supabase S3 protocol access and S3 credentials. The planned primary
   adapter uses the standard Storage API.
@@ -99,14 +99,24 @@ The local recovery exercise uses this procedure:
 1. reconcile the restored database and objects; and
 1. drop only the disposable restore database.
 
-For hosted recovery, the owner must approve the provider database backup
-method and a separate Storage object export. A database backup alone does not
-contain Storage bytes.
+For hosted recovery, export the private `ops` schema with `pg_dump` from an
+IPv6-capable host or the documented Supavisor session pooler, encrypt the
+result, and record its SHA-256. Export Storage separately by listing each
+approved bucket, downloading every object through the Storage API, and writing
+a manifest of bucket, key, byte size, and SHA-256. Restore first into a
+disposable PostgreSQL database and disposable object prefix, then run
+reconciliation before replacing any governed state. A database backup alone
+does not contain Storage bytes.
+
+The Free project reported no provider-managed downloadable backup. Phase 2
+therefore records the procedure above, the existing local `pg_dump` restore
+exercise, and a real hosted Storage export of five objects with all hashes
+verified. The temporary hosted export copy was removed; durable raw objects
+were not deleted.
 
 ### Phase 2 hosted validation gate
 
-After confirming the exact project and costs, place values only in an ignored
-local `.env` or process environment:
+Place values only in an ignored local `.env` or process environment:
 
 ```text
 APP_ENV=cloud
@@ -129,6 +139,12 @@ uv run pytest -m cloud
 Then run the Supabase Security and Performance Advisors and provide the
 sanitized results. Do not copy project references, endpoints, credentials, or
 signed URLs into the completion report.
+
+The Phase 2 workstation could not open outbound PostgreSQL ports `5432` or
+`6543`. Hosted database verification therefore used the authenticated,
+project-scoped Supabase migration and SQL tools. Do not purchase the IPv4
+add-on solely for this phase. The direct PostgreSQL adapter remains covered by
+the PostgreSQL 17 local integration suite.
 
 ## Phase 4 MLflow prerequisites
 

@@ -115,6 +115,15 @@ Hosted tests require `APP_ENV=cloud`, ignored credentials, and the exact
 `cloud` and excluded from ordinary CI. A skipped or mocked hosted test is not
 cloud evidence.
 
+Phase 2 recorded real hosted evidence separately: the Python Storage adapter
+exercised private buckets, upload, download, SHA-256 verification, exact reuse,
+overwrite denial, reconciliation, and derived-prefix cleanup. The authenticated
+project-scoped Supabase migration and SQL tools exercised hosted PostgreSQL
+schema, grants, RLS, metadata, lineage, idempotency, and migration history
+because the workstation blocked outbound PostgreSQL ports. This split is
+reported explicitly and is not described as a hosted direct-PostgreSQL-adapter
+test.
+
 ### Phase 3
 
 - pure ETL tests outside Airflow;
