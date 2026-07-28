@@ -221,7 +221,7 @@ class SupabaseObjectRepository:
         status = str(error.status)
         message = error.message.lower()
         code = error.code.lower()
-        return status == "400" and (
+        return status in {"400", "409"} and (
             "already exists" in message or "duplicate" in message or "duplicate" in code
         )
 

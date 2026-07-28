@@ -158,6 +158,24 @@ def test_supabase_first_put_exact_reuse_and_recursive_listing(tmp_path: Path) ->
     )
 
 
+def test_supabase_adapter_reuses_hosted_409_duplicate(tmp_path: Path) -> None:
+    storage = _FakeStorage()
+    repository = _repository(storage)
+    source = tmp_path / "source.txt"
+    source.write_bytes(b"telemetry")
+    identity = _identity(b"telemetry")
+    storage.objects[("pm-raw", identity.object_key)] = b"telemetry"
+    storage.upload_error = StorageApiError(
+        "The resource already exists",
+        "Duplicate",
+        409,
+    )
+
+    result = repository.put_verified(source, identity)
+
+    assert result.reused is True
+
+
 def test_supabase_existing_different_bytes_fail_closed(tmp_path: Path) -> None:
     storage = _FakeStorage()
     repository = _repository(storage)
