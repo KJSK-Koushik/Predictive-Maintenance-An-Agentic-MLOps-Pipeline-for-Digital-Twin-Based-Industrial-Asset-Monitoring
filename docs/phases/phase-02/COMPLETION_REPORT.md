@@ -2,10 +2,10 @@
 
 ## Status
 
-**COMPLETE — AWAITING OWNER APPROVAL**
+**APPROVED**
 
-Phase 2 acceptance criteria are satisfied. Phase 3 has not been planned or
-started.
+Phase 2 acceptance criteria are satisfied. The owner approved Phase 2 on
+2026-07-30. Phase 3 has not been planned or started.
 
 ## Authorization and target safety
 
@@ -14,6 +14,8 @@ On 2026-07-28 the owner confirmed the exact Supabase development/test project
 and instructed the implementation owner to finish Phase 2. The confirmed
 project was healthy on the Free plan in Singapore (`ap-southeast-1`); no paid
 resource or IPv4 add-on was provisioned.
+
+The owner issued the explicit `APPROVE PHASE 2` command on 2026-07-30.
 
 A read-only preflight found:
 
@@ -132,8 +134,8 @@ provider-managed downloadable backup. The approved ongoing procedure is to:
 ## GitHub CI evidence
 
 GitHub Actions run
-[`30329590112`](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/actions/runs/30329590112)
-passed for commit `f9dbbdc`. The required `Phase 0 quality` job passed every
+[`30329857089`](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/actions/runs/30329857089)
+passed for commit `b3d65e2`. The required `Phase 0 quality` job passed every
 step, including locked dependencies, formatting, linting, strict typing,
 Compose validation, PostgreSQL startup, unit, integration, migration/recovery,
 coverage, Markdown, YAML, dependency audit, and cleanup.
@@ -159,8 +161,8 @@ Ordinary CI contains no cloud credential and performs no deployment.
 
 ## Handoff
 
-Phase 2 is complete and no Phase 3 work has started.
+Phase 2 is owner-approved and no Phase 3 work has started.
 
-Required owner command:
+The only permitted next phase-control command is:
 
-`APPROVE PHASE 2`
+`PLAN PHASE 3`
