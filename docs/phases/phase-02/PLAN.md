@@ -3,8 +3,11 @@
 ## Authorization
 
 Planning was authorized on 2026-07-25 by explicit `PLAN PHASE 2`.
-Implementation is not authorized until the owner issues `START PHASE 2` after
-the blocking manual prerequisites are resolved.
+Implementation was authorized on 2026-07-26 by explicit `START PHASE 2`.
+The exact development/test project was subsequently confirmed, and the owner's
+2026-07-28 command to finish Phase 2 authorized the phase-scoped hosted
+mutation. The confirmed project remained on the Free plan; no paid resource or
+add-on was provisioned.
 
 ## Objective
 

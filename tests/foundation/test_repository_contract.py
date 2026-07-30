@@ -17,7 +17,10 @@ REQUIRED_FILES = (
     ".env.example",
     ".gitignore",
     ".github/CODEOWNERS",
+    "compose.yaml",
     "pyproject.toml",
+    "supabase/config.toml",
+    "supabase/seed.sql",
     "docs/PROJECT_CHARTER.md",
     "docs/MASTER_ARCHITECTURE.md",
     "docs/ROADMAP.md",
@@ -27,6 +30,9 @@ REQUIRED_FILES = (
     "docs/TEST_STRATEGY.md",
     "docs/DATA_CONTRACT.md",
     "docs/adr/README.md",
+    "docs/adr/0015-phase-2-object-storage.md",
+    "docs/adr/0016-phase-2-postgres-security.md",
+    "docs/adr/0017-phase-2-publication-recovery.md",
     "docs/phases/phase-00/ARCHITECTURE.md",
     "docs/phases/phase-00/PLAN.md",
     "docs/phases/phase-00/ACCEPTANCE_CRITERIA.md",
@@ -160,16 +166,17 @@ def test_local_dataset_is_ignored() -> None:
 
 
 @pytest.mark.foundation
-def test_no_post_phase_one_implementation_roots_exist() -> None:
-    prohibited = ("airflow", "supabase", "dashboard", "services", "models")
+def test_phase_two_implementation_stays_inside_approved_roots() -> None:
+    prohibited = ("airflow", "dashboard", "services", "models")
     present = [name for name in prohibited if (ROOT / name).exists()]
     assert not present, f"Later-phase implementation roots present: {present}"
 
-    permitted_source = ROOT / "src/predictive_maintenance/data"
-    source_files = {
-        path.name for path in permitted_source.glob("*.py") if path.is_file()
+    data_files = {
+        path.name
+        for path in (ROOT / "src/predictive_maintenance/data").glob("*.py")
+        if path.is_file()
     }
-    assert source_files == {
+    assert data_files == {
         "__init__.py",
         "cli.py",
         "contract.py",
@@ -180,6 +187,25 @@ def test_no_post_phase_one_implementation_roots_exist() -> None:
         "pipeline.py",
         "validation.py",
     }
+    cloud_files = {
+        path.name
+        for path in (ROOT / "src/predictive_maintenance/cloud").glob("*.py")
+        if path.is_file()
+    }
+    assert cloud_files == {
+        "__init__.py",
+        "cli.py",
+        "config.py",
+        "metadata.py",
+        "models.py",
+        "object_store.py",
+        "publication.py",
+    }
+
+    migrations = sorted((ROOT / "supabase/migrations").glob("*.sql"))
+    assert [path.name for path in migrations] == [
+        "20260726144446_phase_02_cloud_metadata.sql"
+    ]
 
 
 @pytest.mark.foundation
@@ -199,6 +225,7 @@ def test_environment_example_has_no_secret_values() -> None:
         "SUPABASE_S3_ACCESS_KEY_ID",
         "SUPABASE_S3_SECRET_ACCESS_KEY",
         "LLM_API_KEY",
+        "PM_POSTGRES_DSN",
     }
     assert secret_keys <= assignments.keys()
     assert all(assignments[key] == "" for key in secret_keys)
@@ -206,6 +233,56 @@ def test_environment_example_has_no_secret_values() -> None:
     forbidden_fragments = ("eyJ", "postgresql://", "supabase.co", "sk-")
     combined = "\n".join(assignments.values())
     assert not any(fragment in combined for fragment in forbidden_fragments)
+
+
+@pytest.mark.foundation
+def test_repository_contains_no_cloud_credentials_or_project_endpoints() -> None:
+    """Reject common committed Supabase credentials and target identifiers."""
+    excluded_roots = {
+        ".git",
+        ".mypy_cache",
+        ".pytest_cache",
+        ".ruff_cache",
+        ".venv",
+        "Data",
+        "artifacts",
+        "data",
+    }
+    text_suffixes = {
+        ".example",
+        ".json",
+        ".md",
+        ".py",
+        ".sql",
+        ".toml",
+        ".yaml",
+        ".yml",
+    }
+    patterns = {
+        "Supabase secret key": re.compile("sb_" + r"secret_[A-Za-z0-9_-]{20,}"),
+        "JWT-like credential": re.compile(
+            r"eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}"
+        ),
+        "Supabase project endpoint": re.compile(
+            r"https://[a-z]{20}\." + "supabase" + r"\.co"
+        ),
+        "Hosted database credential": re.compile(
+            r"postgres(?:ql)?://[^/\s:@]+:[^@\s]+@[^/\s]*"
+            + "supabase"
+            + r"\.(?:co|com)"
+        ),
+    }
+    findings: list[str] = []
+    for path in ROOT.rglob("*"):
+        if not path.is_file() or excluded_roots.intersection(path.parts):
+            continue
+        if path.suffix not in text_suffixes and path.name != ".env.example":
+            continue
+        content = path.read_text(encoding="utf-8")
+        for label, pattern in patterns.items():
+            if pattern.search(content):
+                findings.append(f"{path.relative_to(ROOT)}: {label}")
+    assert not findings, f"Potential committed cloud secret/target: {findings}"
 
 
 @pytest.mark.foundation

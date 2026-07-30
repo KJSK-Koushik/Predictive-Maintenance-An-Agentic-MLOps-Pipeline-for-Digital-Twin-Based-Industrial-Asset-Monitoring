@@ -50,7 +50,7 @@ def test_actions_are_pinned_to_full_commit_shas() -> None:
 
 
 @pytest.mark.integration
-def test_workflow_runs_all_phase_one_quality_gates() -> None:
+def test_workflow_runs_all_phase_two_quality_gates() -> None:
     workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
     required_commands = (
         "uv sync --locked --dev",
@@ -58,13 +58,18 @@ def test_workflow_runs_all_phase_one_quality_gates() -> None:
         "ruff format --check",
         "ruff check",
         "mypy src tests",
-        'pytest -m "not integration and not dataset"',
-        'pytest -m "integration and not dataset"',
+        "docker compose config --quiet",
+        "docker compose up -d --wait postgres",
+        '"not integration and not dataset and not postgres and not cloud"',
+        '"integration and not dataset and not postgres and not cloud"',
+        '"postgres and not dataset and not cloud"',
+        '"not dataset and not cloud"',
         "--cov=src/predictive_maintenance",
         "--cov-fail-under=90",
         "mdformat --check",
         "yamllint",
         "pip-audit",
+        "docker compose down --volumes",
     )
     missing = [command for command in required_commands if command not in workflow_text]
     assert not missing, f"CI is missing quality gates: {missing}"

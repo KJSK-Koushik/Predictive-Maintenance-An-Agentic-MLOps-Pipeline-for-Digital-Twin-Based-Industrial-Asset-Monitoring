@@ -147,6 +147,45 @@ Phase 0 performs repository contract tests, dependency auditing, ignored-data
 verification, and secret-pattern checks. Cloud controls remain architectural
 requirements until their owning phase exercises them.
 
+## Phase 2 implemented controls
+
+- `ops` is a private schema and is absent from the configured Data API schema
+  list.
+- `PUBLIC`, `anon`, and `authenticated` have no operational schema, table, or
+  sequence access.
+- The application uses a no-login, no-bypass-RLS runtime role with narrow
+  `SELECT`, `INSERT`, and column-level `UPDATE` grants.
+- RLS is enabled as defense in depth and is tested separately from grants.
+- The normal object repository exposes put, read, and list only; raw update and
+  delete operations are absent.
+- Supabase standard uploads set `upsert=false`; stored bytes must pass a
+  downloaded SHA-256 and size check.
+- Source, object, and cloud errors are converted to stable, bounded messages
+  without credentials or private endpoints.
+- The repository test suite scans controlled text files for common Supabase
+  secret, JWT, hosted database credential, and private project URL patterns.
+- The local PostgreSQL password is explicitly test-only, binds to
+  `127.0.0.1`, and protects only a disposable `tmpfs` database.
+
+The hosted service secret bypasses Storage RLS. It remains in an ignored local
+environment and must never be provided to a browser. No hosted credential was
+added to CI. The approved hosted run confirmed both buckets are private,
+different-byte overwrite fails closed, `ops` has no `PUBLIC`, `anon`, or
+`authenticated` grants, all five operational tables have RLS enabled, and no
+project object was added to `auth`, `storage`, or `realtime`.
+
+The hosted Storage API currently reports a duplicate standard upload with
+status `409`; the adapter accepts both the older wrapped `400` and current
+`409` duplicate forms only when the error also identifies an existing object.
+It then downloads and rehashes the stored bytes before reuse. Other upload
+errors remain sanitized failures.
+
+PostgreSQL backup and Storage-object backup are separate. A successful database
+backup does not prove object-byte recovery. The local recovery test exports
+`ops` with `pg_dump`, applies the migration to a disposable restore database,
+restores the rows, copies objects by verified identity, and reconciles both
+sides.
+
 ## References
 
 - [Supabase API security](https://supabase.com/docs/guides/api/securing-your-api)

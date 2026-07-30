@@ -3,8 +3,9 @@
 ## Status
 
 This is the master target architecture. Phases 0 and 1 are approved. Phase 2 is
-planned but not started. Components assigned to Phase 2 or later are designs,
-not working integrations.
+complete and awaiting owner approval. Components assigned to Phase 3 or later
+are designs, not working integrations. Phase 2 local and approved hosted
+Supabase evidence has passed the recorded checks.
 
 ## Architectural principles
 
@@ -101,11 +102,13 @@ models/<registered-name>/<model-version>/...
 reports/<report-type>/<run-or-window-id>/...
 ```
 
-Phase 2 plans two private Supabase Storage buckets: one raw bucket and one
-derived bucket. The derived bucket reserves processed and feature prefixes but
-contains no production derived data until Phase 3. Logical zones do not imply
-AWS S3, and the Supabase S3 protocol is deferred in favor of the standard
-Storage API.
+Phase 2 defines two private Storage buckets: one raw bucket and one derived
+bucket. Local tests use a filesystem substitute with the same narrow
+put-if-absent contract. The Supabase adapter uses the standard Storage API and
+has been exercised against the approved hosted development/test project. The
+derived bucket reserves processed and feature prefixes but contains no
+production derived data until Phase 3. Logical zones do not imply AWS S3, and
+the Supabase S3 protocol remains deferred.
 
 Raw immutability is application-enforced:
 
@@ -134,9 +137,11 @@ versioning or object locking. Backups must cover object bytes and metadata.
 Cross-system identifiers are stored as references. Model metrics are not copied
 into operational tables except for an immutable approval evidence snapshot.
 
-### Planned PostgreSQL schemas
+### PostgreSQL schemas
 
-- `ops`: ingestion, lineage, approval, deployment, and monitoring records.
+- `ops`: currently owns only the five Phase 2 ingestion, object, snapshot,
+  lineage, and run tables. Later approval, deployment, and monitoring objects
+  require their owning phases and new migrations.
 - `twin`: asset-health digital-shadow state and history.
 - `audit`: append-only security and agent decision records.
 - `api`: explicitly exposed views or functions if a dashboard later needs the
@@ -236,7 +241,8 @@ validation, logging, and a documented failure mode.
 - MLflow owns experiment and registry metadata.
 - FastAPI is the planned inference boundary.
 - Airflow is batch orchestration introduced after local ETL.
-- Supabase file buckets and PostgreSQL are planned cloud adapters.
+- Supabase Storage and direct PostgreSQL are the Phase 2 cloud adapters.
+  Filesystem plus PostgreSQL 17 are the exercised local substitutes.
 - Evidently remains optional; custom, testable metrics are the baseline.
 - Docker Compose is introduced only with runnable services.
 

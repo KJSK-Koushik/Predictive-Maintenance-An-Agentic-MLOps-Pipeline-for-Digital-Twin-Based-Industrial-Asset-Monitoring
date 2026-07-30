@@ -151,3 +151,19 @@ All acceptance tests and local gates pass, actual FD001 local publication
 passes, the approved real Supabase verification passes, advisors and
 backup/recovery evidence are recorded, the required GitHub workflow passes, and
 no critical/high issue remains.
+
+## Recorded completion evidence
+
+On 2026-07-28, 125 non-cloud tests passed locally and the CI-compatible selector
+passed 123 tests at 90.82% branch-aware coverage. The real hosted Storage path
+passed bucket privacy, upload, download, hash verification, exact reuse,
+overwrite denial, reconciliation, derived-prefix cleanup, and a five-object
+backup export. Project-scoped hosted PostgreSQL checks passed migration history,
+schema, constraints, grants, RLS, metadata, lineage, idempotency, and
+reconciliation.
+
+The workstation blocked outbound PostgreSQL ports, so the hosted database
+checks used authenticated Supabase migration and SQL tools. The Python
+direct-PostgreSQL adapter passed the PostgreSQL 17 local integration and
+recovery suite and is not reported as a hosted adapter test. GitHub Actions run
+`30329590112` passed the required workflow.

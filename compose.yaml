@@ -1,0 +1,24 @@
+# yamllint disable rule:line-length
+services:
+  postgres:
+    image: postgres:17.10-bookworm@sha256:67870dc097790edf2bd6726658db995dcc830f799d41bb2b78ef07c9a2d5f010
+    environment:
+      POSTGRES_DB: predictive_maintenance
+      POSTGRES_PASSWORD: phase2-local-only
+      POSTGRES_USER: postgres
+    ports:
+      - "127.0.0.1:55432:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    volumes:
+      - ./tests/integration/postgres/bootstrap_roles.sql:/docker-entrypoint-initdb.d/000_bootstrap_roles.sql:ro
+      - ./supabase/migrations/20260726144446_phase_02_cloud_metadata.sql:/docker-entrypoint-initdb.d/010_phase_02_cloud_metadata.sql:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U postgres -d predictive_maintenance
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    restart: "no"
+# yamllint enable rule:line-length

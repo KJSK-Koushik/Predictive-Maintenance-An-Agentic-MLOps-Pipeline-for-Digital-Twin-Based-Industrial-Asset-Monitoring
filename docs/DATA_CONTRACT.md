@@ -126,3 +126,39 @@ must never be included as model input features.
 C-MAPSS is simulated telemetry and is not expected to contain personal data.
 Credentials, filesystem usernames, signed URLs, and private service identifiers
 must not be attached to dataset metadata.
+
+## Phase 2 publication identity
+
+Phase 2 does not change the Phase 1 contract or calculate a new snapshot ID. It
+publishes the accepted snapshot under the same
+`17d1db8dd823266b58b9c8d5b6da8edace17220980b733188756cd6b630e453d`
+identity.
+
+The raw object contract is:
+
+```text
+fd001/<snapshot-id>/<file-sha256>/<logical-filename>
+fd001/<snapshot-id>/manifest.json
+```
+
+An object identity is the tuple `(bucket_name, object_key, zone, sha256, byte_size, content_type)`. Bucket names are environment configuration and do
+not change the dataset snapshot identity. Every accepted object is verified
+against its expected size and SHA-256 after writing. The Supabase adapter
+performs this verification by downloading the object.
+
+The private PostgreSQL `ops` schema records:
+
+- one `dataset_snapshots` row per Phase 1 snapshot ID;
+- one `data_objects` row per bucket and object key;
+- the ordered logical files in `snapshot_files`;
+- manifest-to-file relationships in `lineage_edges`; and
+- one idempotent lifecycle record in `ingestion_runs`.
+
+Snapshot metadata becomes `available` only after every required object is
+verified and the complete metadata transaction commits. Missing or mismatched
+referenced objects change the snapshot to `inconsistent`, which blocks
+downstream use. Orphan objects are reported for investigation and are not
+silently deleted.
+
+Processed datasets and feature snapshots remain undefined until Phase 3. The
+derived bucket contains no production processed or feature contract in Phase 2.
