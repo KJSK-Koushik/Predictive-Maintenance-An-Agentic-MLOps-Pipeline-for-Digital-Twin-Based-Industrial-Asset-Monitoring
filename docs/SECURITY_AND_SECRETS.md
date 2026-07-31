@@ -186,6 +186,29 @@ backup does not prove object-byte recovery. The local recovery test exports
 restores the rows, copies objects by verified identity, and reconciles both
 sides.
 
+## Phase 3 planned controls
+
+- Use Parquet and JSON only; do not deserialize untrusted pickle/joblib
+  artifacts.
+- Bind processed, feature, target, manifest, and report objects to SHA-256 and
+  verified put-if-absent keys.
+- Keep Airflow metadata in a separate database/user from application `ops`
+  metadata.
+- Bind local Airflow and PostgreSQL ports to loopback.
+- Keep Airflow development passwords, database URLs, Fernet keys, and API
+  secrets outside Git and image layers.
+- Perform no network, database, or Storage operation during DAG parsing.
+- Pass only bounded snapshot identifiers and statuses through XCom; never pass
+  DataFrames, raw telemetry, secrets, or temporary paths.
+- Bound input sizes, report examples, XCom payloads, errors, and log output.
+- Keep cloud tests outside ordinary CI and limit cleanup to generated
+  integration prefixes.
+- Reject invalid quality, lineage, or object evidence before a derived snapshot
+  becomes available.
+
+These controls are planned and are not reported as implemented until Phase 3
+tests exercise them.
+
 ## References
 
 - [Supabase API security](https://supabase.com/docs/guides/api/securing-your-api)

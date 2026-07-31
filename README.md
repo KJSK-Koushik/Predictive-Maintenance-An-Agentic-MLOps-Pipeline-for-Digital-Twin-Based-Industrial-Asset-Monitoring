@@ -14,8 +14,9 @@ The project will address:
 **Phase 0: Project foundation and architecture** is complete and owner-approved.
 **Phase 1: Local dataset ingestion and data contract** is complete and
 owner-approved. **Phase 2: Cloud data foundation** is also complete and
-owner-approved. Phase 3 has not been planned or started. The repository still
-contains no trained models or deployable services.
+owner-approved. **Phase 3: ETL and orchestration** is planned but has not
+started. The repository still contains no processed/feature implementation,
+Airflow runtime, trained model, or deployable service.
 
 Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
 filesystem Storage substitute. The approved hosted Supabase project has passed
@@ -60,6 +61,7 @@ maintenance decisions.
 - [Phase 0 plan](docs/phases/phase-00/PLAN.md)
 - [Phase 1 plan](docs/phases/phase-01/PLAN.md)
 - [Phase 2 plan](docs/phases/phase-02/PLAN.md)
+- [Phase 3 plan](docs/phases/phase-03/PLAN.md)
 
 ## Development
 
