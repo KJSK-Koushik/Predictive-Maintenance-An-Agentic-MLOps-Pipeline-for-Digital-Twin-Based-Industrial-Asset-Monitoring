@@ -2,10 +2,10 @@
 
 ## Status
 
-This is the master target architecture. Phases 0 and 1 are approved. Phase 2 is
-complete and awaiting owner approval. Components assigned to Phase 3 or later
-are designs, not working integrations. Phase 2 local and approved hosted
-Supabase evidence has passed the recorded checks.
+This is the master target architecture. Phases 0, 1, and 2 are approved. Phase
+3 is planned but implementation has not started. Components assigned to Phase
+3 or later remain designs, not working integrations. Phase 2 local and approved
+hosted Supabase evidence passed the recorded checks.
 
 ## Architectural principles
 
@@ -232,6 +232,26 @@ validation, logging, and a documented failure mode.
 | Drift alert              | Open investigation; do not retrain automatically     |
 | Agent/tool failure       | Fail closed and preserve an audit event              |
 | Missing delayed labels   | Report unavailable performance, not zero degradation |
+
+## Phase 3 planned boundary
+
+Phase 3 will add deterministic processed, candidate-feature, target, manifest,
+and data-quality artifacts. It will extend the existing content-addressed
+object and private PostgreSQL lineage model rather than introduce a feature
+store or row-level telemetry database.
+
+Core ETL will remain ordinary typed Python. A thin scheduled Airflow DAG will
+own dependencies, retries, timeouts, and backfill execution while exchanging
+only snapshot identifiers. The planned local runtime is one official Airflow 3
+Python 3.11 image with `LocalExecutor` and a dedicated metadata database. It
+does not include Celery, Redis, Kubernetes, streaming, or production hosting.
+
+The first feature snapshot is a versioned separation of settings/sensors from
+RUL/risk targets. It performs no fitted scaling, selection, PCA, imputation,
+rolling aggregation, or model-informed engineering. Split-fitted preprocessing
+remains Phase 4 work.
+
+These are approved planning constraints, not implemented capabilities.
 
 ## Technology decisions
 

@@ -126,10 +126,24 @@ test.
 
 ### Phase 3
 
-- pure ETL tests outside Airflow;
-- DAG import/structure tests;
-- retry, failure, backfill, and idempotency integration tests; and
-- data-quality report validation.
+- pure ETL, processed-schema, candidate-feature, target-separation, canonical
+  manifest, and data-quality tests outside Airflow;
+- repeated clean-build tests for identical snapshot IDs and object hashes;
+- derived PostgreSQL migration, grant, RLS, lineage, partial-failure,
+  reconciliation, and recovery tests;
+- actual FD001 direct-pipeline evidence under the existing `dataset` marker;
+- pinned Airflow image build, import-error, DAG structure, parse-safety, and
+  container-health checks;
+- direct-function versus DAG-triggered identity comparison;
+- bounded retry, contract failure, backfill, and idempotency integration tests;
+- identifier-only XCom and no task-local-file dependency tests;
+- separately approved Supabase derived Storage/database verification and
+  advisors; and
+- the existing 90% branch-aware product coverage gate.
+
+Airflow backfill over FD001 proves orchestration behavior only. The logical date
+does not convert `cycle` into event time, and repeated logical dates must reuse
+the same artifacts for the same source and pipeline versions.
 
 ### Phases 4-5
 

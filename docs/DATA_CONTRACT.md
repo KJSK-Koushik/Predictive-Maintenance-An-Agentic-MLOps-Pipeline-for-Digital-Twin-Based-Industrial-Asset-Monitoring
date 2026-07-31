@@ -160,5 +160,26 @@ referenced objects change the snapshot to `inconsistent`, which blocks
 downstream use. Orphan objects are reported for investigation and are not
 silently deleted.
 
-Processed datasets and feature snapshots remain undefined until Phase 3. The
-derived bucket contains no production processed or feature contract in Phase 2.
+Phase 2 created no production processed or feature artifact.
+
+## Phase 3 planned derived contracts
+
+These contracts are approved for planning but are not executable until Phase 3
+implementation passes its acceptance criteria.
+
+`fd001-processed-v1` will store separate train and test Parquet files with
+source row order, exact Phase 1 telemetry columns, uncapped `rul`, and inclusive
+`failure_risk_30`. It will not sort, drop, impute, scale, cap, or synthesize an
+event timestamp.
+
+`fd001-candidate-features-v1` will store key-aligned candidate-feature and
+target files. Candidate features are limited to the three settings and 21
+sensors; `engine_id` and `cycle` remain keys. Targets contain `rul` and
+`failure_risk_30`, which are prohibited from candidate-feature columns. No
+fitted preprocessing or model-informed feature choice belongs to Phase 3.
+
+Each derived identity will bind its parent snapshot, contract/specification and
+serializer versions, ordered file schemas, sizes, SHA-256 values, and column
+roles in a canonical manifest. A canonical JSON data-quality report will record
+bounded aggregate contract evidence. Airflow logical dates and run IDs are
+execution metadata and do not change derived content identity.

@@ -2,15 +2,14 @@
 
 ## Current control state
 
-| Field                     | Value                                    |
-| ------------------------- | ---------------------------------------- |
-| Current phase             | 2: Cloud data foundation                 |
-| Last completed phase      | 2: Cloud data foundation                 |
-| State                     | APPROVED                                 |
-| Phase 2 planned           | 2026-07-25 by explicit `PLAN PHASE 2`    |
-| Phase 2 started           | 2026-07-26 by explicit `START PHASE 2`   |
-| Phase 2 approved          | 2026-07-30 by explicit `APPROVE PHASE 2` |
-| Next permitted transition | Explicit `PLAN PHASE 3`                  |
+| Field                     | Value                                 |
+| ------------------------- | ------------------------------------- |
+| Current phase             | 3: ETL and orchestration              |
+| Last completed phase      | 2: Cloud data foundation              |
+| State                     | PLANNED                               |
+| Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3` |
+| Phase 3 started           | Not authorized                        |
+| Next permitted transition | Explicit `START PHASE 3`              |
 
 ## Bootstrap record
 
@@ -30,7 +29,7 @@ feature or initializing a cloud service.
 
 | Evidence                  | Status                                                   |
 | ------------------------- | -------------------------------------------------------- |
-| Source-of-truth documents | Phase 2 completion and approval recorded                 |
+| Source-of-truth documents | Phase 3 planning boundary recorded                       |
 | Accepted ADRs             | 17; Phase 2 decisions recorded                           |
 | Phase 1 implementation    | Complete and owner-approved                              |
 | Unit/contract tests       | Phase 1 evidence: passed locally, 46                     |
@@ -57,6 +56,7 @@ feature or initializing a cloud service.
 | Supabase advisors         | Security: none; Performance: five informational notices  |
 | Critical/high issues      | None unresolved                                          |
 | Phase 2 owner approval    | Received explicitly on 2026-07-30                        |
+| Phase 3 implementation    | Not started; planning documents only                     |
 
 ## Repository observations
 
@@ -88,6 +88,21 @@ exercised against the approved hosted project. Hosted database checks used the
 authenticated project-scoped Supabase tools because the workstation could not
 reach PostgreSQL ports; this is not claimed as a hosted direct-adapter test.
 
+## Phase 3 planned boundary
+
+Phase 3 is limited to deterministic batch ETL, processed and candidate-feature
+snapshots, targets, data-quality reports, derived lineage, and thin Airflow
+orchestration. The plan uses one local Airflow runtime with `LocalExecutor` and
+a separate metadata database. It adds no Celery, Redis, Kubernetes, streaming,
+model training, MLflow, serving, monitoring, agent, dashboard, or deployment
+component.
+
+The planned daily schedule and backfill operate on an explicit immutable FD001
+snapshot. They demonstrate retry and idempotency; they do not create event time
+or support a real-time claim. Implementation and all cloud mutation remain
+unauthorized until explicit `START PHASE 3` and the applicable manual
+prerequisites.
+
 ## Phase history
 
 | Phase | State       | Evidence                                    |
@@ -95,4 +110,5 @@ reach PostgreSQL ports; this is not claimed as a hosted direct-adapter test.
 | 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
 | 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
 | 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
-| 3-10  | NOT_PLANNED | Outside the current authorization           |
+| 3     | PLANNED     | `docs/phases/phase-03/PLAN.md`              |
+| 4-10  | NOT_PLANNED | Outside the current authorization           |
