@@ -20,7 +20,15 @@ jobs:
     # Keep this context stable because branch protection requires it.
     name: Phase 0 quality
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 60
+    env:
+      PM_POSTGRES_DSN: >-
+        postgresql://postgres:phase2-local-only@127.0.0.1:55432/predictive_maintenance
+      PM_CODE_REVISION: phase3-local
+      PM_SOURCE_SNAPSHOT_ID: >-
+        7ac4dc6568b3968e18cec98dd0162a640838f062183989a658dc40bc3c831cca
+      PM_RAW_BUCKET: pm-raw-airflow-ci
+      PM_DERIVED_BUCKET: pm-derived-airflow-ci
 
     steps:
       - name: Check out repository
@@ -63,20 +71,23 @@ jobs:
       - name: Run integration tests
         run: >-
           uv run pytest
-          -m "integration and not dataset and not postgres and not cloud"
+          -m "integration and not dataset and not postgres and not airflow and not cloud"
 
       - name: Run PostgreSQL migration and recovery tests
-        env:
-          PM_POSTGRES_DSN: >-
-            postgresql://postgres:phase2-local-only@127.0.0.1:55432/predictive_maintenance
         run: uv run pytest -m "postgres and not dataset and not cloud"
 
+      - name: Build pinned Airflow image
+        run: docker compose build airflow
+
+      - name: Start Airflow LocalExecutor runtime
+        run: docker compose up -d --wait airflow
+
+      - name: Run Airflow DAG, retry, and backfill tests
+        run: uv run pytest -m "airflow and not dataset and not cloud"
+
       - name: Enforce product coverage
-        env:
-          PM_POSTGRES_DSN: >-
-            postgresql://postgres:phase2-local-only@127.0.0.1:55432/predictive_maintenance
         run: >-
-          uv run pytest -m "not dataset and not cloud"
+          uv run pytest -m "not dataset and not airflow and not cloud"
           --cov=src/predictive_maintenance
           --cov-branch
           --cov-report=term-missing
@@ -91,6 +102,6 @@ jobs:
       - name: Audit Python dependencies
         run: uv run pip-audit
 
-      - name: Stop disposable PostgreSQL
+      - name: Stop disposable containers
         if: always()
         run: docker compose down --volumes

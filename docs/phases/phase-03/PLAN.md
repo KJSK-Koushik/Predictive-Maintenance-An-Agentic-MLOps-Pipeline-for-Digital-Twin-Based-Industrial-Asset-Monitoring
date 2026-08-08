@@ -3,12 +3,13 @@
 ## Authorization
 
 Planning was authorized on 2026-07-31 by explicit `PLAN PHASE 3` after Phase 2
-was owner-approved and merged. Implementation is not authorized until the owner
-sends `START PHASE 3`.
+was owner-approved and merged. Implementation was authorized on 2026-08-08 by
+the explicit `START PHASE 3` command.
 
-This planning command authorizes documentation and governance changes only. It
-does not authorize dependency installation, an Airflow runtime, a database
-migration, derived artifact publication, or cloud mutation.
+The start command authorizes local implementation, dependencies, the Airflow
+runtime, the reviewed local migration, tests, CI, and documentation. Hosted
+Supabase migration and derived writes remain separately gated by the manual
+cloud-mutation approval in this plan.
 
 ## Objective
 

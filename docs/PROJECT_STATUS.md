@@ -2,14 +2,14 @@
 
 ## Current control state
 
-| Field                     | Value                                 |
-| ------------------------- | ------------------------------------- |
-| Current phase             | 3: ETL and orchestration              |
-| Last completed phase      | 2: Cloud data foundation              |
-| State                     | PLANNED                               |
-| Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3` |
-| Phase 3 started           | Not authorized                        |
-| Next permitted transition | Explicit `START PHASE 3`              |
+| Field                     | Value                                  |
+| ------------------------- | -------------------------------------- |
+| Current phase             | 3: ETL and orchestration               |
+| Last completed phase      | 2: Cloud data foundation               |
+| State                     | IN_PROGRESS                            |
+| Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`  |
+| Phase 3 started           | 2026-08-08 by explicit `START PHASE 3` |
+| Next permitted transition | Complete every Phase 3 acceptance gate |
 
 ## Bootstrap record
 
@@ -30,7 +30,7 @@ feature or initializing a cloud service.
 | Evidence                  | Status                                                   |
 | ------------------------- | -------------------------------------------------------- |
 | Source-of-truth documents | Phase 3 planning boundary recorded                       |
-| Accepted ADRs             | 17; Phase 2 decisions recorded                           |
+| Accepted ADRs             | 20; Phase 3 decisions recorded                           |
 | Phase 1 implementation    | Complete and owner-approved                              |
 | Unit/contract tests       | Phase 1 evidence: passed locally, 46                     |
 | Integration tests         | Phase 1 evidence: passed locally, 9                      |
@@ -56,7 +56,13 @@ feature or initializing a cloud service.
 | Supabase advisors         | Security: none; Performance: five informational notices  |
 | Critical/high issues      | None unresolved                                          |
 | Phase 2 owner approval    | Received explicitly on 2026-07-30                        |
-| Phase 3 implementation    | Not started; planning documents only                     |
+| Phase 3 implementation    | In progress under explicit owner authorization           |
+| Phase 3 local ETL         | Deterministic direct run and actual FD001 run passed     |
+| Phase 3 PostgreSQL        | 24 checks passed, including derived backup/recovery      |
+| Phase 3 Airflow           | Build, health, retry, and two-date backfill passed       |
+| Phase 3 product coverage  | 90.33% branch-aware                                      |
+| Phase 3 hosted evidence   | Pending explicit migration/write approval                |
+| Phase 3 GitHub Actions    | Pending completion commit                                |
 
 ## Repository observations
 
@@ -88,7 +94,7 @@ exercised against the approved hosted project. Hosted database checks used the
 authenticated project-scoped Supabase tools because the workstation could not
 reach PostgreSQL ports; this is not claimed as a hosted direct-adapter test.
 
-## Phase 3 planned boundary
+## Phase 3 active boundary
 
 Phase 3 is limited to deterministic batch ETL, processed and candidate-feature
 snapshots, targets, data-quality reports, derived lineage, and thin Airflow
@@ -97,11 +103,12 @@ a separate metadata database. It adds no Celery, Redis, Kubernetes, streaming,
 model training, MLflow, serving, monitoring, agent, dashboard, or deployment
 component.
 
-The planned daily schedule and backfill operate on an explicit immutable FD001
+The implemented daily schedule and backfill operate on an explicit immutable FD001
 snapshot. They demonstrate retry and idempotency; they do not create event time
-or support a real-time claim. Implementation and all cloud mutation remain
-unauthorized until explicit `START PHASE 3` and the applicable manual
-prerequisites.
+or support a real-time claim. Local deterministic ETL, PostgreSQL, Airflow,
+actual-dataset, retry, recovery, backfill, and coverage checks have passed.
+Hosted cloud mutation and the completion-commit GitHub Actions run remain open
+gates, so Phase 3 stays `IN_PROGRESS`.
 
 ## Phase history
 
@@ -110,5 +117,5 @@ prerequisites.
 | 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
 | 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
 | 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
-| 3     | PLANNED     | `docs/phases/phase-03/PLAN.md`              |
+| 3     | IN_PROGRESS | `docs/phases/phase-03/PLAN.md`              |
 | 4-10  | NOT_PLANNED | Outside the current authorization           |

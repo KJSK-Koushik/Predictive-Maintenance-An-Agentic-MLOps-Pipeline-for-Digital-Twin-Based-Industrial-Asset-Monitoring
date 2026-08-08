@@ -40,6 +40,8 @@ Thumbs.db
 /supabase/.temp/
 /airflow/logs/
 /airflow/airflow.db
+/orchestration/airflow/logs/
+/orchestration/airflow/*.db
 
 # Graphify is not part of the project architecture
 **/graphify-out/

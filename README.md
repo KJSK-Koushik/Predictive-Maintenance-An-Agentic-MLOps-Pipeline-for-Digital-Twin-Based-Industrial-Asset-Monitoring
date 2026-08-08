@@ -14,9 +14,11 @@ The project will address:
 **Phase 0: Project foundation and architecture** is complete and owner-approved.
 **Phase 1: Local dataset ingestion and data contract** is complete and
 owner-approved. **Phase 2: Cloud data foundation** is also complete and
-owner-approved. **Phase 3: ETL and orchestration** is planned but has not
-started. The repository still contains no processed/feature implementation,
-Airflow runtime, trained model, or deployable service.
+owner-approved. **Phase 3: ETL and orchestration** is in progress under the
+explicit `START PHASE 3` command. Deterministic processed, candidate-feature,
+target, and quality-report pipelines plus a local Airflow runtime are now
+implemented. Hosted Phase 3 evidence and GitHub CI must still pass before the
+phase can be completed. No model has been trained and no service is deployed.
 
 Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
 filesystem Storage substitute. The approved hosted Supabase project has passed
@@ -37,6 +39,32 @@ The command verifies exact source bytes, creates or reuses an ignored
 content-addressed raw snapshot, enforces the executable contract, derives
 labels, and writes aggregate reports under ignored `artifacts/`. It does not
 upload data or contact a cloud service.
+
+## Phase 3 local ETL
+
+After publishing an accepted raw snapshot to the local Phase 2 substitute, run
+the deterministic ETL with its explicit snapshot ID:
+
+```shell
+uv run run-fd001-etl --source-snapshot-id <64-character-sha256>
+```
+
+The command produces typed Parquet processed data, separate candidate-feature
+and target files, canonical manifests, a bounded JSON quality report, and
+PostgreSQL lineage. Exact reruns verify and reuse the same content-addressed
+objects. The command performs no model fitting.
+
+The Phase 3 Airflow development runtime is loopback-only:
+
+```shell
+docker compose build airflow
+docker compose up -d --wait postgres airflow
+docker compose exec -T airflow airflow dags list-import-errors --output json
+```
+
+Set `PM_SOURCE_SNAPSHOT_ID` before starting Airflow for a scheduled static-batch
+run. Airflow logical dates are orchestration metadata; they are not telemetry
+event time and do not make FD001 real-time data.
 
 ## Claim boundaries
 

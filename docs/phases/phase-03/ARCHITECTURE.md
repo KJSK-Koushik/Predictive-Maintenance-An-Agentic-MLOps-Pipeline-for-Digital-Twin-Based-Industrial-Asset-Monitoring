@@ -50,18 +50,18 @@ The same application service is called by the command line and the DAG. Airflow
 owns scheduling and task-run history; project code owns validation,
 transformation, identities, publication, and quality decisions.
 
-## Planned package boundaries
+## Implemented package boundaries
 
 ```text
 src/predictive_maintenance/etl/
   __init__.py
   models.py
   extraction.py
-  transformation.py
-  features.py
+  serialization.py
   quality.py
   publication.py
   pipeline.py
+  runtime.py
   cli.py
 
 orchestration/airflow/
@@ -74,9 +74,8 @@ orchestration/airflow/
 - `models` owns derived snapshot identities and stable ETL errors.
 - `extraction` materializes only verified raw objects for one available source
   snapshot.
-- `transformation` produces canonical processed tables.
-- `features` separates candidate inputs from target columns without fitting on
-  the dataset.
+- `serialization` produces canonical processed tables and separates candidate
+  inputs from target columns without fitting on the dataset.
 - `quality` produces bounded deterministic JSON evidence.
 - `publication` extends the existing staged object/metadata publication model.
 - `pipeline` composes pure stages and exposes stage-level entry points.
@@ -84,8 +83,9 @@ orchestration/airflow/
 - the DAG declares only schedule, dependencies, parameters, retries, timeouts,
   and small identifier exchange.
 
-The exact module count may be reduced during implementation. A generic ETL
-framework, plugin system, or service decomposition is not required.
+The implementation intentionally combines transformation and feature
+serialization instead of introducing a generic ETL framework, plugin system,
+or service decomposition.
 
 ## Input gate
 
@@ -104,7 +104,7 @@ closed before a processed or feature snapshot becomes available.
 
 ## Processed data contract
 
-The planned contract name is `fd001-processed-v1`.
+The implemented contract name is `fd001-processed-v1`.
 
 The processed snapshot contains separate train and test Parquet files with:
 
@@ -118,14 +118,15 @@ The processed snapshot contains separate train and test Parquet files with:
   inputs.
 
 Parquet is selected because it preserves typed tabular data efficiently and is
-widely supported by pandas and scikit-learn. The implementation will pin the
-PyArrow version, compression, column order, row order, index behavior, and
-writer options. Two clean builds in the locked environment must produce the
-same logical manifest and object hashes.
+widely supported by pandas and scikit-learn. PyArrow 25.0.0 writes Parquet 2.6
+with Zstandard level 3, dictionary encoding off, statistics on, data pages 1.0,
+and 65,536-row groups. Column order, source row order, Arrow types, and index
+omission are explicit. Clean builds in the locked environment produce the same
+manifest and object hashes.
 
 ## Feature snapshot contract
 
-The planned feature specification is `fd001-candidate-features-v1`.
+The implemented feature specification is `fd001-candidate-features-v1`.
 
 It produces separate, key-aligned files:
 
@@ -191,8 +192,7 @@ not written to Airflow logs or XCom.
 
 ## PostgreSQL extension
 
-Phase 3 will add one forward-only migration in the private `ops` schema. The
-minimum planned tables are:
+Phase 3 adds one forward-only migration in the private `ops` schema:
 
 | Table                        | Responsibility                                                  |
 | ---------------------------- | --------------------------------------------------------------- |
@@ -228,9 +228,9 @@ or mismatched referenced derived object changes the derived snapshot to
 
 ## Airflow topology
 
-Phase 3 will use the current reviewed Apache Airflow 3 release, with the exact
-version and official Python 3.11 image pinned during implementation. The
-planning reference is Airflow 3.3.0.
+Phase 3 uses Apache Airflow 3.3.0 with the official Python 3.11 image pinned to
+multi-platform digest
+`sha256:7c7eda27057370576b845ced1269ec539e50588fb43ad0d3d9d20eff5f629fb6`.
 
 The local topology is deliberately small:
 
@@ -245,7 +245,7 @@ No Celery worker, Redis broker, Kubernetes executor, Helm chart, or cloud
 Airflow deployment is included. The local standalone-style runtime is
 development evidence, not a production deployment claim.
 
-The DAG is planned as `fd001_derived_pipeline` with stable stages:
+The DAG is `fd001_derived_pipeline` with stable stages:
 
 ```text
 validate_source
@@ -258,10 +258,19 @@ Tasks may re-download an object by identity. They do not depend on another
 task's local temporary files. XCom contains only bounded identifiers and status
 data.
 
+Publication of all three derived snapshots and their lineage is one application
+transactional unit. Therefore `publish_processed` invokes the complete tested
+application service after `validate_source`; the two following task IDs are
+durable orchestration checkpoints that validate the returned feature, quality,
+and lineage identities. They do not claim that a partial processed snapshot is
+safely available before the feature/report metadata transaction. This keeps the
+DAG thin and preserves all-or-nothing publication.
+
 ## Schedule, retry, and backfill semantics
 
 - Schedule: one daily batch schedule with `catchup=False` for normal operation.
-- Source: an explicit approved snapshot ID; no implicit mutable "latest" input.
+- Source: an explicit approved snapshot ID from run configuration or
+  `PM_SOURCE_SNAPSHOT_ID`; no implicit mutable "latest" input.
 - Concurrency: one active DAG run by default.
 - Retry: bounded retries with exponential backoff and task timeouts.
 - Backfill: explicit Airflow backfill with bounded concurrency and declared
@@ -289,9 +298,10 @@ not a timestamp.
 ### Hosted Supabase
 
 After separate target and mutation confirmation, the approved development/test
-project will exercise the Phase 3 migration, derived Storage objects, metadata,
-lineage, exact rerun reuse, reconciliation, and advisors. Ordinary CI contains
-no Supabase credentials and performs no cloud mutation.
+project exercises the Phase 3 migration, derived Storage objects, metadata,
+lineage, exact rerun reuse, reconciliation, and advisors. Until that evidence
+passes it remains an open completion gate. Ordinary CI contains no Supabase
+credentials and performs no cloud mutation.
 
 If the workstation still cannot reach hosted PostgreSQL ports, Storage through
 the Python adapter and database checks through authenticated project-scoped SQL

@@ -12,7 +12,9 @@ services:
       - /var/lib/postgresql/data
     volumes:
       - ./tests/integration/postgres/bootstrap_roles.sql:/docker-entrypoint-initdb.d/000_bootstrap_roles.sql:ro
+      - ./tests/integration/postgres/bootstrap_airflow.sql:/docker-entrypoint-initdb.d/001_bootstrap_airflow.sql:ro
       - ./supabase/migrations/20260726144446_phase_02_cloud_metadata.sql:/docker-entrypoint-initdb.d/010_phase_02_cloud_metadata.sql:ro
+      - ./supabase/migrations/20260808181431_phase_03_derived_metadata.sql:/docker-entrypoint-initdb.d/020_phase_03_derived_metadata.sql:ro
     healthcheck:
       test:
         - CMD-SHELL
@@ -20,5 +22,46 @@ services:
       interval: 2s
       timeout: 3s
       retries: 30
+    restart: "no"
+
+  airflow:
+    build:
+      context: .
+      dockerfile: orchestration/airflow/Dockerfile
+    image: predictive-maintenance-airflow:3.3.0-phase3
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__PARALLELISM: "2"
+      AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG: "2"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:phase3-airflow-local-only@postgres:5432/airflow
+      AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-}
+      AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW_JWT_SECRET:-phase3-local-only-not-production-change-this-value-before-any-shared-use-0001}
+      APP_ENV: local
+      PM_RAW_BUCKET: ${PM_RAW_BUCKET:-pm-raw}
+      PM_DERIVED_BUCKET: ${PM_DERIVED_BUCKET:-pm-derived}
+      PM_LOCAL_OBJECT_ROOT: /opt/airflow/artifacts/cloud-objects
+      PM_POSTGRES_DSN: postgresql://postgres:phase2-local-only@postgres:5432/predictive_maintenance
+      PM_CODE_REVISION: ${PM_CODE_REVISION:-phase3-local}
+      PM_SOURCE_SNAPSHOT_ID: ${PM_SOURCE_SNAPSHOT_ID:-}
+    command: standalone
+    ports:
+      - "127.0.0.1:18080:8080"
+    volumes:
+      - ./orchestration/airflow/dags:/opt/airflow/dags:ro
+      - ./artifacts/cloud-objects:/opt/airflow/artifacts/cloud-objects
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - airflow db check
+      interval: 5s
+      timeout: 10s
+      retries: 24
+      start_period: 20s
+    mem_limit: 2g
+    cpus: 2.0
     restart: "no"
 # yamllint enable rule:line-length

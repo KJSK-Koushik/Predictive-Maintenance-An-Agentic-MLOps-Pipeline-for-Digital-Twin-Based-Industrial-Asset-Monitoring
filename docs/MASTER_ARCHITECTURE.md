@@ -3,9 +3,10 @@
 ## Status
 
 This is the master target architecture. Phases 0, 1, and 2 are approved. Phase
-3 is planned but implementation has not started. Components assigned to Phase
-3 or later remain designs, not working integrations. Phase 2 local and approved
-hosted Supabase evidence passed the recorded checks.
+3 implementation is active and its local ETL, PostgreSQL, filesystem, and
+Airflow evidence has passed. Hosted Phase 3 and GitHub Actions evidence remain
+required before completion. Components assigned to Phase 4 or later remain
+designs, not working integrations.
 
 ## Architectural principles
 
@@ -103,12 +104,12 @@ reports/<report-type>/<run-or-window-id>/...
 ```
 
 Phase 2 defines two private Storage buckets: one raw bucket and one derived
-bucket. Local tests use a filesystem substitute with the same narrow
-put-if-absent contract. The Supabase adapter uses the standard Storage API and
-has been exercised against the approved hosted development/test project. The
-derived bucket reserves processed and feature prefixes but contains no
-production derived data until Phase 3. Logical zones do not imply AWS S3, and
-the Supabase S3 protocol remains deferred.
+bucket. Phase 3 uses content-addressed `processed`, `features`, and
+`reports/data-quality` prefixes in the derived bucket. Local tests use a
+filesystem substitute with the same narrow put-if-absent contract. The
+Supabase adapter uses the standard Storage API. Phase 3 hosted derived evidence
+is not claimed until its separately approved run passes. Logical zones do not
+imply AWS S3, and the Supabase S3 protocol remains deferred.
 
 Raw immutability is application-enforced:
 
@@ -139,9 +140,9 @@ into operational tables except for an immutable approval evidence snapshot.
 
 ### PostgreSQL schemas
 
-- `ops`: currently owns only the five Phase 2 ingestion, object, snapshot,
-  lineage, and run tables. Later approval, deployment, and monitoring objects
-  require their owning phases and new migrations.
+- `ops`: owns five Phase 2 ingestion tables and three Phase 3 derived-snapshot,
+  derived-file, and transformation-run tables. Later approval, deployment, and
+  monitoring objects require their owning phases and new migrations.
 - `twin`: asset-health digital-shadow state and history.
 - `audit`: append-only security and agent decision records.
 - `api`: explicitly exposed views or functions if a dashboard later needs the
@@ -233,25 +234,30 @@ validation, logging, and a documented failure mode.
 | Agent/tool failure       | Fail closed and preserve an audit event              |
 | Missing delayed labels   | Report unavailable performance, not zero degradation |
 
-## Phase 3 planned boundary
+## Phase 3 implemented boundary
 
-Phase 3 will add deterministic processed, candidate-feature, target, manifest,
-and data-quality artifacts. It will extend the existing content-addressed
-object and private PostgreSQL lineage model rather than introduce a feature
-store or row-level telemetry database.
+Phase 3 implements deterministic processed, candidate-feature, target,
+manifest, and data-quality artifacts. It extends the existing
+content-addressed object and private PostgreSQL lineage model; it does not add a
+feature-store product or row-level telemetry database.
 
-Core ETL will remain ordinary typed Python. A thin scheduled Airflow DAG will
-own dependencies, retries, timeouts, and backfill execution while exchanging
-only snapshot identifiers. The planned local runtime is one official Airflow 3
-Python 3.11 image with `LocalExecutor` and a dedicated metadata database. It
-does not include Celery, Redis, Kubernetes, streaming, or production hosting.
+Core ETL is ordinary typed Python and runs without Airflow. The thin
+`fd001_derived_pipeline` DAG owns schedule, dependencies, bounded retries,
+timeouts, failure history, and backfill execution. XCom is restricted to the
+source ID, three derived IDs, and a reuse boolean. The local runtime uses the
+official Airflow 3.3.0 Python 3.11 image pinned by digest, `LocalExecutor`, and a
+dedicated Airflow database/user inside the disposable PostgreSQL 17 service.
+It includes no Celery, Redis, Kubernetes, streaming, or production hosting.
 
-The first feature snapshot is a versioned separation of settings/sensors from
-RUL/risk targets. It performs no fitted scaling, selection, PCA, imputation,
-rolling aggregation, or model-informed engineering. Split-fitted preprocessing
-remains Phase 4 work.
+Scheduled runs use an explicitly configured `PM_SOURCE_SNAPSHOT_ID`; manual and
+backfill runs may provide the same ID in run configuration. A missing or
+invalid ID fails closed. Logical dates and Airflow run IDs are excluded from
+artifact identity, so backfills over the static source reuse one artifact set.
 
-These are approved planning constraints, not implemented capabilities.
+The first feature snapshot separates three settings and 21 sensors from
+uncapped RUL and inclusive 30-cycle risk targets. It performs no fitted
+scaling, selection, PCA, imputation, rolling aggregation, or model-informed
+engineering. Split-fitted preprocessing remains Phase 4 work.
 
 ## Technology decisions
 

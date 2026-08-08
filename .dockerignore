@@ -1,0 +1,9 @@
+# The Airflow build needs only the installable project and pinned requirements.
+*
+!pyproject.toml
+!README.md
+!src/
+!src/**
+!orchestration/
+!orchestration/airflow/
+!orchestration/airflow/requirements.txt

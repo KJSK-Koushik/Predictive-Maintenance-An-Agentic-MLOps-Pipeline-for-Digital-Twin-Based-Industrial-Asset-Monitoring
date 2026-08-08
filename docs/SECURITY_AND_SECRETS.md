@@ -186,7 +186,7 @@ backup does not prove object-byte recovery. The local recovery test exports
 restores the rows, copies objects by verified identity, and reconciles both
 sides.
 
-## Phase 3 planned controls
+## Phase 3 implemented controls
 
 - Use Parquet and JSON only; do not deserialize untrusted pickle/joblib
   artifacts.
@@ -206,8 +206,12 @@ sides.
 - Reject invalid quality, lineage, or object evidence before a derived snapshot
   becomes available.
 
-These controls are planned and are not reported as implemented until Phase 3
-tests exercise them.
+Local tests exercise these controls through deterministic artifact checks,
+malformed input cases, role/RLS tests, immutable object conflicts, bounded XCom
+inspection, Airflow parse checks, retry/backfill recovery, secret scanning, and
+dependency auditing. `cryptography` 50.0.0 and `h2` 4.4.1 are locked after
+resolving their August 2026 advisories. Hosted policy/advisor evidence remains a
+separate Phase 3 completion gate.
 
 ## References
 

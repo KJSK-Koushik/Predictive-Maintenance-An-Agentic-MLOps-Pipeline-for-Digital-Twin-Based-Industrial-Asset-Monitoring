@@ -19,14 +19,20 @@ from predictive_maintenance.cloud.publication import (
     reconcile_snapshot,
 )
 from predictive_maintenance.data.integrity import Snapshot, create_snapshot
+from predictive_maintenance.etl.metadata import PostgresDerivedMetadataRepository
+from predictive_maintenance.etl.pipeline import run_pipeline
+from predictive_maintenance.etl.publication import reconcile_derived_snapshot
 
 ROOT = Path(__file__).resolve().parents[3]
 EXPECTED_TABLES = {
     "data_objects",
     "dataset_snapshots",
+    "derived_snapshot_files",
+    "derived_snapshots",
     "ingestion_runs",
     "lineage_edges",
     "snapshot_files",
+    "transformation_runs",
 }
 
 pytestmark = [pytest.mark.integration, pytest.mark.postgres]
@@ -68,6 +74,9 @@ def clean_operational_tables() -> Iterator[None]:
         connection.execute(
             """
             truncate table
+                ops.transformation_runs,
+                ops.derived_snapshot_files,
+                ops.derived_snapshots,
                 ops.lineage_edges,
                 ops.snapshot_files,
                 ops.dataset_snapshots,
@@ -215,9 +224,12 @@ def test_postgres_publication_is_idempotent_and_complete(tmp_path: Path) -> None
     assert counts == {
         "data_objects": 5,
         "dataset_snapshots": 1,
+        "derived_snapshot_files": 0,
+        "derived_snapshots": 0,
         "ingestion_runs": 1,
         "lineage_edges": 4,
         "snapshot_files": 4,
+        "transformation_runs": 0,
     }
     with psycopg.connect(_dsn()) as connection:
         manifest_edges = connection.execute(
@@ -420,6 +432,15 @@ def test_clean_reset_reapply_has_same_schema_fingerprint() -> None:
                 "--file",
                 "/docker-entrypoint-initdb.d/010_phase_02_cloud_metadata.sql",
             )
+            _compose_exec(
+                "psql",
+                "--username=postgres",
+                "--set=ON_ERROR_STOP=1",
+                "--dbname",
+                reset_database,
+                "--file",
+                "/docker-entrypoint-initdb.d/020_phase_03_derived_metadata.sql",
+            )
             schema_dump = _compose_exec(
                 "pg_dump",
                 "--username=postgres",
@@ -451,6 +472,25 @@ def test_metadata_and_object_backup_restore_reconciles(
     result = publish_snapshot(snapshot, "pm-raw", source_objects, metadata)
     stored = metadata.get_snapshot(result.snapshot_id)
     assert stored is not None
+    derived_metadata = PostgresDerivedMetadataRepository(dsn)
+    derived_result = run_pipeline(
+        result.snapshot_id,
+        "pm-derived",
+        source_objects,
+        metadata,
+        derived_metadata,
+        code_revision="phase3-backup-test",
+    )
+    derived_ids = (
+        derived_result.processed_snapshot_id,
+        derived_result.feature_snapshot_id,
+        derived_result.quality_snapshot_id,
+    )
+    derived_stored = tuple(
+        derived_metadata.get_derived_snapshot(snapshot_id)
+        for snapshot_id in derived_ids
+    )
+    assert all(item is not None for item in derived_stored)
 
     dump = _compose_exec(
         "pg_dump",
@@ -481,12 +521,25 @@ def test_metadata_and_object_backup_restore_reconciles(
             "--set=ON_ERROR_STOP=1",
             "--dbname",
             restore_database,
+            "--file",
+            "/docker-entrypoint-initdb.d/020_phase_03_derived_metadata.sql",
+        )
+        _compose_exec(
+            "psql",
+            "--username=postgres",
+            "--set=ON_ERROR_STOP=1",
+            "--dbname",
+            restore_database,
             input_text=dump,
         )
 
         restored_root = tmp_path / "restored-objects"
         restored_objects = FilesystemObjectRepository(restored_root)
-        for identity in stored.identities:
+        identities = list(stored.identities)
+        for item in derived_stored:
+            assert item is not None
+            identities.extend(item.identities)
+        for identity in identities:
             payload = source_objects.read(
                 identity.bucket_name,
                 identity.object_key,
@@ -504,6 +557,15 @@ def test_metadata_and_object_backup_restore_reconciles(
             restored_metadata,
         )
         assert report.consistent
+        restored_derived_metadata = PostgresDerivedMetadataRepository(
+            _database_dsn(dsn, restore_database)
+        )
+        for snapshot_id in derived_ids:
+            assert reconcile_derived_snapshot(
+                snapshot_id,
+                restored_objects,
+                restored_derived_metadata,
+            ).consistent
     finally:
         with psycopg.connect(dsn, autocommit=True) as connection:
             connection.execute(

@@ -145,6 +145,35 @@ Airflow backfill over FD001 proves orchestration behavior only. The logical date
 does not convert `cycle` into event time, and repeated logical dates must reuse
 the same artifacts for the same source and pipeline versions.
 
+The implemented Phase 3 command groups are:
+
+```shell
+uv sync --locked --dev
+uv lock --check
+uv run ruff format --check .
+uv run ruff check .
+uv run mypy src tests
+docker compose config --quiet
+docker compose up -d --wait postgres
+uv run pytest -m "not integration and not dataset and not postgres and not cloud"
+uv run pytest -m "integration and not dataset and not postgres and not airflow and not cloud"
+uv run pytest -m "postgres and not dataset and not cloud"
+docker compose build airflow
+docker compose up -d --wait airflow
+uv run pytest -m "airflow and not dataset and not cloud"
+uv run pytest -m "not dataset and not airflow and not cloud" --cov=src/predictive_maintenance --cov-branch --cov-fail-under=90
+uv run mdformat --check README.md CONTRIBUTING.md docs
+uv run yamllint .
+uv run pip-audit
+docker compose down --volumes
+```
+
+Ordinary CI uses dedicated local object bucket names and the committed synthetic
+fixture. It contains no Supabase credential and performs no hosted mutation or
+deployment. The Airflow integration test runs a normal DAG, an injected failure
+after verified publication followed by retry, and a two-date backfill. It polls
+bounded run state instead of using fixed sleeps.
+
 ### Phases 4-5
 
 - engine-disjoint split assertions;
