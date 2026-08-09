@@ -6,10 +6,10 @@
 | ------------------------- | -------------------------------------- |
 | Current phase             | 3: ETL and orchestration               |
 | Last completed phase      | 2: Cloud data foundation               |
-| State                     | IN_PROGRESS                            |
+| State                     | AWAITING_APPROVAL                      |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`  |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3` |
-| Next permitted transition | Complete every Phase 3 acceptance gate |
+| Next permitted transition | Owner sends `APPROVE PHASE 3`          |
 
 ## Bootstrap record
 
@@ -56,13 +56,13 @@ feature or initializing a cloud service.
 | Supabase advisors         | Security: none; Performance: five informational notices  |
 | Critical/high issues      | None unresolved                                          |
 | Phase 2 owner approval    | Received explicitly on 2026-07-30                        |
-| Phase 3 implementation    | In progress under explicit owner authorization           |
+| Phase 3 implementation    | Complete; awaiting explicit owner approval               |
 | Phase 3 local ETL         | Deterministic direct run and actual FD001 run passed     |
 | Phase 3 PostgreSQL        | 24 checks passed, including derived backup/recovery      |
 | Phase 3 Airflow           | Build, health, retry, and two-date backfill passed       |
 | Phase 3 product coverage  | 90.38% branch-aware                                      |
 | Phase 3 hosted evidence   | Migration, Storage, SQL, lineage, and advisors passed    |
-| Phase 3 GitHub Actions    | Pending completion commit                                |
+| Phase 3 GitHub Actions    | Passed: run `31327359011`, job `Phase 0 quality`         |
 
 ## Repository observations
 
@@ -113,15 +113,16 @@ object contract gives a separate Airflow user read access while retaining
 owner-only writes, and exact reuse requires no temporary write. The direct
 hosted PostgreSQL adapter remains unexercised because the workstation cannot
 resolve the database hostname; this limitation is reported separately. The
-completion-commit GitHub Actions run remains an open gate, so Phase 3 stays
-`IN_PROGRESS`.
+GitHub Actions run `31327359011` passed every required check and branch
+protection remains enforced. Phase 3 is complete and stays `AWAITING_APPROVAL`
+until the owner explicitly approves it.
 
 ## Phase history
 
-| Phase | State       | Evidence                                    |
-| ----- | ----------- | ------------------------------------------- |
-| 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
-| 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
-| 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
-| 3     | IN_PROGRESS | `docs/phases/phase-03/PLAN.md`              |
-| 4-10  | NOT_PLANNED | Outside the current authorization           |
+| Phase | State             | Evidence                                    |
+| ----- | ----------------- | ------------------------------------------- |
+| 0     | APPROVED          | `docs/phases/phase-00/COMPLETION_REPORT.md` |
+| 1     | APPROVED          | `docs/phases/phase-01/COMPLETION_REPORT.md` |
+| 2     | APPROVED          | `docs/phases/phase-02/COMPLETION_REPORT.md` |
+| 3     | AWAITING_APPROVAL | `docs/phases/phase-03/COMPLETION_REPORT.md` |
+| 4-10  | NOT_PLANNED       | Outside the current authorization           |

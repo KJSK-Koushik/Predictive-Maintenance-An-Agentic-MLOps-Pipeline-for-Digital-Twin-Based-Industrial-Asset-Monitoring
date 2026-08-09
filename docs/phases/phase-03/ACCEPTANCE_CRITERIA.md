@@ -107,7 +107,7 @@
   declared reprocessing behavior and one artifact identity per source/version.
 - [x] Backfill evidence is described as static batch orchestration, not event
   time or real-time ingestion.
-- [ ] Container startup, health, DAG test, and cleanup pass locally and in CI.
+- [x] Container startup, health, DAG test, and cleanup pass locally and in CI.
 
 ## Hosted Supabase evidence
 
@@ -133,8 +133,8 @@
   or production credential.
 - [x] CI performs verification only and contains no deployment or cloud
   mutation.
-- [ ] The required GitHub Actions workflow passes on the completion commit.
-- [ ] Branch protection remains enforced.
+- [x] The required GitHub Actions workflow passes on the completion commit.
+- [x] Branch protection remains enforced.
 - [x] No critical or high-severity issue remains unresolved.
 
 ## Documentation and completion
@@ -145,8 +145,8 @@
 - [x] `COMPLETION_REPORT.md` distinguishes unit, local, Docker, Airflow, actual
   dataset, cloud, advisor, recovery, and GitHub evidence.
 - [x] Known limitations and deferred Phase 4 work are explicit.
-- [ ] `docs/PROJECT_STATUS.md` is updated to `AWAITING_APPROVAL` only after all
+- [x] `docs/PROJECT_STATUS.md` is updated to `AWAITING_APPROVAL` only after all
   criteria pass.
-- [ ] The completion handoff asks for `APPROVE PHASE 3` and stops.
+- [x] The completion handoff asks for `APPROVE PHASE 3` and stops.
 
-Unchecked criteria prevent Phase 3 completion.
+All Phase 3 acceptance criteria pass. Phase 4 remains outside authorization.

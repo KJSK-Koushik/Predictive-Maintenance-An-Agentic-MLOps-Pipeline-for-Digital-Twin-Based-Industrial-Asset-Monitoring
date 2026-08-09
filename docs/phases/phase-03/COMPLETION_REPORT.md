@@ -2,11 +2,10 @@
 
 ## Status
 
-**IN PROGRESS — HOSTED AND FINAL LOCAL GATES PASSED; GITHUB EVIDENCE PENDING**
+**COMPLETE — AWAITING OWNER APPROVAL**
 
 Implementation was authorized by `START PHASE 3` on 2026-08-08. This report is
-not a completion handoff until the completion-commit GitHub Actions workflow
-passes.
+the completion handoff after all local, hosted, and GitHub gates passed.
 
 ## Delivered scope
 
@@ -118,9 +117,18 @@ host/container filesystem permissions. The final diagnostic log proved that
 atomic files inherited owner-only mode `600` from `mkstemp`, so the separate
 Airflow user could not read the raw manifest. The adapter now gives completed
 immutable local objects mode `644`, verifies existing objects before any
-temporary write, and has regression tests for both contracts. The required
-passing completion-commit run is still pending; a local pass is not a GitHub
-Actions pass.
+temporary write, and has regression tests for both contracts.
+
+Run `31327359011`, job `Phase 0 quality`, passed on the completed
+implementation commit `646984b` in 2 minutes 51 seconds. It included the
+pinned Airflow image build, Linux LocalExecutor execution, controlled retry,
+two-date backfill, coverage, formatting, linting, typing, migration/recovery,
+dependency audit, and cleanup. The completion-state documentation commit is
+also subject to the same required PR check.
+
+`main` branch protection was queried after the passing run. It still requires
+strict `Phase 0 quality`, a pull request, resolved conversations, and admin
+enforcement; force pushes and branch deletion remain disabled.
 
 ## Known limitations and deferred work
 
@@ -142,5 +150,8 @@ Actions pass.
 
 ## Current handoff
 
-Phase 3 remains `IN_PROGRESS`. Do not request `APPROVE PHASE 3` until final
-local gates and GitHub Actions pass.
+Phase 3 is `AWAITING_APPROVAL`. Stop completely and wait for the owner command:
+
+`APPROVE PHASE 3`
+
+Do not plan or implement Phase 4.
