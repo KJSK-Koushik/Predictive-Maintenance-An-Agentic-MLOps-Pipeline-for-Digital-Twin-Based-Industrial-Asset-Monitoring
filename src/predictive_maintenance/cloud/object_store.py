@@ -131,6 +131,7 @@ class FilesystemObjectRepository:
                 shutil.copyfileobj(source_stream, temporary_stream, _CHUNK_SIZE)
                 temporary_stream.flush()
                 os.fsync(temporary_stream.fileno())
+            temporary_path.chmod(0o644)
             temporary_sha256, temporary_size = inspect_path(temporary_path)
             _verify_expected_bytes(temporary_sha256, temporary_size, expected)
             try:

@@ -66,6 +66,26 @@ def test_exact_reuse_does_not_require_a_temporary_write(
     assert repository.put_verified(source, identity).reused is True
 
 
+def test_first_put_sets_shared_runtime_read_permission(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = tmp_path / "source.txt"
+    source.write_bytes(b"telemetry")
+    repository = FilesystemObjectRepository(tmp_path / "objects")
+    chmod_modes: list[int] = []
+    original_chmod = Path.chmod
+
+    def record_chmod(path: Path, mode: int, *, follow_symlinks: bool = True) -> None:
+        chmod_modes.append(mode)
+        original_chmod(path, mode, follow_symlinks=follow_symlinks)
+
+    monkeypatch.setattr(Path, "chmod", record_chmod)
+
+    repository.put_verified(source, _identity(b"telemetry"))
+
+    assert chmod_modes == [0o644]
+
+
 def test_existing_different_bytes_fail_closed(tmp_path: Path) -> None:
     first_source = tmp_path / "first.txt"
     first_source.write_bytes(b"first")
