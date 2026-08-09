@@ -45,14 +45,21 @@ def _airflow_dsn() -> str:
 
 
 def _airflow(*arguments: str, check: bool = True) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
+    completed = subprocess.run(
         ["docker", "compose", "exec", "-T", "airflow", "airflow", *arguments],
         cwd=ROOT,
-        check=check,
+        check=False,
         capture_output=True,
         text=True,
         timeout=240,
     )
+    if check and completed.returncode != 0:
+        pytest.fail(
+            "Airflow command failed.\n"
+            f"stdout:\n{completed.stdout}\n"
+            f"stderr:\n{completed.stderr}"
+        )
+    return completed
 
 
 def _wait_for_backfill() -> None:

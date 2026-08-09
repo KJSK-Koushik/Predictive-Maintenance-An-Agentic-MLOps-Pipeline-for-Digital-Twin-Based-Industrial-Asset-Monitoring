@@ -2,11 +2,11 @@
 
 ## Status
 
-**IN PROGRESS — HOSTED GATES PASSED; FINAL LOCAL AND GITHUB EVIDENCE PENDING**
+**IN PROGRESS — HOSTED AND FINAL LOCAL GATES PASSED; GITHUB EVIDENCE PENDING**
 
 Implementation was authorized by `START PHASE 3` on 2026-08-08. This report is
-not a completion handoff until the final local rerun and completion-commit
-GitHub Actions workflow pass.
+not a completion handoff until the completion-commit GitHub Actions workflow
+passes.
 
 ## Delivered scope
 
@@ -51,7 +51,7 @@ Evidence recorded on 2026-08-08/09:
 | Evidence                      | Result                                                                                               |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------- |
 | Python and tooling            | Python 3.11.9; `uv` 0.11.8; Docker 29.1.3; Compose 2.40.3                                            |
-| Unit and contract tests       | 132 passed                                                                                           |
+| Unit and contract tests       | 133 passed                                                                                           |
 | Local integration tests       | 9 passed                                                                                             |
 | Deterministic ETL tests       | Passed, including success, reuse, tampering, partial publication, recovery, and fail-closed branches |
 | PostgreSQL integration        | 24 passed                                                                                            |
@@ -60,8 +60,8 @@ Evidence recorded on 2026-08-08/09:
 | Airflow execution             | 6 passed; normal run and controlled post-publication retry passed on attempt 2                       |
 | Airflow backfill              | Two logical dates passed; one reused artifact set                                                    |
 | XCom boundary                 | Maximum stored value 381 bytes; identifiers/status only                                              |
-| Coverage-compatible suite     | 165 passed; 12 dataset/Airflow/cloud tests deselected                                                |
-| Product coverage              | 90.33% branch-aware                                                                                  |
+| Coverage-compatible suite     | 166 passed; 12 dataset/Airflow/cloud tests deselected                                                |
+| Product coverage              | 90.37% branch-aware                                                                                  |
 | Formatting, lint, typing      | Ruff and strict mypy passed for 58 source/test files                                                 |
 | Dependency audit              | No known vulnerability after locking `cryptography` 50.0.0 and `h2` 4.4.1                            |
 | YAML and Compose              | Passed                                                                                               |
@@ -112,10 +112,14 @@ paths and are not claimed as one hosted Python pipeline run.
 
 ## GitHub Actions evidence
 
-Runs `31274882270` and `31325137898` correctly failed on cross-platform fixture
-line endings and fresh-runner shared-directory permissions. Both root causes
-were fixed and locally reproduced. The required passing completion-commit run
-is still pending; a local pass is not a GitHub Actions pass.
+Runs `31274882270`, `31325137898`, and `31325822247` correctly failed on,
+respectively, cross-platform fixture line endings, fresh-runner root-directory
+permissions, and an unnecessary temporary write during exact object reuse from
+the Airflow container user. All three root causes were fixed and locally
+reproduced. The last fix verifies an existing immutable object before creating
+a temporary file; a regression test proves exact reuse requires no write. The
+required passing completion-commit run is still pending; a local pass is not a
+GitHub Actions pass.
 
 ## Known limitations and deferred work
 

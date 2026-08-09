@@ -108,6 +108,12 @@ class FilesystemObjectRepository:
         source_sha256, source_size = inspect_path(source)
         _verify_expected_bytes(source_sha256, source_size, expected)
         destination = self._path(expected.bucket_name, expected.object_key)
+        if destination.exists():
+            actual_sha256, actual_size = inspect_path(destination)
+            _verify_expected_bytes(actual_sha256, actual_size, expected)
+            source_after_sha256, source_after_size = inspect_path(source)
+            _verify_expected_bytes(source_after_sha256, source_after_size, expected)
+            return ObjectPutResult(expected, reused=True)
         destination.parent.mkdir(parents=True, exist_ok=True)
 
         temporary_path: Path | None = None
