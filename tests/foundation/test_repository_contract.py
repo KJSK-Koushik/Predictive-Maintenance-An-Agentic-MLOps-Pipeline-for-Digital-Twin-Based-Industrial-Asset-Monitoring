@@ -16,6 +16,7 @@ REQUIRED_FILES = (
     "CONTRIBUTING.md",
     "LICENSE",
     ".env.example",
+    ".gitattributes",
     ".dockerignore",
     ".gitignore",
     ".github/CODEOWNERS",
@@ -174,6 +175,16 @@ def test_local_dataset_is_ignored() -> None:
             text=True,
         )
         assert result.returncode == 0, result.stderr
+
+
+@pytest.mark.foundation
+def test_committed_telemetry_fixtures_use_canonical_lf_bytes() -> None:
+    attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8")
+    assert "tests/fixtures/cmapss/** text eol=lf" in attributes.splitlines()
+
+    for path in (ROOT / "tests/fixtures/cmapss").rglob("*.txt"):
+        payload = path.read_bytes()
+        assert b"\r\n" not in payload, f"Non-canonical CRLF fixture: {path.name}"
 
 
 @pytest.mark.foundation

@@ -35,10 +35,10 @@ The committed synthetic source produced these stable IDs with code revision
 
 | Artifact                       | Snapshot ID                                                        |
 | ------------------------------ | ------------------------------------------------------------------ |
-| Raw source                     | `7ac4dc6568b3968e18cec98dd0162a640838f062183989a658dc40bc3c831cca` |
-| Processed                      | `4eb8b1c24b76db17c49810548108822f3b89a6e0c8936b6280b2e771a57c2f74` |
-| Candidate features and targets | `928a84a8dfb9c1e84b69fe3565e992cdcf6979cbbca7ea42c4549c5a48c92a31` |
-| Quality report                 | `959abc3da0a0d6ab19b46395cb2e4077213867ef6c0ad0e0c683c2b698c9c1d4` |
+| Raw source                     | `a793898150be06e5079dc92a327ab3abe298ca5f3198c10aa9c0745f840b87e2` |
+| Processed                      | `0bb163edf0afd6e85246a308734dcb8b55382e48ed6b0af6d291f4f5a19f1c8d` |
+| Candidate features and targets | `6e89993c6accc32e21725398f3ca2241c23a745ab4ccbbc9d0568f6f73658968` |
+| Quality report                 | `82915a01767250440f3695ed2852ffdd8a56ccfe3a5e53709e02f5bb561843dd` |
 
 The direct run and Airflow run returned the same IDs. Repeated runs, one retry
 after verified publication, and a two-date backfill left one transformation run

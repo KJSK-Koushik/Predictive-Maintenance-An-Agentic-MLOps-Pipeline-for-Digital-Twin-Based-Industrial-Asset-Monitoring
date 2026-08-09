@@ -26,7 +26,7 @@ jobs:
         postgresql://postgres:phase2-local-only@127.0.0.1:55432/predictive_maintenance
       PM_CODE_REVISION: phase3-local
       PM_SOURCE_SNAPSHOT_ID: >-
-        7ac4dc6568b3968e18cec98dd0162a640838f062183989a658dc40bc3c831cca
+        a793898150be06e5079dc92a327ab3abe298ca5f3198c10aa9c0745f840b87e2
       PM_RAW_BUCKET: pm-raw-airflow-ci
       PM_DERIVED_BUCKET: pm-derived-airflow-ci
 

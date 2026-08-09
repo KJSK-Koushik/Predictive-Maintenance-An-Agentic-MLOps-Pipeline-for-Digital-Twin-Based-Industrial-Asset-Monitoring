@@ -20,7 +20,7 @@ from predictive_maintenance.etl.metadata import PostgresDerivedMetadataRepositor
 from predictive_maintenance.etl.pipeline import run_pipeline
 
 ROOT = Path(__file__).resolve().parents[3]
-EXPECTED_SOURCE_ID = "7ac4dc6568b3968e18cec98dd0162a640838f062183989a658dc40bc3c831cca"
+EXPECTED_SOURCE_ID = "a793898150be06e5079dc92a327ab3abe298ca5f3198c10aa9c0745f840b87e2"
 pytestmark = [pytest.mark.integration, pytest.mark.airflow]
 
 
