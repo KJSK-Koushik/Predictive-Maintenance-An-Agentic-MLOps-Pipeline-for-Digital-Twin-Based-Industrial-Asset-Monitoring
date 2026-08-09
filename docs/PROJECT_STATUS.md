@@ -61,7 +61,7 @@ feature or initializing a cloud service.
 | Phase 3 PostgreSQL        | 24 checks passed, including derived backup/recovery      |
 | Phase 3 Airflow           | Build, health, retry, and two-date backfill passed       |
 | Phase 3 product coverage  | 90.33% branch-aware                                      |
-| Phase 3 hosted evidence   | Pending explicit migration/write approval                |
+| Phase 3 hosted evidence   | Migration, Storage, SQL, lineage, and advisors passed    |
 | Phase 3 GitHub Actions    | Pending completion commit                                |
 
 ## Repository observations
@@ -107,8 +107,12 @@ The implemented daily schedule and backfill operate on an explicit immutable FD0
 snapshot. They demonstrate retry and idempotency; they do not create event time
 or support a real-time claim. Local deterministic ETL, PostgreSQL, Airflow,
 actual-dataset, retry, recovery, backfill, and coverage checks have passed.
-Hosted cloud mutation and the completion-commit GitHub Actions run remain open
-gates, so Phase 3 stays `IN_PROGRESS`.
+The approved hosted migration, private Storage writes, project-scoped SQL,
+lineage verification, conflict cleanup, and advisors have passed. The direct
+hosted PostgreSQL adapter remains unexercised because the workstation cannot
+resolve the database hostname; this limitation is reported separately. The
+completion-commit GitHub Actions run remains an open gate, so Phase 3 stays
+`IN_PROGRESS`.
 
 ## Phase history
 

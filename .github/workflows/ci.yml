@@ -76,6 +76,9 @@ jobs:
       - name: Run PostgreSQL migration and recovery tests
         run: uv run pytest -m "postgres and not dataset and not cloud"
 
+      - name: Prepare disposable shared object directory
+        run: install -d -m 0777 artifacts/cloud-objects
+
       - name: Build pinned Airflow image
         run: docker compose build airflow
 

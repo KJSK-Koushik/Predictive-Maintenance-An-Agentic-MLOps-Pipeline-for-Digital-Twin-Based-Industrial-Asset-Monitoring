@@ -14,7 +14,7 @@ services:
       - ./tests/integration/postgres/bootstrap_roles.sql:/docker-entrypoint-initdb.d/000_bootstrap_roles.sql:ro
       - ./tests/integration/postgres/bootstrap_airflow.sql:/docker-entrypoint-initdb.d/001_bootstrap_airflow.sql:ro
       - ./supabase/migrations/20260726144446_phase_02_cloud_metadata.sql:/docker-entrypoint-initdb.d/010_phase_02_cloud_metadata.sql:ro
-      - ./supabase/migrations/20260808181431_phase_03_derived_metadata.sql:/docker-entrypoint-initdb.d/020_phase_03_derived_metadata.sql:ro
+      - ./supabase/migrations/20260809165753_phase_03_derived_metadata.sql:/docker-entrypoint-initdb.d/020_phase_03_derived_metadata.sql:ro
     healthcheck:
       test:
         - CMD-SHELL

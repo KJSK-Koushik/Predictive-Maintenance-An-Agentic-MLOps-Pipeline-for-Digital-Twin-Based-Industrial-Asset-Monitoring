@@ -160,11 +160,11 @@ Complete these after `START PHASE 3` and before the action they control:
 - [x] Confirm the existing Supabase target is still development/test-only and
   contains no unapproved production data. Read-only preflight reconfirmed the
   healthy development/test project before any Phase 3 mutation.
-- [ ] Explicitly approve applying the reviewed Phase 3 migration to that
+- [x] Explicitly approve applying the reviewed Phase 3 migration to that
   project.
-- [ ] Explicitly approve writing processed, feature, target, manifest, and
+- [x] Explicitly approve writing processed, feature, target, manifest, and
   data-quality objects to the private derived bucket.
-- [ ] Approve whether accepted Phase 3 derived artifacts remain as durable
+- [x] Approve whether accepted Phase 3 derived artifacts remain as durable
   research evidence; integration-test objects must use generated prefixes.
 - [x] Confirm that no managed Airflow service, paid add-on, IPv4 add-on, or
   other paid resource will be provisioned.

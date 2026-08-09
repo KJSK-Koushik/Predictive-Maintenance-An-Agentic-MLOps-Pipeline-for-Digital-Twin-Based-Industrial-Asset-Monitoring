@@ -16,16 +16,22 @@ from predictive_maintenance.cloud.metadata import PostgresMetadataRepository
 from predictive_maintenance.cloud.models import CloudFoundationError, ObjectIdentity
 from predictive_maintenance.cloud.object_store import SupabaseObjectRepository
 from predictive_maintenance.cloud.publication import (
+    build_publication,
     publish_snapshot,
     reconcile_snapshot,
 )
 from predictive_maintenance.data.pipeline import ingest_fd001
+from predictive_maintenance.etl.pipeline import (
+    materialize_pipeline,
+    prepare_pipeline_artifacts,
+)
 from supabase import create_client
 
 EXPECTED_SNAPSHOT_ID = (
     "17d1db8dd823266b58b9c8d5b6da8edace17220980b733188756cd6b630e453d"
 )
 APPROVAL_PHRASE = "I_CONFIRM_THIS_IS_THE_APPROVED_PHASE_2_TEST_PROJECT"
+PHASE_3_APPROVAL_PHRASE = "I_CONFIRM_PHASE_3_DERIVED_WRITES_ARE_APPROVED"
 
 pytestmark = [pytest.mark.integration, pytest.mark.cloud]
 
@@ -33,6 +39,15 @@ pytestmark = [pytest.mark.integration, pytest.mark.cloud]
 def _require_explicit_cloud_approval() -> Phase2Settings:
     if os.environ.get("PM_CLOUD_TEST_APPROVAL") != APPROVAL_PHRASE:
         pytest.skip("Explicit Phase 2 hosted Supabase approval is required.")
+    settings = Phase2Settings.from_env()
+    if settings.app_env != "cloud":
+        pytest.fail("APP_ENV=cloud is required for hosted verification.")
+    return settings
+
+
+def _require_phase_3_cloud_approval() -> Phase2Settings:
+    if os.environ.get("PM_PHASE_3_CLOUD_TEST_APPROVAL") != PHASE_3_APPROVAL_PHRASE:
+        pytest.skip("Explicit Phase 3 hosted derived-write approval is required.")
     settings = Phase2Settings.from_env()
     if settings.app_env != "cloud":
         pytest.fail("APP_ENV=cloud is required for hosted verification.")
@@ -191,3 +206,67 @@ def test_approved_cloud_derived_integration_cleanup(tmp_path: Path) -> None:
     finally:
         client.storage.from_(settings.derived_bucket).remove([key])
     assert key not in _list_all_keys(client.storage.from_(settings.derived_bucket))
+
+
+def test_approved_phase_3_actual_derived_storage(tmp_path: Path) -> None:
+    settings = _require_phase_3_cloud_approval()
+    source = Path("Data")
+    required = (
+        "train_FD001.txt",
+        "test_FD001.txt",
+        "RUL_FD001.txt",
+        "readme.txt",
+    )
+    if not all((source / filename).is_file() for filename in required):
+        pytest.fail("Owner-provided FD001 files are required for cloud verification.")
+
+    client = create_client(
+        settings.supabase_url.reveal(),
+        settings.supabase_secret_key.reveal(),
+    )
+    objects = SupabaseObjectRepository(client)
+    objects.ensure_private_buckets(settings.raw_bucket, settings.derived_bucket)
+    bucket_states = {
+        bucket.id: bucket.public for bucket in client.storage.list_buckets()
+    }
+    assert bucket_states[settings.derived_bucket] is False
+
+    ingestion = ingest_fd001(
+        source,
+        tmp_path / "raw",
+        code_revision="phase-3-cloud-verification",
+    )
+    assert ingestion.snapshot.manifest.snapshot_id == EXPECTED_SNAPSHOT_ID
+    raw_publication = build_publication(ingestion.snapshot, settings.raw_bucket)
+    raw_files = {item.logical_filename: item.identity for item in raw_publication.files}
+    materialized = materialize_pipeline(
+        ingestion,
+        code_revision="phase3-cloud-verification",
+        workspace=tmp_path / "derived",
+    )
+    prepared = prepare_pipeline_artifacts(
+        materialized,
+        raw_files,
+        settings.derived_bucket,
+    )
+
+    first_results = [
+        objects.put_verified(item.path, item.identity)
+        for artifact in prepared
+        for item in artifact.objects
+    ]
+    second_results = [
+        objects.put_verified(item.path, item.identity)
+        for artifact in prepared
+        for item in artifact.objects
+    ]
+    assert len(first_results) == 10
+    assert all(result.reused for result in second_results)
+    for artifact in prepared:
+        for item in artifact.objects:
+            payload = objects.read(
+                item.identity.bucket_name,
+                item.identity.object_key,
+            )
+            assert len(payload) == item.identity.byte_size
+            assert hashlib.sha256(payload).hexdigest() == item.identity.sha256

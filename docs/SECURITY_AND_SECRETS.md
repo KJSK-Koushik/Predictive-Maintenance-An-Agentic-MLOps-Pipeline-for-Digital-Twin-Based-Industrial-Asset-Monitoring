@@ -210,8 +210,11 @@ Local tests exercise these controls through deterministic artifact checks,
 malformed input cases, role/RLS tests, immutable object conflicts, bounded XCom
 inspection, Airflow parse checks, retry/backfill recovery, secret scanning, and
 dependency auditing. `cryptography` 50.0.0 and `h2` 4.4.1 are locked after
-resolving their August 2026 advisories. Hosted policy/advisor evidence remains a
-separate Phase 3 completion gate.
+resolving their August 2026 advisories. Hosted checks confirmed private derived
+Storage, denied client roles, runtime-only policies, no Airflow tables in `ops`,
+and no Supabase Security Advisor finding. The Performance Advisor returned no
+critical/high finding; its one policy-performance warning and informational
+index notices are recorded in the Phase 3 completion report.
 
 ## References
 

@@ -244,7 +244,7 @@ def test_phase_three_implementation_stays_inside_approved_roots() -> None:
     migrations = sorted((ROOT / "supabase/migrations").glob("*.sql"))
     assert [path.name for path in migrations] == [
         "20260726144446_phase_02_cloud_metadata.sql",
-        "20260808181431_phase_03_derived_metadata.sql",
+        "20260809165753_phase_03_derived_metadata.sql",
     ]
 
 

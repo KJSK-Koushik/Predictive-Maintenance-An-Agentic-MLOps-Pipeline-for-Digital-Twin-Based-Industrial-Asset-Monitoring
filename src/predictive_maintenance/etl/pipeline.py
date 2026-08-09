@@ -87,7 +87,7 @@ def materialize_pipeline(
     return MaterializedPipeline(processed, feature, quality)
 
 
-def _prepared_artifacts(
+def prepare_pipeline_artifacts(
     materialized: MaterializedPipeline,
     raw_files: dict[str, ObjectIdentity],
     derived_bucket: str,
@@ -155,7 +155,11 @@ def run_pipeline(
             code_revision=code_revision,
             workspace=workspace / "artifacts",
         )
-        prepared = _prepared_artifacts(artifacts, source.raw_files, derived_bucket)
+        prepared = prepare_pipeline_artifacts(
+            artifacts,
+            source.raw_files,
+            derived_bucket,
+        )
         batch = build_batch_publication(
             source_snapshot_id,
             code_revision,

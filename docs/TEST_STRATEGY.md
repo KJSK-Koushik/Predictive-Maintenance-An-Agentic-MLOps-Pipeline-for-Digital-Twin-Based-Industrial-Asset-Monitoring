@@ -208,7 +208,8 @@ bounded run state instead of using fixed sleeps.
   cases.
 - Integration tests use temporary directories and isolated database schemas or
   object prefixes.
-- Cloud tests clean only their explicit test namespace.
+- Cloud conflict tests clean only their generated integration namespace;
+  owner-approved content-addressed research evidence remains durable.
 - Evaluation sets are versioned and protected from tuning leakage.
 
 ## CI and CD

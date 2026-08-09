@@ -3,7 +3,7 @@
 ## Authorization and scope
 
 - [x] `START PHASE 3` is received before implementation begins.
-- [ ] Manual Airflow, Docker, cloud-target, migration, retention, and cost
+- [x] Manual Airflow, Docker, cloud-target, migration, retention, and cost
   prerequisites are completed.
 - [x] Work remains limited to deterministic ETL, derived publication, data
   quality, Airflow orchestration, tests, CI, and documentation.
@@ -111,22 +111,22 @@
 
 ## Hosted Supabase evidence
 
-- [ ] The exact development/test project and mutation scope are reconfirmed.
-- [ ] The Phase 3 migration history matches the repository.
-- [ ] Processed, feature, target, manifest, and report objects are private and
+- [x] The exact development/test project and mutation scope are reconfirmed.
+- [x] The Phase 3 migration history matches the repository.
+- [x] Processed, feature, target, manifest, and report objects are private and
   verified in the derived bucket.
-- [ ] Hosted metadata and lineage reference every accepted derived object.
-- [ ] Exact rerun reuse and reconciliation pass.
-- [ ] Cleanup is limited to generated integration prefixes; approved durable
+- [x] Hosted metadata and lineage reference every accepted derived object.
+- [x] Exact rerun reuse and reconciliation pass.
+- [x] Cleanup is limited to generated integration prefixes; approved durable
   artifacts are not silently deleted.
-- [ ] Storage, project-scoped SQL, and direct-adapter evidence are reported
+- [x] Storage, project-scoped SQL, and direct-adapter evidence are reported
   separately when network limits prevent one end-to-end path.
-- [ ] Supabase Security and Performance Advisor evidence is recorded and every
+- [x] Supabase Security and Performance Advisor evidence is recorded and every
   introduced critical/high finding is resolved.
 
 ## Engineering and CI evidence
 
-- [ ] Formatting, linting, strict typing, lock, Markdown, YAML, dependency,
+- [x] Formatting, linting, strict typing, lock, Markdown, YAML, dependency,
   secret, migration, container, and security checks pass.
 - [x] Product code maintains at least 90% branch-aware coverage.
 - [x] Ordinary CI uses only committed synthetic fixtures and contains no cloud
@@ -135,14 +135,14 @@
   mutation.
 - [ ] The required GitHub Actions workflow passes on the completion commit.
 - [ ] Branch protection remains enforced.
-- [ ] No critical or high-severity issue remains unresolved.
+- [x] No critical or high-severity issue remains unresolved.
 
 ## Documentation and completion
 
-- [ ] Master, data-contract, security, test, manual-prerequisite, and Phase 3
+- [x] Master, data-contract, security, test, manual-prerequisite, and Phase 3
   documents match exercised behavior.
 - [x] Phase 3 decisions are recorded in focused ADRs.
-- [ ] `COMPLETION_REPORT.md` distinguishes unit, local, Docker, Airflow, actual
+- [x] `COMPLETION_REPORT.md` distinguishes unit, local, Docker, Airflow, actual
   dataset, cloud, advisor, recovery, and GitHub evidence.
 - [x] Known limitations and deferred Phase 4 work are explicit.
 - [ ] `docs/PROJECT_STATUS.md` is updated to `AWAITING_APPROVAL` only after all

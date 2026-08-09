@@ -63,6 +63,7 @@ def test_workflow_runs_all_phase_three_quality_gates() -> None:
         '"not integration and not dataset and not postgres and not cloud"',
         '"integration and not dataset and not postgres and not airflow and not cloud"',
         '"postgres and not dataset and not cloud"',
+        "install -d -m 0777 artifacts/cloud-objects",
         "docker compose build airflow",
         "docker compose up -d --wait airflow",
         '"airflow and not dataset and not cloud"',

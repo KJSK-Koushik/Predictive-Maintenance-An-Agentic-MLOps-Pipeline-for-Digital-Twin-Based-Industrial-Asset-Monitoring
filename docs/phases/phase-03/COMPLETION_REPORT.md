@@ -2,11 +2,11 @@
 
 ## Status
 
-**IN PROGRESS — LOCAL GATES PASSED; HOSTED AND GITHUB EVIDENCE PENDING**
+**IN PROGRESS — HOSTED GATES PASSED; FINAL LOCAL AND GITHUB EVIDENCE PENDING**
 
 Implementation was authorized by `START PHASE 3` on 2026-08-08. This report is
-not a completion handoff until the separately approved hosted Supabase checks
-and the completion-commit GitHub Actions workflow pass.
+not a completion handoff until the final local rerun and completion-commit
+GitHub Actions workflow pass.
 
 ## Delivered scope
 
@@ -51,14 +51,16 @@ Evidence recorded on 2026-08-08/09:
 | Evidence                      | Result                                                                                               |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------- |
 | Python and tooling            | Python 3.11.9; `uv` 0.11.8; Docker 29.1.3; Compose 2.40.3                                            |
+| Unit and contract tests       | 132 passed                                                                                           |
+| Local integration tests       | 9 passed                                                                                             |
 | Deterministic ETL tests       | Passed, including success, reuse, tampering, partial publication, recovery, and fail-closed branches |
 | PostgreSQL integration        | 24 passed                                                                                            |
 | Actual owner FD001 direct ETL | 1 passed; 20,631 train rows and 13,096 test rows exercised                                           |
 | Airflow image/runtime         | Build, health, Airflow 3.3.0, LocalExecutor, and zero import errors passed                           |
-| Airflow execution             | Normal run passed; controlled post-publication retry passed on attempt 2                             |
+| Airflow execution             | 6 passed; normal run and controlled post-publication retry passed on attempt 2                       |
 | Airflow backfill              | Two logical dates passed; one reused artifact set                                                    |
 | XCom boundary                 | Maximum stored value 381 bytes; identifiers/status only                                              |
-| Coverage-compatible suite     | 164 passed; 11 dataset/Airflow/cloud tests deselected                                                |
+| Coverage-compatible suite     | 165 passed; 12 dataset/Airflow/cloud tests deselected                                                |
 | Product coverage              | 90.33% branch-aware                                                                                  |
 | Formatting, lint, typing      | Ruff and strict mypy passed for 58 source/test files                                                 |
 | Dependency audit              | No known vulnerability after locking `cryptography` 50.0.0 and `h2` 4.4.1                            |
@@ -77,13 +79,43 @@ streaming, fleet-scale, or autonomous operation.
 
 ## Hosted Supabase evidence
 
-Pending the explicit Phase 3 migration/write approval. No hosted Phase 3
-mutation is claimed in this interim report.
+The owner approved the Phase 3 migration and private derived writes on
+2026-08-09. The confirmed development/test project remained healthy on its Free
+plan; no paid resource was created.
+
+| Evidence                    | Result                                                                                   |
+| --------------------------- | ---------------------------------------------------------------------------------------- |
+| Migration                   | `20260809165753_phase_03_derived_metadata` applied; repository history matches           |
+| Storage adapter             | 1 hosted test passed in 38.13 seconds                                                    |
+| Private derived objects     | 10 objects uploaded/downloaded and SHA-256 verified; exact rerun reused all 10           |
+| Generated conflict cleanup  | 1 hosted test passed in 6.67 seconds; only its generated `_integration` key was removed  |
+| Derived PostgreSQL metadata | 3 snapshots, 7 data/report files, 3 manifests, and 1 available run                       |
+| Lineage                     | 24 total edges: 11 manifest, 7 derived-from, and 6 report edges                          |
+| Reconciliation              | 0 invalid derived references                                                             |
+| Access boundary             | RLS on; `anon`/`authenticated` denied; runtime grants present; no Airflow table in `ops` |
+| Security Advisor            | 0 findings                                                                               |
+| Performance Advisor         | 9 informational notices and 1 performance warning; no critical/high finding              |
+
+The accepted actual-FD001 derived snapshot IDs are:
+
+| Artifact                       | Snapshot ID                                                        |
+| ------------------------------ | ------------------------------------------------------------------ |
+| Processed                      | `30e22602ec9528c8d348bda68ef7c9294586a8d05f769daaba2c9e4a4147a7c2` |
+| Candidate features and targets | `d16197d85f439083041364142be3e0d76647943fade35c55212b0a48dd49ec44` |
+| Quality report                 | `d1dcd2d2506b02ae24fa5c88ee6506ca865f3da229e086c2ba051f132fd71a57` |
+
+The Python Supabase Storage adapter was exercised end to end. The direct hosted
+PostgreSQL adapter was retried but the workstation could not resolve the
+database hostname. The metadata transaction and verification therefore used
+the authenticated project-scoped SQL channel. These are separate evidence
+paths and are not claimed as one hosted Python pipeline run.
 
 ## GitHub Actions evidence
 
-Pending the completion commit and required `Phase 0 quality` workflow. A local
-pass is not a GitHub Actions pass.
+Runs `31274882270` and `31325137898` correctly failed on cross-platform fixture
+line endings and fresh-runner shared-directory permissions. Both root causes
+were fixed and locally reproduced. The required passing completion-commit run
+is still pending; a local pass is not a GitHub Actions pass.
 
 ## Known limitations and deferred work
 
@@ -98,8 +130,12 @@ pass is not a GitHub Actions pass.
   changes.
 - Application immutability is not compliance-grade WORM; privileged cloud
   administrators retain deletion/replacement authority.
+- The Performance Advisor reports one multiple-permissive-policy warning and
+  informational unused-index notices on this tiny research workload. There is
+  no critical/high finding; policy consolidation and index usage should be
+  reassessed using measured workload evidence rather than speculative changes.
 
 ## Current handoff
 
-Phase 3 remains `IN_PROGRESS`. Do not request `APPROVE PHASE 3` until hosted
-evidence, advisors, final local gates, and GitHub Actions all pass.
+Phase 3 remains `IN_PROGRESS`. Do not request `APPROVE PHASE 3` until final
+local gates and GitHub Actions pass.
