@@ -2,10 +2,9 @@
 
 ## Status
 
-This is the master target architecture. Phases 0, 1, and 2 are approved. Phase
-3 implementation is active and its local ETL, PostgreSQL, filesystem, and
-Airflow evidence has passed. Hosted Phase 3 and GitHub Actions evidence remain
-required before completion. Components assigned to Phase 4 or later remain
+This is the master target architecture. Phases 0, 1, 2, and 3 are approved.
+Phase 3 local ETL, PostgreSQL, filesystem, Airflow, hosted Supabase, and GitHub
+Actions evidence has passed. Components assigned to Phase 4 or later remain
 designs, not working integrations.
 
 ## Architectural principles

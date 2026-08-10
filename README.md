@@ -14,11 +14,11 @@ The project will address:
 **Phase 0: Project foundation and architecture** is complete and owner-approved.
 **Phase 1: Local dataset ingestion and data contract** is complete and
 owner-approved. **Phase 2: Cloud data foundation** is also complete and
-owner-approved. **Phase 3: ETL and orchestration** is in progress under the
-explicit `START PHASE 3` command. Deterministic processed, candidate-feature,
-target, and quality-report pipelines plus a local Airflow runtime are now
-implemented. Hosted Phase 3 evidence and GitHub CI must still pass before the
-phase can be completed. No model has been trained and no service is deployed.
+owner-approved. **Phase 3: ETL and orchestration** is complete and
+owner-approved. Deterministic processed, candidate-feature, target, and
+quality-report pipelines, hosted derived evidence, and the local Airflow
+runtime have passed their required checks. No model has been trained and no
+service is deployed.
 
 Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
 filesystem Storage substitute. The approved hosted Supabase project has passed

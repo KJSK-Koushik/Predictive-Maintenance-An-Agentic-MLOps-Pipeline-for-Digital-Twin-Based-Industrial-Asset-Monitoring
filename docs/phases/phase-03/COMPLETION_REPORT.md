@@ -2,10 +2,11 @@
 
 ## Status
 
-**COMPLETE — AWAITING OWNER APPROVAL**
+**APPROVED**
 
 Implementation was authorized by `START PHASE 3` on 2026-08-08. This report is
-the completion handoff after all local, hosted, and GitHub gates passed.
+the approved completion record after all local, hosted, and GitHub gates
+passed. The owner issued `APPROVE PHASE 3` on 2026-08-10.
 
 ## Delivered scope
 
@@ -124,7 +125,11 @@ implementation commit `646984b` in 2 minutes 51 seconds. It included the
 pinned Airflow image build, Linux LocalExecutor execution, controlled retry,
 two-date backfill, coverage, formatting, linting, typing, migration/recovery,
 dependency audit, and cleanup. The completion-state documentation commit is
-also subject to the same required PR check.
+also subject to the same required PR check and passed as recorded below.
+
+Run `31327590977`, job `Phase 0 quality`, passed on the completion-state commit
+`a29911e` in 3 minutes. It independently repeated every required repository and
+Airflow check before owner approval.
 
 `main` branch protection was queried after the passing run. It still requires
 strict `Phase 0 quality`, a pull request, resolved conversations, and admin
@@ -150,8 +155,9 @@ enforcement; force pushes and branch deletion remain disabled.
 
 ## Current handoff
 
-Phase 3 is `AWAITING_APPROVAL`. Stop completely and wait for the owner command:
+Phase 3 is owner-approved. Stop completely and wait for the only permitted
+next phase-control command:
 
-`APPROVE PHASE 3`
+`PLAN PHASE 4`
 
 Do not plan or implement Phase 4.
