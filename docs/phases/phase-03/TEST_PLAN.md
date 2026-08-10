@@ -169,9 +169,10 @@ hosted check cannot satisfy the cloud acceptance criteria.
 - denied database roles cannot access new objects; and
 - cloud cleanup cannot target raw or durable derived prefixes.
 
-## Planned local and CI commands
+## Exercised local and CI commands
 
-Exact commands are finalized after `START PHASE 3`. Planned gates include:
+The following commands are the implemented Phase 3 gates. GitHub Actions runs
+the same credential-free groups on a clean Ubuntu runner:
 
 ```shell
 uv sync --locked --dev
@@ -187,7 +188,7 @@ uv run pytest -m "integration and not dataset and not postgres and not airflow a
 uv run pytest -m "postgres and not dataset and not cloud"
 docker compose exec airflow airflow dags list-import-errors
 uv run pytest -m "airflow and not dataset and not cloud"
-uv run pytest -m "not dataset and not cloud" --cov=src/predictive_maintenance --cov-branch --cov-fail-under=90
+uv run pytest -m "not dataset and not airflow and not cloud" --cov=src/predictive_maintenance --cov-branch --cov-fail-under=90
 uv run mdformat --check README.md CONTRIBUTING.md docs
 uv run yamllint .
 uv run pip-audit

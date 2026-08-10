@@ -50,7 +50,7 @@ def test_actions_are_pinned_to_full_commit_shas() -> None:
 
 
 @pytest.mark.integration
-def test_workflow_runs_all_phase_two_quality_gates() -> None:
+def test_workflow_runs_all_phase_three_quality_gates() -> None:
     workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
     required_commands = (
         "uv sync --locked --dev",
@@ -61,9 +61,13 @@ def test_workflow_runs_all_phase_two_quality_gates() -> None:
         "docker compose config --quiet",
         "docker compose up -d --wait postgres",
         '"not integration and not dataset and not postgres and not cloud"',
-        '"integration and not dataset and not postgres and not cloud"',
+        '"integration and not dataset and not postgres and not airflow and not cloud"',
         '"postgres and not dataset and not cloud"',
-        '"not dataset and not cloud"',
+        "install -d -m 0777 artifacts/cloud-objects",
+        "docker compose build airflow",
+        "docker compose up -d --wait airflow",
+        '"airflow and not dataset and not cloud"',
+        '"not dataset and not airflow and not cloud"',
         "--cov=src/predictive_maintenance",
         "--cov-fail-under=90",
         "mdformat --check",

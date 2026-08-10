@@ -35,6 +35,9 @@ and Verification.
 | [0015](0015-phase-2-object-storage.md)       | Phase 2 object-storage layout             | Accepted |
 | [0016](0016-phase-2-postgres-security.md)    | Private operational PostgreSQL            | Accepted |
 | [0017](0017-phase-2-publication-recovery.md) | Publication and recovery behavior         | Accepted |
+| [0018](0018-phase-3-derived-contracts.md)    | Deterministic derived data contracts      | Accepted |
+| [0019](0019-phase-3-derived-publication.md)  | Derived publication and lineage           | Accepted |
+| [0020](0020-phase-3-airflow-runtime.md)      | Thin Airflow LocalExecutor runtime        | Accepted |
 
 New ADRs use the next four-digit identifier. Existing ADR content is not
 rewritten to hide a changed decision; create a superseding ADR instead.

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -15,6 +16,8 @@ REQUIRED_FILES = (
     "CONTRIBUTING.md",
     "LICENSE",
     ".env.example",
+    ".gitattributes",
+    ".dockerignore",
     ".gitignore",
     ".github/CODEOWNERS",
     "compose.yaml",
@@ -33,6 +36,9 @@ REQUIRED_FILES = (
     "docs/adr/0015-phase-2-object-storage.md",
     "docs/adr/0016-phase-2-postgres-security.md",
     "docs/adr/0017-phase-2-publication-recovery.md",
+    "docs/adr/0018-phase-3-derived-contracts.md",
+    "docs/adr/0019-phase-3-derived-publication.md",
+    "docs/adr/0020-phase-3-airflow-runtime.md",
     "docs/phases/phase-00/ARCHITECTURE.md",
     "docs/phases/phase-00/PLAN.md",
     "docs/phases/phase-00/ACCEPTANCE_CRITERIA.md",
@@ -172,7 +178,17 @@ def test_local_dataset_is_ignored() -> None:
 
 
 @pytest.mark.foundation
-def test_phase_two_implementation_stays_inside_approved_roots() -> None:
+def test_committed_telemetry_fixtures_use_canonical_lf_bytes() -> None:
+    attributes = (ROOT / ".gitattributes").read_text(encoding="utf-8")
+    assert "tests/fixtures/cmapss/** text eol=lf" in attributes.splitlines()
+
+    for path in (ROOT / "tests/fixtures/cmapss").rglob("*.txt"):
+        payload = path.read_bytes()
+        assert b"\r\n" not in payload, f"Non-canonical CRLF fixture: {path.name}"
+
+
+@pytest.mark.foundation
+def test_phase_three_implementation_stays_inside_approved_roots() -> None:
     prohibited = ("airflow", "dashboard", "services", "models")
     present = [name for name in prohibited if (ROOT / name).exists()]
     assert not present, f"Later-phase implementation roots present: {present}"
@@ -207,10 +223,28 @@ def test_phase_two_implementation_stays_inside_approved_roots() -> None:
         "object_store.py",
         "publication.py",
     }
+    etl_files = {
+        path.name
+        for path in (ROOT / "src/predictive_maintenance/etl").glob("*.py")
+        if path.is_file()
+    }
+    assert etl_files == {
+        "__init__.py",
+        "cli.py",
+        "extraction.py",
+        "metadata.py",
+        "models.py",
+        "pipeline.py",
+        "publication.py",
+        "quality.py",
+        "runtime.py",
+        "serialization.py",
+    }
 
     migrations = sorted((ROOT / "supabase/migrations").glob("*.sql"))
     assert [path.name for path in migrations] == [
-        "20260726144446_phase_02_cloud_metadata.sql"
+        "20260726144446_phase_02_cloud_metadata.sql",
+        "20260809165753_phase_03_derived_metadata.sql",
     ]
 
 
@@ -226,6 +260,8 @@ def test_environment_example_has_no_secret_values() -> None:
         assignments[key] = value
 
     secret_keys = {
+        "AIRFLOW_JWT_SECRET",
+        "AIRFLOW_FERNET_KEY",
         "SUPABASE_SECRET_KEY",
         "SUPABASE_DB_URL",
         "SUPABASE_S3_ACCESS_KEY_ID",
@@ -279,15 +315,16 @@ def test_repository_contains_no_cloud_credentials_or_project_endpoints() -> None
         ),
     }
     findings: list[str] = []
-    for path in ROOT.rglob("*"):
-        if not path.is_file() or excluded_roots.intersection(path.parts):
-            continue
-        if path.suffix not in text_suffixes and path.name != ".env.example":
-            continue
-        content = path.read_text(encoding="utf-8")
-        for label, pattern in patterns.items():
-            if pattern.search(content):
-                findings.append(f"{path.relative_to(ROOT)}: {label}")
+    for directory, child_dirs, filenames in os.walk(ROOT, topdown=True):
+        child_dirs[:] = [name for name in child_dirs if name not in excluded_roots]
+        for filename in filenames:
+            path = Path(directory, filename)
+            if path.suffix not in text_suffixes and path.name != ".env.example":
+                continue
+            content = path.read_text(encoding="utf-8")
+            for label, pattern in patterns.items():
+                if pattern.search(content):
+                    findings.append(f"{path.relative_to(ROOT)}: {label}")
     assert not findings, f"Potential committed cloud secret/target: {findings}"
 
 

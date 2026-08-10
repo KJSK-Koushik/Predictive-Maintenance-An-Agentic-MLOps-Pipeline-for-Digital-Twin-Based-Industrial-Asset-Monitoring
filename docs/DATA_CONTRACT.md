@@ -160,26 +160,37 @@ referenced objects change the snapshot to `inconsistent`, which blocks
 downstream use. Orphan objects are reported for investigation and are not
 silently deleted.
 
-Phase 2 created no production processed or feature artifact.
+Phase 2 created no processed or feature artifact. Phase 3 now implements the
+following derived contracts.
 
-## Phase 3 planned derived contracts
+## Phase 3 executable derived contracts
 
-These contracts are approved for planning but are not executable until Phase 3
-implementation passes its acceptance criteria.
-
-`fd001-processed-v1` will store separate train and test Parquet files with
+`fd001-processed-v1` stores `train.parquet` and `test.parquet` with
 source row order, exact Phase 1 telemetry columns, uncapped `rul`, and inclusive
-`failure_risk_30`. It will not sort, drop, impute, scale, cap, or synthesize an
+`failure_risk_30`. It does not sort, drop, impute, scale, cap, or synthesize an
 event timestamp.
 
-`fd001-candidate-features-v1` will store key-aligned candidate-feature and
-target files. Candidate features are limited to the three settings and 21
-sensors; `engine_id` and `cycle` remain keys. Targets contain `rul` and
-`failure_risk_30`, which are prohibited from candidate-feature columns. No
-fitted preprocessing or model-informed feature choice belongs to Phase 3.
+`fd001-candidate-features-v1` stores `train_features.parquet`,
+`train_targets.parquet`, `test_features.parquet`, and `test_targets.parquet`.
+Candidate features contain key-aligned `engine_id`, `cycle`, the three settings,
+and 21 sensors. Target files contain the keys, uncapped `rul`, and inclusive
+`failure_risk_30`. Labels are prohibited from candidate-feature columns. Test
+targets are evaluation evidence, never inference inputs. No fitted
+preprocessing or model-informed feature choice belongs to Phase 3.
 
-Each derived identity will bind its parent snapshot, contract/specification and
+Each derived identity binds its parent snapshot, contract/specification and
 serializer versions, ordered file schemas, sizes, SHA-256 values, and column
-roles in a canonical manifest. A canonical JSON data-quality report will record
-bounded aggregate contract evidence. Airflow logical dates and run IDs are
-execution metadata and do not change derived content identity.
+roles in a canonical ASCII JSON manifest. `fd001-data-quality-v1` records only
+bounded aggregate row, engine, column, null, duplicate-key, cycle, finite-value,
+label, and hash evidence with stable rule IDs and no more than five sanitized
+examples per failed rule.
+
+Parquet serialization is pinned to PyArrow 25.0.0, Parquet format 2.6, Zstandard
+compression level 3, dictionary encoding disabled, statistics enabled, data
+page version 1.0, and 65,536-row groups. Index and pandas metadata are omitted.
+Canonical JSON sorts keys, uses compact separators, rejects non-finite values,
+uses ASCII escaping, and ends with one newline.
+
+Airflow logical dates and run IDs are execution metadata and do not change
+derived content identity. `fd001-derived-pipeline-v1`, `fd001-etl-v1`, and
+`pyarrow-25.0.0-parquet-v1` are explicit provenance/version boundaries.

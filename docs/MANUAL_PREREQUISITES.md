@@ -150,26 +150,29 @@ the PostgreSQL 17 local integration suite.
 
 Complete these after `START PHASE 3` and before the action they control:
 
-- [ ] Confirm Docker Compose meets the current Airflow minimum (at least
-  version 2.14) and Docker has at least 4 GB available memory.
-- [ ] Approve a loopback-only local Airflow UI/API port.
-- [ ] Keep all Airflow development credentials, Fernet keys, API keys, and
+- [x] Confirm Docker Compose meets the current Airflow minimum (at least
+  version 2.14) and Docker has at least 4 GB available memory. Verified locally:
+  Compose 2.40.3 and approximately 8 GB available to Docker.
+- [x] Approve a loopback-only local Airflow UI/API port. Phase 3 uses
+  `127.0.0.1:18080`; this was included in the approved Phase 3 plan/start.
+- [x] Keep all Airflow development credentials, Fernet keys, API keys, and
   database credentials in ignored local configuration.
-- [ ] Confirm the existing Supabase target is still development/test-only and
-  contains no unapproved production data.
-- [ ] Explicitly approve applying the reviewed Phase 3 migration to that
+- [x] Confirm the existing Supabase target is still development/test-only and
+  contains no unapproved production data. Read-only preflight reconfirmed the
+  healthy development/test project before any Phase 3 mutation.
+- [x] Explicitly approve applying the reviewed Phase 3 migration to that
   project.
-- [ ] Explicitly approve writing processed, feature, target, manifest, and
+- [x] Explicitly approve writing processed, feature, target, manifest, and
   data-quality objects to the private derived bucket.
-- [ ] Approve whether accepted Phase 3 derived artifacts remain as durable
+- [x] Approve whether accepted Phase 3 derived artifacts remain as durable
   research evidence; integration-test objects must use generated prefixes.
-- [ ] Confirm that no managed Airflow service, paid add-on, IPv4 add-on, or
+- [x] Confirm that no managed Airflow service, paid add-on, IPv4 add-on, or
   other paid resource will be provisioned.
-- [ ] If full hosted direct-PostgreSQL-adapter evidence is required, provide an
-  approved host/network path that can reach the database. Otherwise, preserve
-  the honest split-evidence limitation from Phase 2.
+- [x] Preserve the honest split-evidence limitation from Phase 2 unless an
+  approved reachable PostgreSQL path is later provided. Hosted Storage and
+  project-scoped SQL evidence must be reported separately.
 
-The planned local Airflow topology is development/integration evidence only.
+The implemented local Airflow topology is development/integration evidence only.
 It is not a production deployment and needs no public endpoint.
 
 ## Phase 4 MLflow prerequisites

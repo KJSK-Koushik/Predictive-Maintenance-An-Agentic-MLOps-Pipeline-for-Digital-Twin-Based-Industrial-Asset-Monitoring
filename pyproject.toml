@@ -14,11 +14,13 @@ dependencies = [
   "pandas>=2.2,<3",
   "pandera[pandas]>=0.24,<1",
   "psycopg[binary]>=3.3.4,<4",
+  "pyarrow==25.0.0",
   "supabase>=2.31,<3",
 ]
 
 [project.scripts]
 publish-fd001 = "predictive_maintenance.cloud.cli:main"
+run-fd001-etl = "predictive_maintenance.etl.cli:main"
 validate-fd001 = "predictive_maintenance.data.cli:main"
 
 [dependency-groups]
@@ -64,6 +66,7 @@ markers = [
   "foundation: repository architecture and governance contract tests",
   "integration: integration tests that span repository configuration artifacts",
   "postgres: tests that require the local PostgreSQL 17 container",
+  "airflow: tests that require the pinned Airflow container",
 ]
 
 [tool.coverage.run]
