@@ -2,8 +2,8 @@
 
 ## Status
 
-This is the master target architecture. Phases 0, 1, 2, and 3 are approved.
-Phase 4 baseline modeling is implemented and completing its validation gates.
+This is the master target architecture. Phases 0 through 4 are approved.
+Phase 4 baseline modeling is implemented, validated, and owner-approved.
 It adds only verified feature loading, engine-level splitting, fixed baselines,
 aggregate evaluation, and local MLflow tracking. Components assigned to Phase
 5 or later remain designs, not working integrations.

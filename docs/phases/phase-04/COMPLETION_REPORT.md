@@ -2,11 +2,11 @@
 
 ## Status
 
-**COMPLETE - awaiting owner approval.**
+**APPROVED**
 
 Planning was authorized by `PLAN PHASE 4` and implementation by
-`START PHASE 4` on 2026-08-14. Every acceptance criterion has passed, so the
-phase is ready for the owner's explicit approval.
+`START PHASE 4` on 2026-08-14. Every acceptance criterion passed. The owner
+issued `APPROVE PHASE 4` on 2026-08-14.
 
 ## Delivered scope
 
@@ -108,10 +108,11 @@ cloudpickle loading path is provided.
 ## GitHub and approval evidence
 
 Implementation commit `a70ebf6abaaa7320023a7c57671586bbc5971121` passed
-required GitHub Actions run `31773869033`. The final documentation-only commit
-is also verified on GitHub before the owner handoff; its run is included in the
-handoff report. Branch protection continues to require the `Phase 4 quality`
-check.
+required GitHub Actions run `31773869033` in 4 minutes 58 seconds. Completion
+commit `2138b187c7d33ca195abc56b343aa11cfb2448ac` independently passed run
+`31774309963` in 4 minutes 56 seconds. Branch protection requires the strict
+`Phase 4 quality` check, enforces administrators and resolved conversations,
+and disables force pushes and branch deletion.
 
-Phase 4 is `AWAITING_APPROVAL`. No Phase 5 planning or implementation is
-permitted until the owner sends `APPROVE PHASE 4`.
+Phase 4 is owner-approved. Stop completely and wait for the only permitted
+next phase-control command: `PLAN PHASE 5`.

@@ -5,14 +5,15 @@
 | Field                     | Value                                    |
 | ------------------------- | ---------------------------------------- |
 | Current phase             | 4: Baseline model development            |
-| Last completed phase      | 3: ETL and orchestration                 |
-| State                     | AWAITING_APPROVAL                        |
+| Last completed phase      | 4: Baseline model development            |
+| State                     | APPROVED                                 |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
 | Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
 | Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`    |
 | Phase 4 started           | 2026-08-14 by explicit `START PHASE 4`   |
-| Next permitted transition | `APPROVE PHASE 4`                        |
+| Phase 4 approved          | 2026-08-14 by explicit `APPROVE PHASE 4` |
+| Next permitted transition | Explicit `PLAN PHASE 5`                  |
 
 ## Bootstrap record
 
@@ -32,7 +33,7 @@ feature or initializing a cloud service.
 
 | Evidence                  | Status                                                             |
 | ------------------------- | ------------------------------------------------------------------ |
-| Source-of-truth documents | Phase 4 implementation and local evidence recorded                 |
+| Source-of-truth documents | Phase 4 completion and approval recorded                           |
 | Accepted ADRs             | 23; Phase 4 split, baseline, and MLflow decisions added            |
 | Phase 1 implementation    | Complete and owner-approved                                        |
 | Unit/contract tests       | Phase 1 evidence: passed locally, 46                               |
@@ -67,7 +68,7 @@ feature or initializing a cloud service.
 | Phase 3 hosted evidence   | Migration, Storage, SQL, lineage, and advisors passed              |
 | Phase 3 GitHub Actions    | Passed: run `31327359011`, job `Phase 0 quality`                   |
 | Phase 3 owner approval    | Received explicitly on 2026-08-10                                  |
-| Phase 4 implementation    | Complete; awaiting explicit owner approval                         |
+| Phase 4 implementation    | Complete and owner-approved                                        |
 | Phase 4 unit/local tests  | 209 passed; 13 later/owner-data tests deselected                   |
 | Phase 4 product coverage  | 90.17% branch-aware                                                |
 | Phase 4 MLflow            | Real loopback log/load/query/copy/restore test passed              |
@@ -75,6 +76,8 @@ feature or initializing a cloud service.
 | Phase 4 actual split      | `acce2be62a3d0e29e0a00c0567d2b33eb3f14f206e2acc52e32d81e19b93faed` |
 | Phase 4 actual MLflow run | Parent `27fe5e1360db430d982867d8a8983fae`; local only              |
 | Phase 4 GitHub Actions    | Passed: run `31773869033`, job `Phase 4 quality`                   |
+| Phase 4 completion CI     | Passed: run `31774309963`, job `Phase 4 quality`                   |
+| Phase 4 owner approval    | Received explicitly on 2026-08-14                                  |
 
 ## Repository observations
 
@@ -131,8 +134,8 @@ protection remains enforced. The owner explicitly approved Phase 3 on
 
 ## Phase 4 implemented boundary
 
-Phase 4 implementation is complete and awaiting owner approval. It is limited
-to one verified Phase 3
+Phase 4 implementation is complete and owner-approved. It is limited to one
+verified Phase 3
 feature snapshot, a shared engine-disjoint train/validation/test manifest,
 train-only preprocessing, fixed dummy/Ridge/logistic baselines, deterministic
 aggregate evaluation, and local SQLite-backed MLflow tracking.
@@ -148,13 +151,16 @@ does not use Supabase as an MLflow backend, change a Supabase schema, register
 or promote a model, add Airflow training, deploy a service, monitor, retrain,
 add agents, or implement dashboard work.
 
+The owner explicitly approved Phase 4 on 2026-08-14. No later phase is planned
+or active.
+
 ## Phase history
 
-| Phase | State             | Evidence                                    |
-| ----- | ----------------- | ------------------------------------------- |
-| 0     | APPROVED          | `docs/phases/phase-00/COMPLETION_REPORT.md` |
-| 1     | APPROVED          | `docs/phases/phase-01/COMPLETION_REPORT.md` |
-| 2     | APPROVED          | `docs/phases/phase-02/COMPLETION_REPORT.md` |
-| 3     | APPROVED          | `docs/phases/phase-03/COMPLETION_REPORT.md` |
-| 4     | AWAITING_APPROVAL | `docs/phases/phase-04/COMPLETION_REPORT.md` |
-| 5-10  | NOT_PLANNED       | Await Phase 4 completion and approval       |
+| Phase | State       | Evidence                                    |
+| ----- | ----------- | ------------------------------------------- |
+| 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
+| 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
+| 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
+| 3     | APPROVED    | `docs/phases/phase-03/COMPLETION_REPORT.md` |
+| 4     | APPROVED    | `docs/phases/phase-04/COMPLETION_REPORT.md` |
+| 5-10  | NOT_PLANNED | Await explicit `PLAN PHASE 5`               |

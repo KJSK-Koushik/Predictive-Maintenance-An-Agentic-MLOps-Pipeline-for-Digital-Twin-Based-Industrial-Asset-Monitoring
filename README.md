@@ -15,8 +15,8 @@ The project will address:
 **Phase 1: Local dataset ingestion and data contract** is complete and
 owner-approved. **Phase 2: Cloud data foundation** is also complete and
 owner-approved. **Phase 3: ETL and orchestration** is complete and
-owner-approved. **Phase 4: Baseline model development** is complete and
-awaiting owner approval.
+owner-approved. **Phase 4: Baseline model development** is also complete and
+owner-approved.
 Leakage-safe Ridge and logistic candidates, dummy references, aggregate
 evaluation, and local SQLite-backed MLflow tracking are implemented and have
 passed local synthetic and actual-FD001 checks. Required GitHub Actions run
