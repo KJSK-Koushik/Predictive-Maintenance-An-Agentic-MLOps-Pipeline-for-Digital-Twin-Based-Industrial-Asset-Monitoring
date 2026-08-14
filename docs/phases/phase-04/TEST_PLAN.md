@@ -181,8 +181,7 @@ NASA data.
 
 ## Planned local and CI command groups
 
-Exact marker expressions and server helpers will be finalized after dependency
-compatibility is verified following `START PHASE 4`. The planned gates are:
+Dependency compatibility and marker expressions are finalized. The gates are:
 
 ```shell
 uv sync --locked --dev

@@ -195,6 +195,19 @@ bounded run state instead of using fixed sleeps.
 The final NASA test partition is not a tuning input. CI performs no cloud
 mutation, model registration, promotion, or deployment.
 
+The implemented Phase 4-specific commands are:
+
+```shell
+uv run pytest -m "mlflow and not dataset and not cloud"
+uv run pytest -m "dataset and mlflow and postgres and not cloud"
+uv run pytest -m "not dataset and not airflow and not cloud" \
+  --cov=src/predictive_maintenance --cov-branch --cov-fail-under=90
+```
+
+The first command starts a real temporary loopback server. It is not mocked.
+The second requires the ignored owner-provided FD001 files and disposable local
+PostgreSQL, so ordinary CI excludes it.
+
 ### Phase 5
 
 - fixed-protocol model comparison and justified tuning;

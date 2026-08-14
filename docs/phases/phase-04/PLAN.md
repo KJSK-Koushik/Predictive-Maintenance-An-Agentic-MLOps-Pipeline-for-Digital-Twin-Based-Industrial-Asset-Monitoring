@@ -5,9 +5,9 @@
 Planning was authorized on 2026-08-14 by explicit `PLAN PHASE 4` after Phase 3
 was owner-approved and merged.
 
-Implementation is not authorized. No model dependency, training code, MLflow
-server, generated model, or experiment run may be added until the owner sends
-`START PHASE 4`.
+Implementation was authorized on 2026-08-14 by the explicit command
+`START PHASE 4`. This authorizes the local-only modeling, MLflow, tests, CI,
+and documentation described here. It does not authorize later-phase work.
 
 ## Objective
 
@@ -94,7 +94,7 @@ src/predictive_maintenance/modeling/
   cli.py
 
 tests/modeling/
-tests/integration/mlflow/
+tests/integration/model_tracking/
 
 docs/adr/0021-*.md
 docs/adr/0022-*.md

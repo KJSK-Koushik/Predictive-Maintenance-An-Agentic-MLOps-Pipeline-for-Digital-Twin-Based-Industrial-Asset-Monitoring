@@ -216,7 +216,7 @@ and no Supabase Security Advisor finding. The Performance Advisor returned no
 critical/high finding; its one policy-performance warning and informational
 index notices are recorded in the Phase 3 completion report.
 
-## Phase 4 planned controls
+## Phase 4 implemented controls
 
 - Accept only an explicit available and reconciled Phase 3 feature snapshot;
   never train directly from mutable source files.
@@ -239,8 +239,16 @@ index notices are recorded in the Phase 3 completion report.
 - Permit experiment tracking only. Registration, aliases, approval, promotion,
   serving, and deployment remain denied.
 
-These are planned requirements, not exercised controls, until Phase 4 starts
-and its tests pass.
+These controls are implemented and exercised locally. The real MLflow test
+verifies loopback binding, SQLite metadata, proxied local artifacts, run
+ownership, SHA-256, exact signatures, trusted-type inspection, prediction
+parity, an empty registry, and stopped-server copy/restore behavior.
+
+MLflow 3.15.1's full metapackage requires `cryptography<50`, but 49.0.0 is
+affected by `PYSEC-2026-3552`. Phase 4 therefore uses the official
+`mlflow-skinny` and `mlflow-tracing` packages with MLflow's declared server
+runtime dependencies while retaining `cryptography==50.0.0`. The full
+metapackage is intentionally absent and `pip-audit` remains mandatory.
 
 ## References
 

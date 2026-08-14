@@ -15,11 +15,12 @@ The project will address:
 **Phase 1: Local dataset ingestion and data contract** is complete and
 owner-approved. **Phase 2: Cloud data foundation** is also complete and
 owner-approved. **Phase 3: ETL and orchestration** is complete and
-owner-approved. Deterministic processed, candidate-feature, target, and
-quality-report pipelines, hosted derived evidence, and the local Airflow
-runtime have passed their required checks. **Phase 4: Baseline model
-development** is planned but not started. No model has been trained and no
-service is deployed.
+owner-approved. **Phase 4: Baseline model development** is in progress.
+Leakage-safe Ridge and logistic candidates, dummy references, aggregate
+evaluation, and local SQLite-backed MLflow tracking are implemented and have
+passed local synthetic and actual-FD001 checks. Phase 4 is not complete until
+the required GitHub Actions run passes. No model has been registered,
+promoted, served, or deployed.
 
 Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
 filesystem Storage substitute. The approved hosted Supabase project has passed
@@ -66,6 +67,24 @@ docker compose exec -T airflow airflow dags list-import-errors --output json
 Set `PM_SOURCE_SNAPSHOT_ID` before starting Airflow for a scheduled static-batch
 run. Airflow logical dates are orchestration metadata; they are not telemetry
 event time and do not make FD001 real-time data.
+
+## Phase 4 local baseline run
+
+Start MLflow on loopback with its SQLite database and artifacts below ignored
+`artifacts/mlflow/`, then run:
+
+```shell
+uv run train-fd001-baselines \
+  --feature-snapshot-id <explicit-phase-3-feature-snapshot-id> \
+  --code-revision <git-revision> \
+  --tracking-uri http://127.0.0.1:5000
+```
+
+The command verifies raw, processed, and feature lineage plus every referenced
+object hash before training. It uses 24 ordered telemetry inputs, an
+engine-disjoint 80/20 development split, and the NASA test partition only as
+the final holdout. Outputs are simulated research evidence, not a deployed
+model or physical digital twin.
 
 ## Claim boundaries
 

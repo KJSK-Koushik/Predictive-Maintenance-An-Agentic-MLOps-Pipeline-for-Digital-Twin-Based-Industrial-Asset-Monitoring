@@ -46,6 +46,9 @@ remote CI, documentation, evidence, and severity requirements are satisfied.
 
 - Phase 1 establishes what the data can and cannot support.
 - Phase 4 establishes non-agentic predictive baselines.
+- Phase 4 uses one engine-disjoint split, fixed Ridge and logistic candidates,
+  dummy-relative eligibility gates, and local MLflow. It remains pending
+  completion approval until local gates and GitHub Actions both pass.
 - Phase 5 determines whether complexity adds measurable value.
 - Phase 7 establishes a conventional monitored MLOps workflow.
 - Phase 8 compares agents with that fixed conventional baseline.

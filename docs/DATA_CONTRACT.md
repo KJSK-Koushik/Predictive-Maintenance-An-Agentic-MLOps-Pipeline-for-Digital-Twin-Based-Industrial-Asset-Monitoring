@@ -195,10 +195,10 @@ Airflow logical dates and run IDs are execution metadata and do not change
 derived content identity. `fd001-derived-pipeline-v1`, `fd001-etl-v1`, and
 `pyarrow-25.0.0-parquet-v1` are explicit provenance/version boundaries.
 
-## Phase 4 planned modeling contract
+## Phase 4 executable modeling contract
 
-Phase 4 will consume one explicit available and reconciled
-`fd001-candidate-features-v1` snapshot. It will not read mutable source files or
+Phase 4 consumes one explicit available and reconciled
+`fd001-candidate-features-v1` snapshot. It does not read mutable source files or
 select an implicit latest snapshot.
 
 The model-input columns are exactly the three settings and 21 sensors.
@@ -206,7 +206,7 @@ The model-input columns are exactly the three settings and 21 sensors.
 model matrix. `rul` and `failure_risk_30` remain targets in separate files and
 are prohibited from inputs and fitted preprocessing.
 
-The split contract will:
+The split contract:
 
 - use source partition plus engine ID as group identity;
 - divide NASA training engines once into seeded 80% fit and 20% validation
@@ -222,4 +222,6 @@ cap, alternate horizon, threshold optimization, rolling feature, selection,
 PCA, or other fitted feature experiment requires a new versioned Phase 5
 contract and cannot silently replace this baseline.
 
-This section is planned, not executable, until Phase 4 starts.
+The loader, split manifest, feature exclusion, target semantics, and relative
+eligibility gates are executable and covered by synthetic and actual-FD001
+tests. This contract does not define a production threshold.

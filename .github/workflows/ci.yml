@@ -18,7 +18,7 @@ concurrency:
 jobs:
   quality:
     # Keep this context stable because branch protection requires it.
-    name: Phase 0 quality
+    name: Phase 4 quality
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -71,7 +71,11 @@ jobs:
       - name: Run integration tests
         run: >-
           uv run pytest
-          -m "integration and not dataset and not postgres and not airflow and not cloud"
+          -m "integration and not dataset and not postgres
+          and not airflow and not mlflow and not cloud"
+
+      - name: Run real local MLflow integration tests
+        run: uv run pytest -m "mlflow and not dataset and not cloud"
 
       - name: Run PostgreSQL migration and recovery tests
         run: uv run pytest -m "postgres and not dataset and not cloud"

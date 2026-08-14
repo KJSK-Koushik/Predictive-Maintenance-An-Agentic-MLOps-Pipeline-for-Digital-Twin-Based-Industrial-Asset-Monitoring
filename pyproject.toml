@@ -11,16 +11,33 @@ requires-python = ">=3.11,<3.12"
 license = "Apache-2.0"
 authors = [{ name = "Project maintainers" }]
 dependencies = [
+  "aiohttp>=3.7,<4",
+  "alembic>=1.19,<2",
+  "cryptography==50.0.0",
+  "docker>=4,<8",
+  "flask>=3.1,<4",
+  "flask-cors>=6,<7",
+  "graphene>=3,<4",
+  "gunicorn>=23,<27; platform_system != 'Windows'",
+  "huey>=2.5.4,<4",
+  "matplotlib>=3,<4",
+  "mlflow-skinny>=3.15,<4",
+  "mlflow-tracing>=3.15,<4",
   "pandas>=2.2,<3",
   "pandera[pandas]>=0.24,<1",
   "psycopg[binary]>=3.3.4,<4",
   "pyarrow==25.0.0",
+  "scikit-learn>=1.9,<1.10",
+  "skops>=0.14,<1",
+  "sqlalchemy>=2,<3",
   "supabase>=2.31,<3",
+  "waitress>=3,<4; platform_system == 'Windows'",
 ]
 
 [project.scripts]
 publish-fd001 = "predictive_maintenance.cloud.cli:main"
 run-fd001-etl = "predictive_maintenance.etl.cli:main"
+train-fd001-baselines = "predictive_maintenance.modeling.cli:main"
 validate-fd001 = "predictive_maintenance.data.cli:main"
 
 [dependency-groups]
@@ -67,6 +84,7 @@ markers = [
   "integration: integration tests that span repository configuration artifacts",
   "postgres: tests that require the local PostgreSQL 17 container",
   "airflow: tests that require the pinned Airflow container",
+  "mlflow: tests that start a real loopback-only MLflow tracking server",
 ]
 
 [tool.coverage.run]

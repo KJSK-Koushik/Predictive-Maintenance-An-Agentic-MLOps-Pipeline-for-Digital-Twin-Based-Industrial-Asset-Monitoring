@@ -218,7 +218,7 @@ The loopback server has no production authentication or availability claim. It
 must not bind to all interfaces. Generated databases, models, plots, and
 artifacts remain ignored by Git.
 
-## Planned package boundaries
+## Implemented package boundaries
 
 ```text
 src/predictive_maintenance/modeling/
@@ -226,33 +226,38 @@ src/predictive_maintenance/modeling/
   models.py
   loading.py
   splitting.py
-  preprocessing.py
   baselines.py
   metrics.py
-  evaluation.py
   tracking.py
   pipeline.py
+  runtime.py
   cli.py
 
 tests/modeling/
-tests/integration/mlflow/
+tests/integration/model_tracking/
 ```
 
-Names may be combined when that keeps the implementation smaller. There is no
+Preprocessing stays directly inside scikit-learn pipelines, and evaluation is
+kept in the small task pipeline and metrics modules. There is no
 generic training framework, plugin system, registry service, or model-serving
 package in Phase 4.
 
 ## Local and CI evidence
 
-Local-real-data evidence will train and evaluate on the ignored, approved
-actual FD001 feature snapshot. CI will use a small committed synthetic feature
+Local-real-data evidence trained and evaluated the ignored, approved actual
+FD001 feature snapshot. CI uses a small committed synthetic feature
 snapshot whose engine groups, labels, and signal are deliberately known.
 
-MLflow integration tests will start a temporary loopback server with a
+MLflow integration tests start a temporary loopback server with a
 temporary SQLite database and artifact root, exercise run/model logging and
 retrieval, then clean only that temporary state. Ordinary CI has no Supabase
 credentials and performs no cloud mutation, registration, promotion, or
 deployment.
+
+The full MLflow 3.15.1 metapackage is excluded because its
+`cryptography<50` constraint conflicts with the security fix for
+`PYSEC-2026-3552`. ADR-0023 records the audited lightweight-package and server
+dependency topology that keeps `cryptography==50.0.0`.
 
 ## Explicit exclusions
 
