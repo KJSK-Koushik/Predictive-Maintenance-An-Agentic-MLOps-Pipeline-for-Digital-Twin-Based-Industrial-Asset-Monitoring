@@ -2,12 +2,11 @@
 
 ## Status
 
-**IN PROGRESS - local implementation and validation passed; required GitHub
-Actions evidence is pending.**
+**COMPLETE - awaiting owner approval.**
 
 Planning was authorized by `PLAN PHASE 4` and implementation by
-`START PHASE 4` on 2026-08-14. This report must not be marked complete until
-the completion commit's required GitHub Actions workflow passes.
+`START PHASE 4` on 2026-08-14. Every acceptance criterion has passed, so the
+phase is ready for the owner's explicit approval.
 
 ## Delivered scope
 
@@ -74,13 +73,14 @@ real-time, digital-twin, or autonomous-maintenance evidence.
 | PostgreSQL 17                | Disposable local service healthy; existing tests passed                |
 | MLflow runtime               | Loopback `127.0.0.1`; SQLite; local proxied artifacts                  |
 | Docker/Airflow regression    | Image build, service health, and 6 retry/backfill tests passed         |
-| Static/security gates        | Ruff, lock, Markdown, and `pip-audit` passed; no known vulnerabilities |
+| Static/security gates        | Ruff, lock, Markdown, YAML, and audit passed; no known vulnerabilities |
+| GitHub Actions               | Run `31773869033`, job `Phase 4 quality`, passed in 4m58s              |
 | Versions                     | Python 3.11.9; NumPy 2.4.6; sklearn 1.9.0; skops 0.14.0; MLflow 3.15.1 |
 
 The Windows checkout converts YAML files to CRLF, while the repository and CI
-expect LF. The final candidate will therefore be checked from a clean
-LF-preserving checkout in addition to the ordinary Linux GitHub runner.
-GitHub Actions evidence remains pending.
+expect LF. YAML, Python, and Markdown formatting therefore also passed from a
+clean LF-preserving local checkout. The Linux GitHub runner independently
+passed the same required gates.
 
 ## Security and dependency decision
 
@@ -105,8 +105,13 @@ cloudpickle loading path is provided.
   anomaly analysis, and deeper error analysis remain Phase 5 decisions.
 - Registry, promotion, serving, and deployment remain Phase 6 work.
 
-## Pending completion gate
+## GitHub and approval evidence
 
-The required GitHub Actions run for the final commit must pass on GitHub. Local
-success cannot substitute for that evidence. Until then, Phase 4 remains
-`IN_PROGRESS` and does not request owner approval.
+Implementation commit `a70ebf6abaaa7320023a7c57671586bbc5971121` passed
+required GitHub Actions run `31773869033`. The final documentation-only commit
+is also verified on GitHub before the owner handoff; its run is included in the
+handoff report. Branch protection continues to require the `Phase 4 quality`
+check.
+
+Phase 4 is `AWAITING_APPROVAL`. No Phase 5 planning or implementation is
+permitted until the owner sends `APPROVE PHASE 4`.

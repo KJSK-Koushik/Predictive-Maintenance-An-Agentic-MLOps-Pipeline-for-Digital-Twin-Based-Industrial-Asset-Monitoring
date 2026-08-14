@@ -15,12 +15,13 @@ The project will address:
 **Phase 1: Local dataset ingestion and data contract** is complete and
 owner-approved. **Phase 2: Cloud data foundation** is also complete and
 owner-approved. **Phase 3: ETL and orchestration** is complete and
-owner-approved. **Phase 4: Baseline model development** is in progress.
+owner-approved. **Phase 4: Baseline model development** is complete and
+awaiting owner approval.
 Leakage-safe Ridge and logistic candidates, dummy references, aggregate
 evaluation, and local SQLite-backed MLflow tracking are implemented and have
-passed local synthetic and actual-FD001 checks. Phase 4 is not complete until
-the required GitHub Actions run passes. No model has been registered,
-promoted, served, or deployed.
+passed local synthetic and actual-FD001 checks. Required GitHub Actions run
+`31773869033` also passed every Phase 4 quality gate. No model has been
+registered, promoted, served, or deployed.
 
 Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
 filesystem Storage substitute. The approved hosted Supabase project has passed

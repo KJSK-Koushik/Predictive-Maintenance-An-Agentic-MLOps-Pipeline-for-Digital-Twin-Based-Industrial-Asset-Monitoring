@@ -6,13 +6,13 @@
 | ------------------------- | ---------------------------------------- |
 | Current phase             | 4: Baseline model development            |
 | Last completed phase      | 3: ETL and orchestration                 |
-| State                     | IN_PROGRESS                              |
+| State                     | AWAITING_APPROVAL                        |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
 | Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
 | Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`    |
 | Phase 4 started           | 2026-08-14 by explicit `START PHASE 4`   |
-| Next permitted transition | Complete Phase 4 acceptance gates        |
+| Next permitted transition | `APPROVE PHASE 4`                        |
 
 ## Bootstrap record
 
@@ -67,13 +67,14 @@ feature or initializing a cloud service.
 | Phase 3 hosted evidence   | Migration, Storage, SQL, lineage, and advisors passed              |
 | Phase 3 GitHub Actions    | Passed: run `31327359011`, job `Phase 0 quality`                   |
 | Phase 3 owner approval    | Received explicitly on 2026-08-10                                  |
-| Phase 4 implementation    | Implemented; GitHub Actions evidence remains pending               |
+| Phase 4 implementation    | Complete; awaiting explicit owner approval                         |
 | Phase 4 unit/local tests  | 209 passed; 13 later/owner-data tests deselected                   |
 | Phase 4 product coverage  | 90.17% branch-aware                                                |
 | Phase 4 MLflow            | Real loopback log/load/query/copy/restore test passed              |
 | Phase 4 actual FD001      | Complete baseline and model-retrieval test passed                  |
 | Phase 4 actual split      | `acce2be62a3d0e29e0a00c0567d2b33eb3f14f206e2acc52e32d81e19b93faed` |
 | Phase 4 actual MLflow run | Parent `27fe5e1360db430d982867d8a8983fae`; local only              |
+| Phase 4 GitHub Actions    | Passed: run `31773869033`, job `Phase 4 quality`                   |
 
 ## Repository observations
 
@@ -130,7 +131,8 @@ protection remains enforced. The owner explicitly approved Phase 3 on
 
 ## Phase 4 implemented boundary
 
-Phase 4 is in progress. It is limited to one verified Phase 3
+Phase 4 implementation is complete and awaiting owner approval. It is limited
+to one verified Phase 3
 feature snapshot, a shared engine-disjoint train/validation/test manifest,
 train-only preprocessing, fixed dummy/Ridge/logistic baselines, deterministic
 aggregate evaluation, and local SQLite-backed MLflow tracking.
@@ -148,11 +150,11 @@ add agents, or implement dashboard work.
 
 ## Phase history
 
-| Phase | State       | Evidence                                    |
-| ----- | ----------- | ------------------------------------------- |
-| 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
-| 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
-| 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
-| 3     | APPROVED    | `docs/phases/phase-03/COMPLETION_REPORT.md` |
-| 4     | IN_PROGRESS | `docs/phases/phase-04/PLAN.md`              |
-| 5-10  | NOT_PLANNED | Await Phase 4 completion and approval       |
+| Phase | State             | Evidence                                    |
+| ----- | ----------------- | ------------------------------------------- |
+| 0     | APPROVED          | `docs/phases/phase-00/COMPLETION_REPORT.md` |
+| 1     | APPROVED          | `docs/phases/phase-01/COMPLETION_REPORT.md` |
+| 2     | APPROVED          | `docs/phases/phase-02/COMPLETION_REPORT.md` |
+| 3     | APPROVED          | `docs/phases/phase-03/COMPLETION_REPORT.md` |
+| 4     | AWAITING_APPROVAL | `docs/phases/phase-04/COMPLETION_REPORT.md` |
+| 5-10  | NOT_PLANNED       | Await Phase 4 completion and approval       |
