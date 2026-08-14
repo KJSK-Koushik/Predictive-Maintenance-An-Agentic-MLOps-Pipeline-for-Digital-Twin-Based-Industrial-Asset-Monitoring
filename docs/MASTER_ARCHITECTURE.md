@@ -3,9 +3,10 @@
 ## Status
 
 This is the master target architecture. Phases 0, 1, 2, and 3 are approved.
-Phase 3 local ETL, PostgreSQL, filesystem, Airflow, hosted Supabase, and GitHub
-Actions evidence has passed. Components assigned to Phase 4 or later remain
-designs, not working integrations.
+Phase 4 baseline modeling is planned but not started. Phase 3 local ETL,
+PostgreSQL, filesystem, Airflow, hosted Supabase, and GitHub Actions evidence
+has passed. Components assigned to Phase 4 or later remain designs, not working
+integrations.
 
 ## Architectural principles
 
@@ -257,6 +258,33 @@ The first feature snapshot separates three settings and 21 sensors from
 uncapped RUL and inclusive 30-cycle risk targets. It performs no fitted
 scaling, selection, PCA, imputation, rolling aggregation, or model-informed
 engineering. Split-fitted preprocessing remains Phase 4 work.
+
+## Phase 4 planned boundary
+
+Phase 4 will read one explicit available and reconciled
+`fd001-candidate-features-v1` snapshot. `engine_id` and `cycle` remain identity
+and grouping keys; the model matrix is limited to the three settings and 21
+sensors. Labels remain in separate target files.
+
+One canonical split manifest will be shared by both tasks. A seeded
+engine-group split assigns 80% of NASA training engines to fit and 20% to
+validation; the NASA test partition remains the final holdout. All fitted
+preprocessing is inside scikit-learn pipelines and sees training engines only.
+Engine-balanced validation RMSE and average precision are the primary metrics,
+with pooled, lifecycle-band, calibration, and final-cycle evidence reported
+separately.
+
+The fixed baselines are median dummy versus scaled Ridge for uncapped RUL, and
+prior dummy versus scaled class-balanced logistic regression for inclusive
+30-cycle risk. A candidate is eligible only if it beats its dummy on the
+predeclared validation metric. Hyperparameter search, target capping, feature
+selection, threshold optimization, and advanced models remain Phase 5.
+
+MLflow will run only on loopback with a local SQLite backend and ignored local
+artifact root. It will own experiment runs, metrics, signatures, reports, and
+trusted `skops` model artifacts. It will not share the operational `ops`
+schema. Registered-model versions, aliases, approvals, promotion, serving, and
+remote MLflow remain outside Phase 4.
 
 ## Technology decisions
 

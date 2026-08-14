@@ -18,7 +18,7 @@ remote CI, documentation, evidence, and severity requirements are satisfied.
 | 1     | Local FD001 integrity, ingestion, contract, labels, exploration | Approved Phase 0    | Supabase, Airflow, model training             |
 | 2     | Cloud object zones, PostgreSQL migrations, lineage, idempotency | Approved Phase 1    | ETL scheduling, model training                |
 | 3     | Reproducible ETL wrapped by Airflow                             | Approved Phase 2    | Model development                             |
-| 4     | Leakage-safe regression/classification baselines and MLflow     | Approved Phase 3    | Deep learning, deployment                     |
+| 4     | Leakage-safe fixed baselines and local MLflow tracking          | Approved Phase 3    | Tuning, registry, serving, deployment         |
 | 5     | Justified tuning, uncertainty, clustering, anomaly analysis     | Approved Phase 4    | Serving and production promotion              |
 | 6     | Registry gates, release packaging, FastAPI, staging rollback    | Approved Phase 5    | Automatic production deployment               |
 | 7     | Data/model/service monitoring and retraining candidates         | Approved Phase 6    | Automatic promotion                           |
@@ -55,8 +55,8 @@ remote CI, documentation, evidence, and severity requirements are satisfied.
 
 The following require evidence from earlier phases:
 
-- exact RUL cap and failure-risk horizon;
-- model-performance thresholds;
+- whether a versioned capped RUL target improves an advanced model;
+- absolute promotion-level model-performance thresholds;
 - whether a neural multi-task model is justified;
 - whether Evidently adds value beyond custom metrics;
 - remote MLflow topology;

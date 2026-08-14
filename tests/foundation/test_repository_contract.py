@@ -60,6 +60,11 @@ REQUIRED_FILES = (
     "docs/phases/phase-03/ACCEPTANCE_CRITERIA.md",
     "docs/phases/phase-03/TEST_PLAN.md",
     "docs/phases/phase-03/COMPLETION_REPORT.md",
+    "docs/phases/phase-04/ARCHITECTURE.md",
+    "docs/phases/phase-04/PLAN.md",
+    "docs/phases/phase-04/ACCEPTANCE_CRITERIA.md",
+    "docs/phases/phase-04/TEST_PLAN.md",
+    "docs/phases/phase-04/COMPLETION_REPORT.md",
 )
 
 ADR_REQUIRED_HEADINGS = (
@@ -111,7 +116,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         assert state_match.group(1) == "APPROVED"
         assert re.search(r"\|\s*Last completed phase\s*\|\s*1:", status)
     else:
-        assert current_phase.startswith(("0", "1", "2", "3"))
+        assert current_phase.startswith(("0", "1", "2", "3", "4"))
 
     phase_directories = sorted((ROOT / "docs/phases").glob("phase-*"))
     assert [path.name for path in phase_directories] == [
@@ -119,6 +124,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         "phase-01",
         "phase-02",
         "phase-03",
+        "phase-04",
     ]
 
 
@@ -188,7 +194,7 @@ def test_committed_telemetry_fixtures_use_canonical_lf_bytes() -> None:
 
 
 @pytest.mark.foundation
-def test_phase_three_implementation_stays_inside_approved_roots() -> None:
+def test_phase_four_planning_stays_inside_approved_roots() -> None:
     prohibited = ("airflow", "dashboard", "services", "models")
     present = [name for name in prohibited if (ROOT / name).exists()]
     assert not present, f"Later-phase implementation roots present: {present}"

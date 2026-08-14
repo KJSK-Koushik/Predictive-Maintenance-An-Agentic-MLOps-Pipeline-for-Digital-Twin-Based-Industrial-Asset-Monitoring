@@ -177,10 +177,24 @@ It is not a production deployment and needs no public endpoint.
 
 ## Phase 4 MLflow prerequisites
 
-- [ ] Approve the local or remote tracking topology.
-- [ ] For a remote registry, approve a dedicated database-backed backend.
-- [ ] Approve the artifact-store path and its backup policy.
-- [ ] Define model approvers and immutable approval evidence.
+- [ ] Approve a loopback-only MLflow tracking server at `127.0.0.1:5000`.
+- [ ] Approve local SQLite metadata and filesystem artifacts under ignored
+  `artifacts/mlflow/` for Phase 4.
+- [ ] Accept that this is single-user reproducible research evidence, not a
+  durable or highly available shared tracking service.
+- [ ] Require a stopped-server local copy/restore exercise before completion;
+  no remote backup or disaster-recovery claim is made.
+- [ ] Confirm the project owner as the Phase 4 evaluation reviewer. Registered
+  model promotion and immutable approval evidence remain Phase 6 work.
+- [ ] Confirm that Phase 4 will not provision remote MLflow, use Supabase as an
+  MLflow backend, mutate Supabase, or provision a paid resource.
+- [ ] Keep the NASA test partition unavailable to preprocessing, fitting,
+  threshold selection, feature choice, and configuration decisions.
+
+The explicit `START PHASE 4` command accepts this documented local topology
+and these phase-scoped prerequisites unless the owner changes an item first.
+A later shared or remote MLflow topology requires dedicated database,
+artifact-store, authentication, TLS, backup, and network decisions.
 
 ## Phase 6 deployment prerequisites
 

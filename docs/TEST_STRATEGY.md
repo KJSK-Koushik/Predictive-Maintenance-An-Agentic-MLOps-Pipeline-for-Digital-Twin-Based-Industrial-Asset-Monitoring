@@ -174,14 +174,34 @@ deployment. The Airflow integration test runs a normal DAG, an injected failure
 after verified publication followed by retry, and a two-date backfill. It polls
 bounded run state instead of using fixed sleeps.
 
-### Phases 4-5
+### Phase 4
 
-- engine-disjoint split assertions;
-- deterministic training tests;
-- metric and threshold tests;
-- model serialization and signature tests;
-- performance/robustness gates on a fixed evaluation set; and
-- comparison and uncertainty validation.
+- explicit feature-snapshot state, hash, lineage, schema, and key-alignment
+  gates;
+- canonical engine-disjoint split identity, overlap, coverage, and repeated
+  creation assertions;
+- train-only preprocessing tests that perturb validation/test inputs and
+  targets without changing fitted state;
+- deterministic dummy, Ridge, logistic, metric, threshold, non-negative RUL,
+  and relative performance-gate tests;
+- engine-balanced, pooled, lifecycle-band, calibration, and final-cycle metric
+  checks on known vectors;
+- repeated-run prediction and metric tolerance evidence;
+- temporary SQLite-backed MLflow server, explicit run logging, signature,
+  trusted `skops` model, retrieval, query, and restore integration;
+- separate actual FD001 local evidence and synthetic CI evidence; and
+- the existing 90% branch-aware coverage threshold.
+
+The final NASA test partition is not a tuning input. CI performs no cloud
+mutation, model registration, promotion, or deployment.
+
+### Phase 5
+
+- fixed-protocol model comparison and justified tuning;
+- uncertainty and calibration improvement validation;
+- clustering and anomaly-analysis validation;
+- explainability and error analysis; and
+- proof that added complexity improves a predeclared measure.
 
 ### Phases 6-7
 

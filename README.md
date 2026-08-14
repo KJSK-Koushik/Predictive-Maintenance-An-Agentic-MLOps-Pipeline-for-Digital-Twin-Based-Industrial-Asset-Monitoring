@@ -17,7 +17,8 @@ owner-approved. **Phase 2: Cloud data foundation** is also complete and
 owner-approved. **Phase 3: ETL and orchestration** is complete and
 owner-approved. Deterministic processed, candidate-feature, target, and
 quality-report pipelines, hosted derived evidence, and the local Airflow
-runtime have passed their required checks. No model has been trained and no
+runtime have passed their required checks. **Phase 4: Baseline model
+development** is planned but not started. No model has been trained and no
 service is deployed.
 
 Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
@@ -90,6 +91,7 @@ maintenance decisions.
 - [Phase 1 plan](docs/phases/phase-01/PLAN.md)
 - [Phase 2 plan](docs/phases/phase-02/PLAN.md)
 - [Phase 3 plan](docs/phases/phase-03/PLAN.md)
+- [Phase 4 plan](docs/phases/phase-04/PLAN.md)
 
 ## Development
 

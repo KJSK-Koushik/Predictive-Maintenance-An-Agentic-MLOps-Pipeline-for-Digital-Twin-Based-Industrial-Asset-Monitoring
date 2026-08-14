@@ -4,13 +4,14 @@
 
 | Field                     | Value                                    |
 | ------------------------- | ---------------------------------------- |
-| Current phase             | 3: ETL and orchestration                 |
+| Current phase             | 4: Baseline model development            |
 | Last completed phase      | 3: ETL and orchestration                 |
-| State                     | APPROVED                                 |
+| State                     | PLANNED                                  |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
 | Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
-| Next permitted transition | Explicit `PLAN PHASE 4`                  |
+| Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`    |
+| Next permitted transition | Explicit `START PHASE 4`                 |
 
 ## Bootstrap record
 
@@ -65,6 +66,7 @@ feature or initializing a cloud service.
 | Phase 3 hosted evidence   | Migration, Storage, SQL, lineage, and advisors passed    |
 | Phase 3 GitHub Actions    | Passed: run `31327359011`, job `Phase 0 quality`         |
 | Phase 3 owner approval    | Received explicitly on 2026-08-10                        |
+| Phase 4 planning          | Complete; implementation and MLflow remain not started   |
 
 ## Repository observations
 
@@ -117,7 +119,26 @@ hosted PostgreSQL adapter remains unexercised because the workstation cannot
 resolve the database hostname; this limitation is reported separately. The
 GitHub Actions run `31327359011` passed every required check and branch
 protection remains enforced. The owner explicitly approved Phase 3 on
-2026-08-10. No later phase is planned or active.
+2026-08-10.
+
+## Phase 4 planned boundary
+
+Phase 4 is planned but not started. It is limited to one verified Phase 3
+feature snapshot, a shared engine-disjoint train/validation/test manifest,
+train-only preprocessing, fixed dummy/Ridge/logistic baselines, deterministic
+aggregate evaluation, and local SQLite-backed MLflow tracking.
+
+NASA training engines will supply one seeded 80/20 development split. The NASA
+test partition remains the final holdout. The primary gates compare
+engine-balanced validation RMSE and average precision against task-specific
+dummy references. No absolute production claim or test-driven tuning is
+permitted.
+
+MLflow will remain loopback-only with ignored local metadata/artifacts. Phase 4
+will not use Supabase as an MLflow backend, change a Supabase schema, register
+or promote a model, add Airflow training, deploy a service, monitor, retrain,
+add agents, or implement dashboard work. Implementation requires explicit
+`START PHASE 4`.
 
 ## Phase history
 
@@ -127,4 +148,5 @@ protection remains enforced. The owner explicitly approved Phase 3 on
 | 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
 | 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
 | 3     | APPROVED    | `docs/phases/phase-03/COMPLETION_REPORT.md` |
-| 4-10  | NOT_PLANNED | Await explicit `PLAN PHASE 4`               |
+| 4     | PLANNED     | `docs/phases/phase-04/PLAN.md`              |
+| 5-10  | NOT_PLANNED | Await Phase 4 completion and approval       |
