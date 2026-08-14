@@ -39,6 +39,9 @@ REQUIRED_FILES = (
     "docs/adr/0018-phase-3-derived-contracts.md",
     "docs/adr/0019-phase-3-derived-publication.md",
     "docs/adr/0020-phase-3-airflow-runtime.md",
+    "docs/adr/0021-phase-4-engine-split.md",
+    "docs/adr/0022-phase-4-baseline-protocol.md",
+    "docs/adr/0023-phase-4-local-mlflow.md",
     "docs/phases/phase-00/ARCHITECTURE.md",
     "docs/phases/phase-00/PLAN.md",
     "docs/phases/phase-00/ACCEPTANCE_CRITERIA.md",
@@ -60,6 +63,11 @@ REQUIRED_FILES = (
     "docs/phases/phase-03/ACCEPTANCE_CRITERIA.md",
     "docs/phases/phase-03/TEST_PLAN.md",
     "docs/phases/phase-03/COMPLETION_REPORT.md",
+    "docs/phases/phase-04/ARCHITECTURE.md",
+    "docs/phases/phase-04/PLAN.md",
+    "docs/phases/phase-04/ACCEPTANCE_CRITERIA.md",
+    "docs/phases/phase-04/TEST_PLAN.md",
+    "docs/phases/phase-04/COMPLETION_REPORT.md",
 )
 
 ADR_REQUIRED_HEADINGS = (
@@ -111,7 +119,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         assert state_match.group(1) == "APPROVED"
         assert re.search(r"\|\s*Last completed phase\s*\|\s*1:", status)
     else:
-        assert current_phase.startswith(("0", "1", "2", "3"))
+        assert current_phase.startswith(("0", "1", "2", "3", "4"))
 
     phase_directories = sorted((ROOT / "docs/phases").glob("phase-*"))
     assert [path.name for path in phase_directories] == [
@@ -119,6 +127,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         "phase-01",
         "phase-02",
         "phase-03",
+        "phase-04",
     ]
 
 
@@ -188,7 +197,7 @@ def test_committed_telemetry_fixtures_use_canonical_lf_bytes() -> None:
 
 
 @pytest.mark.foundation
-def test_phase_three_implementation_stays_inside_approved_roots() -> None:
+def test_phase_four_implementation_stays_inside_approved_roots() -> None:
     prohibited = ("airflow", "dashboard", "services", "models")
     present = [name for name in prohibited if (ROOT / name).exists()]
     assert not present, f"Later-phase implementation roots present: {present}"
@@ -239,6 +248,23 @@ def test_phase_three_implementation_stays_inside_approved_roots() -> None:
         "quality.py",
         "runtime.py",
         "serialization.py",
+    }
+    modeling_files = {
+        path.name
+        for path in (ROOT / "src/predictive_maintenance/modeling").glob("*.py")
+        if path.is_file()
+    }
+    assert modeling_files == {
+        "__init__.py",
+        "baselines.py",
+        "cli.py",
+        "loading.py",
+        "metrics.py",
+        "models.py",
+        "pipeline.py",
+        "runtime.py",
+        "splitting.py",
+        "tracking.py",
     }
 
     migrations = sorted((ROOT / "supabase/migrations").glob("*.sql"))

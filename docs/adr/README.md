@@ -38,6 +38,9 @@ and Verification.
 | [0018](0018-phase-3-derived-contracts.md)    | Deterministic derived data contracts      | Accepted |
 | [0019](0019-phase-3-derived-publication.md)  | Derived publication and lineage           | Accepted |
 | [0020](0020-phase-3-airflow-runtime.md)      | Thin Airflow LocalExecutor runtime        | Accepted |
+| [0021](0021-phase-4-engine-split.md)         | Engine split and final holdout            | Accepted |
+| [0022](0022-phase-4-baseline-protocol.md)    | Fixed baseline evaluation protocol        | Accepted |
+| [0023](0023-phase-4-local-mlflow.md)         | Local MLflow and trusted artifacts        | Accepted |
 
 New ADRs use the next four-digit identifier. Existing ADR content is not
 rewritten to hide a changed decision; create a superseding ADR instead.

@@ -194,3 +194,34 @@ uses ASCII escaping, and ends with one newline.
 Airflow logical dates and run IDs are execution metadata and do not change
 derived content identity. `fd001-derived-pipeline-v1`, `fd001-etl-v1`, and
 `pyarrow-25.0.0-parquet-v1` are explicit provenance/version boundaries.
+
+## Phase 4 executable modeling contract
+
+Phase 4 consumes one explicit available and reconciled
+`fd001-candidate-features-v1` snapshot. It does not read mutable source files or
+select an implicit latest snapshot.
+
+The model-input columns are exactly the three settings and 21 sensors.
+`engine_id` and `cycle` remain identity/grouping keys and are excluded from the
+model matrix. `rul` and `failure_risk_30` remain targets in separate files and
+are prohibited from inputs and fitted preprocessing.
+
+The split contract:
+
+- use source partition plus engine ID as group identity;
+- divide NASA training engines once into seeded 80% fit and 20% validation
+  groups;
+- preserve the NASA test partition as the final holdout;
+- record ordered engine lists, row/engine counts, class prevalence, versions,
+  seed, features, targets, and parent identities in canonical JSON;
+- use one manifest for both regression and classification; and
+- require zero engine overlap and complete row coverage.
+
+RUL remains uncapped. Failure risk remains inclusive at 30 cycles. Any target
+cap, alternate horizon, threshold optimization, rolling feature, selection,
+PCA, or other fitted feature experiment requires a new versioned Phase 5
+contract and cannot silently replace this baseline.
+
+The loader, split manifest, feature exclusion, target semantics, and relative
+eligibility gates are executable and covered by synthetic and actual-FD001
+tests. This contract does not define a production threshold.
