@@ -6,7 +6,7 @@
 | ------------------------- | ---------------------------------------- |
 | Current phase             | 5: Advanced model analysis               |
 | Last completed phase      | 4: Baseline model development            |
-| State                     | IN_PROGRESS                              |
+| State                     | AWAITING_APPROVAL                        |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
 | Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
@@ -15,7 +15,7 @@
 | Phase 4 approved          | 2026-08-14 by explicit `APPROVE PHASE 4` |
 | Phase 5 planned           | 2026-08-20 by explicit `PLAN PHASE 5`    |
 | Phase 5 started           | 2026-08-21 by explicit `START PHASE 5`   |
-| Next permitted transition | Complete Phase 5 acceptance criteria     |
+| Next permitted transition | Explicit `APPROVE PHASE 5`               |
 
 ## Bootstrap record
 
@@ -190,18 +190,19 @@ claiming ground-truth states or anomaly accuracy.
 The complete owner-data repeat passed in 42 minutes 44 seconds. The clean
 non-dataset coverage command passed 234 tests at 91.23% branch-aware coverage;
 PostgreSQL, MLflow, Airflow, formatting, typing, Markdown, YAML, Docker, and
-dependency/security checks also pass locally. GitHub Actions has not yet been
-run on the Phase 5 completion commit, so the state correctly remains
-`IN_PROGRESS` and local results are not represented as CI evidence.
+dependency/security checks also pass locally. GitHub Actions run `32499093174`
+subsequently passed every protected check on the implementation commit. Pull
+request 10 carries the documentation-only completion commit for its final
+required check.
 
 ## Phase history
 
-| Phase | State       | Evidence                                    |
-| ----- | ----------- | ------------------------------------------- |
-| 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
-| 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
-| 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
-| 3     | APPROVED    | `docs/phases/phase-03/COMPLETION_REPORT.md` |
-| 4     | APPROVED    | `docs/phases/phase-04/COMPLETION_REPORT.md` |
-| 5     | IN_PROGRESS | Implementation authorized on 2026-08-21     |
-| 6-10  | NOT_PLANNED | Await Phase 5 completion and approval       |
+| Phase | State             | Evidence                                    |
+| ----- | ----------------- | ------------------------------------------- |
+| 0     | APPROVED          | `docs/phases/phase-00/COMPLETION_REPORT.md` |
+| 1     | APPROVED          | `docs/phases/phase-01/COMPLETION_REPORT.md` |
+| 2     | APPROVED          | `docs/phases/phase-02/COMPLETION_REPORT.md` |
+| 3     | APPROVED          | `docs/phases/phase-03/COMPLETION_REPORT.md` |
+| 4     | APPROVED          | `docs/phases/phase-04/COMPLETION_REPORT.md` |
+| 5     | AWAITING_APPROVAL | `docs/phases/phase-05/COMPLETION_REPORT.md` |
+| 6-10  | NOT_PLANNED       | Await explicit `APPROVE PHASE 5`            |
