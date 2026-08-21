@@ -4,16 +4,18 @@
 
 | Field                     | Value                                    |
 | ------------------------- | ---------------------------------------- |
-| Current phase             | 4: Baseline model development            |
+| Current phase             | 5: Advanced model analysis               |
 | Last completed phase      | 4: Baseline model development            |
-| State                     | APPROVED                                 |
+| State                     | IN_PROGRESS                              |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
 | Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
 | Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`    |
 | Phase 4 started           | 2026-08-14 by explicit `START PHASE 4`   |
 | Phase 4 approved          | 2026-08-14 by explicit `APPROVE PHASE 4` |
-| Next permitted transition | Explicit `PLAN PHASE 5`                  |
+| Phase 5 planned           | 2026-08-20 by explicit `PLAN PHASE 5`    |
+| Phase 5 started           | 2026-08-21 by explicit `START PHASE 5`   |
+| Next permitted transition | Complete Phase 5 acceptance criteria     |
 
 ## Bootstrap record
 
@@ -151,8 +153,46 @@ does not use Supabase as an MLflow backend, change a Supabase schema, register
 or promote a model, add Airflow training, deploy a service, monitor, retrain,
 add agents, or implement dashboard work.
 
-The owner explicitly approved Phase 4 on 2026-08-14. No later phase is planned
-or active.
+The owner explicitly approved Phase 4 on 2026-08-14.
+
+## Phase 5 active boundary
+
+Phase 5 is authorized and in progress. It compares the approved linear
+baselines with one bounded histogram-gradient-boosting family per task using
+nested engine-group cross-validation over NASA source-training engines. A
+paired whole-engine bootstrap and practical guardrails decide whether the
+extra complexity is justified; retaining a Phase 4 baseline is a valid result.
+
+The NASA test partition was evaluated and reported in Phase 4. Phase 5 will
+therefore treat it as a locked benchmark, not claim that it is blind or
+previously unseen. Tuning code must not access it, and a separate benchmark
+step requires a locked selection record.
+
+Phase 5 also implements exploratory telemetry-state clustering, novelty scoring,
+evaluation uncertainty, explainability, and error analysis. C-MAPSS has no
+ground-truth health-state or anomaly labels, so these outputs cannot be called
+verified failure detection or maintenance authority. A multi-task neural model
+is not justified by default because the risk label is derived directly from
+RUL and FD001 has only 100 source-training engines.
+
+Implementation is limited to the approved Phase 5 boundary. Supabase mutation,
+registry action, serving, deployment, monitoring, agent, and dashboard work
+remain unauthorized.
+
+## Phase 5 local validation result
+
+Local implementation and validation are complete. The actual FD001 comparison
+selected histogram gradient boosting for RUL regression and retained the Phase
+4 logistic baseline for failure-risk classification. Two stable exploratory
+telemetry clusters and a reproducible novelty-score pattern were found, without
+claiming ground-truth states or anomaly accuracy.
+
+The complete owner-data repeat passed in 42 minutes 44 seconds. The clean
+non-dataset coverage command passed 234 tests at 91.23% branch-aware coverage;
+PostgreSQL, MLflow, Airflow, formatting, typing, Markdown, YAML, Docker, and
+dependency/security checks also pass locally. GitHub Actions has not yet been
+run on the Phase 5 completion commit, so the state correctly remains
+`IN_PROGRESS` and local results are not represented as CI evidence.
 
 ## Phase history
 
@@ -163,4 +203,5 @@ or active.
 | 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
 | 3     | APPROVED    | `docs/phases/phase-03/COMPLETION_REPORT.md` |
 | 4     | APPROVED    | `docs/phases/phase-04/COMPLETION_REPORT.md` |
-| 5-10  | NOT_PLANNED | Await explicit `PLAN PHASE 5`               |
+| 5     | IN_PROGRESS | Implementation authorized on 2026-08-21     |
+| 6-10  | NOT_PLANNED | Await Phase 5 completion and approval       |

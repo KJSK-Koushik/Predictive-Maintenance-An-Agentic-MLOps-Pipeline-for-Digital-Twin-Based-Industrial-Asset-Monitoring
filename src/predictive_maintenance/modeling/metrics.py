@@ -53,6 +53,22 @@ def nasa_asymmetric_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     return float(np.sum(np.expm1(exponent)))
 
 
+def engine_balanced_nasa_score(
+    engine_ids: Any, y_true: np.ndarray, y_pred: np.ndarray
+) -> float:
+    """Average the mean NASA penalty of each engine trajectory."""
+    engines = np.asarray(engine_ids, dtype="int64")
+    true = np.asarray(y_true, dtype="float64")
+    predicted = np.asarray(y_pred, dtype="float64")
+    penalties: list[float] = []
+    for engine in np.unique(engines):
+        mask = engines == engine
+        penalties.append(
+            nasa_asymmetric_score(true[mask], predicted[mask]) / mask.sum()
+        )
+    return float(np.mean(penalties))
+
+
 def _regression_subset(y_true: np.ndarray, y_pred: np.ndarray) -> dict[str, float]:
     return {
         "mae": float(np.mean(np.abs(y_pred - y_true))),
@@ -98,6 +114,9 @@ def regression_metrics(
         "pooled_mae": float(np.mean(np.abs(residual))),
         "pooled_rmse": float(np.sqrt(np.mean(residual**2))),
         "nasa_asymmetric_score": nasa_asymmetric_score(true, predicted),
+        "engine_balanced_nasa_score": engine_balanced_nasa_score(
+            keys["engine_id"].to_numpy(), true, predicted
+        ),
         "residual_mean": float(np.mean(residual)),
         "residual_std": float(np.std(residual)),
         "clipped_prediction_count": clipped_count,
@@ -170,6 +189,9 @@ def classification_metrics(
         "pooled_average_precision": float(average_precision_score(true, probabilities)),
         "engine_balanced_roc_auc": _optional_roc_auc(true, probabilities, weights),
         "pooled_roc_auc": _optional_roc_auc(true, probabilities),
+        "engine_balanced_brier_score": float(
+            brier_score_loss(true, probabilities, sample_weight=weights)
+        ),
         "brier_score": float(brier_score_loss(true, probabilities)),
         "balanced_accuracy": _balanced_accuracy(true, predicted),
         "precision": float(precision_score(true, predicted, zero_division=0)),

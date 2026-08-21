@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pandas as pd
 import pytest
 
@@ -9,6 +11,10 @@ from predictive_maintenance.modeling.models import (
     FEATURE_COLUMNS,
     ModelingError,
     TrainingDataset,
+)
+from predictive_maintenance.modeling.phase5_tracking import (
+    load_verified_phase5_model,
+    log_phase5_result,
 )
 from predictive_maintenance.modeling.tracking import (
     log_baseline_result,
@@ -48,4 +54,23 @@ def test_tracking_rejects_non_loopback_before_network(
             tracking_uri="http://0.0.0.0:5000",
             code_revision="test",
             dirty_worktree=False,
+        )
+
+
+def test_phase5_tracking_rejects_non_loopback_before_network() -> None:
+    with pytest.raises(ModelingError, match="loopback"):
+        log_phase5_result(
+            None,  # type: ignore[arg-type]
+            tracking_uri="http://0.0.0.0:5000",
+            code_revision="test",
+            dirty_worktree=False,
+        )
+    with pytest.raises(ModelingError, match="loopback"):
+        load_verified_phase5_model(
+            "run",
+            tracking_uri="http://localhost:5000",
+            feature_snapshot_id="f" * 64,
+            comparison_id="c" * 64,
+            selection_id="s" * 64,
+            download_root=Path("unused"),
         )

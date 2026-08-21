@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import os
 import socket
 import subprocess
 import sys
@@ -29,6 +30,18 @@ class LocalMlflowServer:
 
     def stop(self) -> None:
         """Terminate the exact child process with a bounded fallback."""
+        if os.name == "nt":
+            subprocess.run(
+                ["taskkill", "/PID", str(self.process.pid), "/T", "/F"],
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            try:
+                self.process.wait(timeout=20)
+            finally:
+                self.log_stream.close()
+            return
         self.process.terminate()
         try:
             self.process.wait(timeout=20)
@@ -51,6 +64,15 @@ def _start_mlflow_server(root: Path) -> LocalMlflowServer:
     database = root / "mlflow.db"
     artifacts = root / "artifacts"
     log_stream = (root / "server.log").open("wb")
+    environment = os.environ.copy()
+    environment.update(
+        {
+            "OPENBLAS_NUM_THREADS": "1",
+            "OMP_NUM_THREADS": "1",
+            "MKL_NUM_THREADS": "1",
+            "NUMEXPR_NUM_THREADS": "1",
+        }
+    )
     process = subprocess.Popen(
         [
             sys.executable,
@@ -72,6 +94,7 @@ def _start_mlflow_server(root: Path) -> LocalMlflowServer:
         ],
         stdout=log_stream,
         stderr=subprocess.STDOUT,
+        env=environment,
     )
     deadline = time.monotonic() + 90
     while time.monotonic() < deadline:
@@ -144,7 +167,7 @@ def _partition(engine_count: int, cycles: int) -> tuple[pd.DataFrame, pd.DataFra
     return features, targets
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def synthetic_dataset() -> TrainingDataset:
     """Provide multiple engine trajectories with a simple known signal."""
     train_features, train_targets = _partition(10, 40)

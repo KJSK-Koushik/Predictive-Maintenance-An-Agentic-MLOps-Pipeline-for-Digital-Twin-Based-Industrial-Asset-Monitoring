@@ -250,6 +250,28 @@ affected by `PYSEC-2026-3552`. Phase 4 therefore uses the official
 runtime dependencies while retaining `cryptography==50.0.0`. The full
 metapackage is intentionally absent and `pip-audit` remains mandatory.
 
+## Phase 5 controls
+
+- Keep tuning inputs physically and logically separate from NASA test inputs.
+- Require a content-addressed locked-selection record before benchmark
+  evaluation and reject missing or mismatched evidence.
+- Split every fitted operation by engine group; never treat correlated cycle
+  rows as independent train/test samples.
+- Bound search spaces, parallel workers, bootstrap samples, reports, plots,
+  errors, and artifact sizes.
+- Resample whole engines for statistical intervals to avoid false precision
+  from correlated cycle rows.
+- Keep clustering and novelty selection independent of RUL/risk labels and
+  prohibit unsupported ground-truth anomaly metrics.
+- Prevent explanation output from automatically changing features or causing
+  a new search.
+- Reuse exact-run provenance, SHA-256, signatures, trusted `skops` types, and
+  prediction-parity checks before model loading.
+- Keep the MLflow registry empty and deny model alias, promotion, serving,
+  deployment, cloud mutation, or agent action.
+- Add no neural framework unless a separately reviewed dependency/security
+  change and owner-approved plan amendment exists.
+
 ## References
 
 - [Supabase API security](https://supabase.com/docs/guides/api/securing-your-api)

@@ -1,4 +1,4 @@
-"""Leakage-safe Phase 4 baseline modeling."""
+"""Leakage-safe baseline and bounded Phase 5 research modeling."""
 
 from predictive_maintenance.modeling.models import ModelingError
 

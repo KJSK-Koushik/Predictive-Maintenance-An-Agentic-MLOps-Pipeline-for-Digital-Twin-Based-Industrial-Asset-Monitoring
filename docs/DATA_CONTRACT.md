@@ -225,3 +225,25 @@ contract and cannot silently replace this baseline.
 The loader, split manifest, feature exclusion, target semantics, and relative
 eligibility gates are executable and covered by synthetic and actual-FD001
 tests. This contract does not define a production threshold.
+
+## Phase 5 comparison contract
+
+Phase 5 continues to consume the same explicit
+`fd001-candidate-features-v1` snapshot, 24 ordered model inputs, uncapped RUL,
+and inclusive `failure_risk_30`. It will not create a replacement feature or
+target snapshot.
+
+A versioned child comparison manifest binds five outer and four inner
+engine-group folds over NASA source-training engines, the Phase 4 split
+identity, finite search spaces, metrics, seeds, and dependency versions. Every
+source-training row must receive one outer out-of-fold prediction. The tuning
+contract will reject NASA test inputs.
+
+The NASA test partition is called a locked benchmark because Phase 4
+already exposed its metrics. Benchmark evaluation will require a matching
+content-addressed selection record produced without Phase 5 test access.
+
+Cluster and novelty records are analysis artifacts, not new labels.
+RUL and failure risk cannot select KMeans clusters or tune Isolation Forest.
+No artifact may represent an exploratory cluster as a ground-truth health
+state or a novelty score as a verified fault event.
