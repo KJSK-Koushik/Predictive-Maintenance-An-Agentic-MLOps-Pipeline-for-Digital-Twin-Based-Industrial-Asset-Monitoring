@@ -17,7 +17,9 @@ owner-approved. **Phase 2: Cloud data foundation** is also complete and
 owner-approved. **Phase 3: ETL and orchestration** is complete and
 owner-approved. **Phase 4: Baseline model development** is also complete and
 owner-approved. **Phase 5: Advanced model analysis** is also complete and
-owner-approved.
+owner-approved. **Phase 6: Model registry and deployment** is planned and is
+waiting for `START PHASE 6`; no registry, API, container, or deployment work
+has started.
 Leakage-safe Ridge and logistic candidates, dummy references, aggregate
 evaluation, and local SQLite-backed MLflow tracking are implemented and have
 passed local synthetic and actual-FD001 checks. Required GitHub Actions run
@@ -137,6 +139,7 @@ maintenance decisions.
 - [Phase 3 plan](docs/phases/phase-03/PLAN.md)
 - [Phase 4 plan](docs/phases/phase-04/PLAN.md)
 - [Phase 5 plan](docs/phases/phase-05/PLAN.md)
+- [Phase 6 plan](docs/phases/phase-06/PLAN.md)
 
 ## Development
 

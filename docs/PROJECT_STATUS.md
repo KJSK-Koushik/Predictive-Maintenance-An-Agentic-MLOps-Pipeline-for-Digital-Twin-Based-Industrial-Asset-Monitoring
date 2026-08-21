@@ -4,9 +4,9 @@
 
 | Field                     | Value                                    |
 | ------------------------- | ---------------------------------------- |
-| Current phase             | 5: Advanced model analysis               |
+| Current phase             | 6: Model registry and deployment         |
 | Last completed phase      | 5: Advanced model analysis               |
-| State                     | APPROVED                                 |
+| State                     | PLANNED                                  |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
 | Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
@@ -16,7 +16,8 @@
 | Phase 5 planned           | 2026-08-20 by explicit `PLAN PHASE 5`    |
 | Phase 5 started           | 2026-08-21 by explicit `START PHASE 5`   |
 | Phase 5 approved          | 2026-08-21 by explicit `APPROVE PHASE 5` |
-| Next permitted transition | Explicit `PLAN PHASE 6`                  |
+| Phase 6 planned           | 2026-08-21 by explicit `PLAN PHASE 6`    |
+| Next permitted transition | Explicit `START PHASE 6`                 |
 
 ## Bootstrap record
 
@@ -36,8 +37,8 @@ feature or initializing a cloud service.
 
 | Evidence                  | Status                                                             |
 | ------------------------- | ------------------------------------------------------------------ |
-| Source-of-truth documents | Phase 4 completion and approval recorded                           |
-| Accepted ADRs             | 23; Phase 4 split, baseline, and MLflow decisions added            |
+| Source-of-truth documents | Phase 5 completion/approval and Phase 6 plan recorded              |
+| Accepted ADRs             | 26; Phase 5 comparison, gates, and exploratory decisions added     |
 | Phase 1 implementation    | Complete and owner-approved                                        |
 | Unit/contract tests       | Phase 1 evidence: passed locally, 46                               |
 | Integration tests         | Phase 1 evidence: passed locally, 9                                |
@@ -203,6 +204,26 @@ passed every protected check on the implementation commit, and run
 `32500149019` passed on the documentation-only completion commit. The owner
 explicitly approved Phase 5 on 2026-08-21.
 
+## Phase 6 planned boundary
+
+Phase 6 is planned but not started. It will register the exact Phase 5 selected
+RUL and failure-risk artifacts as local MLflow candidate versions, apply a
+deterministic release gate, record human approval and deployment evidence in
+private operational PostgreSQL, and package both task models into one
+content-addressed release.
+
+The planned FastAPI service accepts bounded cycle-level batches with the exact
+24 telemetry features and returns RUL plus 30-cycle failure-risk evidence. It
+will state that per-prediction uncertainty is unavailable because Phase 5
+bootstrap intervals describe evaluation uncertainty only.
+
+The default staging target is a loopback-only Docker Compose service, with a
+separate ephemeral GitHub protected-environment validation workflow. No public
+or production target exists. Actual staging promotion requires a separate
+explicit owner approval containing the immutable release ID. Monitoring,
+retraining, digital-shadow persistence, agents, and dashboard work remain
+outside Phase 6.
+
 ## Phase history
 
 | Phase | State       | Evidence                                    |
@@ -213,4 +234,5 @@ explicitly approved Phase 5 on 2026-08-21.
 | 3     | APPROVED    | `docs/phases/phase-03/COMPLETION_REPORT.md` |
 | 4     | APPROVED    | `docs/phases/phase-04/COMPLETION_REPORT.md` |
 | 5     | APPROVED    | `docs/phases/phase-05/COMPLETION_REPORT.md` |
-| 6-10  | NOT_PLANNED | Await explicit `PLAN PHASE 6`               |
+| 6     | PLANNED     | `docs/phases/phase-06/PLAN.md`              |
+| 7-10  | NOT_PLANNED | Await Phase 6 implementation and approval   |

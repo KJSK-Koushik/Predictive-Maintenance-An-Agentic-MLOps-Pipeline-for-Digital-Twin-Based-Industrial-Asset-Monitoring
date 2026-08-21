@@ -2,11 +2,10 @@
 
 ## Status
 
-This is the master target architecture. Phases 0 through 4 are approved.
-Phase 4 baseline modeling is implemented, validated, and owner-approved.
-It adds only verified feature loading, engine-level splitting, fixed baselines,
-aggregate evaluation, and local MLflow tracking. Components assigned to Phase
-5 or later remain designs, not working integrations.
+This is the master target architecture. Phases 0 through 5 are implemented,
+validated, and owner-approved. Phase 6 is planned but not started. Registry,
+release, approval, FastAPI, inference-container, staging, and rollback
+components remain designs rather than working integrations.
 
 ## Architectural principles
 
@@ -316,6 +315,33 @@ monitoring, retraining, agents, and dashboards remain outside its boundary. A
 multi-task neural network is excluded by default because the classification
 label is a deterministic threshold of RUL; adding one requires a separate
 approved plan amendment and ablation hypothesis.
+
+## Phase 6 planned boundary
+
+Phase 6 will register the exact Phase 5 selected models as candidate versions
+in the existing database-backed local MLflow registry. MLflow owns registered
+names, versions, tags, and aliases. Private operational PostgreSQL owns
+append-only release approval, deployment, and rollback evidence. Registration
+alone grants no deployment authority.
+
+One canonical release binds the selected regression and classification model
+versions, their trusted `skops` artifacts and signatures, all Phase 5 evidence
+identities, the exact 24-feature contract, dependency-lock digest, approval,
+and previous staging release. The service loads this immutable release at
+startup and never follows a mutable MLflow alias for each request.
+
+The inference boundary is a bounded FastAPI `/v1` contract with separate
+liveness and verified-model readiness. It returns non-negative RUL and
+inclusive 30-cycle failure-risk outputs with immutable provenance. It reports
+that per-prediction uncertainty is unavailable; Phase 5 evaluation intervals
+are not prediction intervals.
+
+The default staging topology is one release-specific, non-root container bound
+to loopback with candidate-slot smoke testing and rollback to a previous
+immutable release. Pull-request CI builds and tests a synthetic release but
+does not deploy. A separate manual workflow references a protected `staging`
+environment. There is no Phase 6 public endpoint, production target, automatic
+promotion, monitoring, agent, dashboard, or digital-shadow persistence.
 
 ## Technology decisions
 

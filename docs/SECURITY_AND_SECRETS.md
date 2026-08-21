@@ -272,6 +272,34 @@ metapackage is intentionally absent and `pip-audit` remains mandatory.
 - Add no neural framework unless a separately reviewed dependency/security
   change and owner-approved plan amendment exists.
 
+## Phase 6 planned controls
+
+- Treat registration, deterministic validation, human approval, alias changes,
+  release packaging, deployment, and rollback as separate attributable events.
+- Keep MLflow loopback-only; do not expose its unauthenticated local server.
+- Store approval and deployment evidence in private operational PostgreSQL, not
+  only in mutable MLflow tags or aliases.
+- Require an exact release-ID approval before staging alias or deployment
+  mutation. Create no production alias or target.
+- Load only manifest-declared, digest-verified `skops` artifacts with inspected
+  trusted types and prediction parity.
+- Bind both task models, signatures, dependencies, evidence, and approval into
+  one content-addressed release.
+- Publish release bytes only to ignored local storage or the approved private
+  Supabase derived bucket with put-if-absent and downloaded hash verification.
+- Keep the inference image free of Supabase, PostgreSQL, GitHub, and MLflow
+  credentials. Registry/deployment tools and serving have separate authority.
+- Bind staging only to loopback. Authentication, TLS, public ingress, and
+  production hosting require a later approved design.
+- Bound request bodies, batch size, values, startup, timeouts, logs, errors, and
+  deployment polling. Reject non-finite values and extra fields.
+- Log request ID, release ID, status, latency, and batch size without complete
+  feature vectors or prediction payloads.
+- Run the image as non-root with a read-only filesystem and dropped capabilities
+  where supported; verify these controls rather than assuming them.
+- Keep pull-request CI credential-free and deployment-free. Use a separate
+  manual protected `staging` environment for deployment workflow evidence.
+
 ## References
 
 - [Supabase API security](https://supabase.com/docs/guides/api/securing-your-api)

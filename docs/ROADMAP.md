@@ -49,11 +49,13 @@ remote CI, documentation, evidence, and severity requirements are satisfied.
 - Phase 4 uses one engine-disjoint split, fixed Ridge and logistic candidates,
   dummy-relative eligibility gates, and local MLflow. It is complete and
   owner-approved.
-- Phase 5 determines whether bounded nonlinear complexity adds measurable
-  value through nested engine-group comparison and may retain the linear
-  baseline.
+- Phase 5 determined whether bounded nonlinear complexity added measurable
+  value. It selected histogram gradient boosting for RUL and retained logistic
+  regression for failure risk.
 - Phase 5 calls unsupervised outputs exploratory telemetry states and novelty
   scores because FD001 has no ground-truth health-state or anomaly labels.
+- Phase 6 packages those two selected task models into one immutable,
+  human-approved staging release. Local or ephemeral staging is not production.
 - Phase 7 establishes a conventional monitored MLOps workflow.
 - Phase 8 compares agents with that fixed conventional baseline.
 - Phase 10 reports exercised capabilities and avoids generalizing beyond FD001.

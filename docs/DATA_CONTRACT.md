@@ -247,3 +247,31 @@ Cluster and novelty records are analysis artifacts, not new labels.
 RUL and failure risk cannot select KMeans clusters or tune Isolation Forest.
 No artifact may represent an exploratory cluster as a ground-truth health
 state or a novelty score as a verified fault event.
+
+## Phase 6 planned release and inference contract
+
+Phase 6 will not change the FD001 data, feature, target, split, comparison, or
+selection contracts. It will bind the exact selected task artifacts into one
+`fd001-model-release-v1` manifest.
+
+The release manifest will contain both registered model versions, source runs,
+artifact SHA-256 values, signatures, trusted types, Phase 5 selection and parent
+identities, the ordered 24-feature schema, RUL output rule, inclusive 30-cycle
+risk horizon, threshold 0.5, dependency-lock digest, approval ID, code revision,
+and previous staging release. Canonical JSON bytes determine the release ID.
+
+The `/v1/predict` request accepts a batch of 1-128 cycle observations. Each
+observation contains positive `engine_id` and `cycle` values plus exactly
+`setting_1` through `setting_3` and `sensor_1` through `sensor_21` as finite
+numbers. Identity fields are response provenance and cannot enter the model
+matrix. Targets are never accepted.
+
+Each response preserves the input identity and returns non-negative RUL, a
+failure-risk probability in `[0, 1]`, the thresholded risk label, horizon 30,
+threshold 0.5, immutable release/model references, and
+`predictive_uncertainty_status: not_available`. Phase 5 bootstrap intervals are
+evaluation uncertainty and cannot be converted into per-request prediction
+intervals.
+
+This is a planned API/release contract until Phase 6 implementation and tests
+pass.
