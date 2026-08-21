@@ -2,11 +2,12 @@
 
 ## Status
 
-**COMPLETE — AWAITING OWNER APPROVAL**
+**APPROVED**
 
 Planning was authorized by `PLAN PHASE 5` on 2026-08-20. Implementation was
 authorized by `START PHASE 5` on 2026-08-21. Every local gate and the protected
-GitHub Actions workflow have passed.
+GitHub Actions workflow passed. The owner explicitly approved Phase 5 with
+`APPROVE PHASE 5` on 2026-08-21.
 
 ## Implemented scope
 
@@ -85,7 +86,7 @@ already reported it; it is not a blind holdout.
 | Docker                             | Compose config, PostgreSQL, and Airflow build/start passed             |
 | GitHub branch protection           | Required `Phase 4 quality` context and admin enforcement remain active |
 | GitHub Actions implementation run  | Run `32499093174` passed all steps in 8 minutes 48 seconds             |
-| Completion commit check            | Protected `Phase 4 quality` check on pull request 10                   |
+| GitHub Actions completion run      | Run `32500149019` passed all steps in 8 minutes 51 seconds             |
 
 The first Airflow run had an empty static source ID because the test container
 was started before setting the CI environment. Recreating only that disposable
@@ -129,11 +130,10 @@ high-severity issue remains in local evidence.
 
 The Phase 5 implementation is committed and pushed to draft pull request 10.
 The real GitHub Actions `Phase 4 quality` check passed on the implementation
-commit. The documentation-only completion commit is subject to the same
-protected check before the completion handoff is issued. No merge, registry
-action, promotion, serving, or deployment is part of this completion.
+commit and on the documentation-only completion commit. No registry action,
+promotion, serving, or deployment is part of this completion.
 
 ## Approval
 
-Phase 5 is eligible for owner review. The required next command is
-`APPROVE PHASE 5`.
+The owner explicitly approved Phase 5 on 2026-08-21. The required next command
+is `PLAN PHASE 6`. No Phase 6 planning or implementation has started.
