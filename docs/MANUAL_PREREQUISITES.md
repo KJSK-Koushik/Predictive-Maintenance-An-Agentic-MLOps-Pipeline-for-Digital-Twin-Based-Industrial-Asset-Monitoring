@@ -200,6 +200,31 @@ This approved topology and the stopped-server copy/restore test were exercised
 on 2026-08-14. Generated evidence remains under ignored
 `artifacts/mlflow/`; it is not a shared or durable tracking service.
 
+## Phase 5 advanced-analysis prerequisites
+
+These were reconfirmed by `START PHASE 5` before the controlled actions:
+
+- [x] Continue using only the approved FD001 feature snapshot and local-only
+  MLflow topology.
+- [x] Accept the finite CPU-only scikit-learn search budget and bounded local
+  artifact growth; no GPU or paid resource is required.
+- [x] Accept that NASA test is a locked benchmark, not a blind holdout, because
+  its Phase 4 metrics are already known.
+- [x] Keep NASA test inputs unavailable to the tuning path until a matching
+  selection record is locked.
+- [x] Keep generated search, model, plot, explanation, and unsupervised
+  analysis evidence in ignored local storage.
+- [x] Confirm that Supabase mutation, remote MLflow, registry action, serving,
+  deployment, monitoring, and Airflow-scheduled training remain unauthorized.
+- [x] Confirm that no deep-learning dependency or multi-task neural model is
+  authorized without a separate owner-approved plan amendment.
+- [x] Confirm the project owner remains the human reviewer and that Phase 6
+  owns any future registry or promotion decision.
+
+The explicit `START PHASE 5` command accepted these documented local
+prerequisites. It did not approve a deep-learning amendment or any cloud
+mutation.
+
 ## Phase 6 deployment prerequisites
 
 - [ ] Choose a staging target.

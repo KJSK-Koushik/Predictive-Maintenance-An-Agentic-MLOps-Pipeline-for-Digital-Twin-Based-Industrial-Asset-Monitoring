@@ -286,6 +286,37 @@ trusted `skops` model artifacts. It does not share the operational `ops`
 schema. Registered-model versions, aliases, approvals, promotion, serving, and
 remote MLflow remain outside Phase 4.
 
+## Phase 5 implemented boundary
+
+Phase 5 reuses the exact verified FD001 feature snapshot and input columns. It
+does not change labels, cap RUL, add rolling features, or ingest FD002-FD004.
+This isolates model-family complexity from data and target changes.
+
+The Phase 4 80/20 split remains immutable evidence. Phase 5 adds a child
+nested-cross-validation manifest over the 100 NASA source-training engines:
+five outer engine-group folds for comparison and four inner engine-group folds
+for a finite histogram-gradient-boosting search. The Phase 4 Ridge and logistic
+models are re-evaluated on the same outer folds. Whole-engine paired bootstrap
+intervals and practical guardrails decide whether the advanced model is
+preferred. Failure to pass retains the baseline.
+
+The NASA test partition is a locked benchmark, not a blind holdout, because
+its Phase 4 metrics are already known. A separate evaluation path requires a
+content-addressed locked-selection record and prohibits configuration changes.
+
+Unsupervised work is isolated from supervised selection. Training-only,
+engine-balanced KMeans/PCA analysis may identify exploratory telemetry states,
+and Isolation Forest may produce a novelty score. Neither has ground-truth
+state or anomaly labels. Explainability uses held-out outer-fold evidence and
+cannot silently feed feature selection or retuning.
+
+Phase 5 reuses loopback SQLite-backed MLflow for evidence only. Registry,
+promotion, FastAPI, serving, deployment, Supabase mutation, Airflow training,
+monitoring, retraining, agents, and dashboards remain outside its boundary. A
+multi-task neural network is excluded by default because the classification
+label is a deterministic threshold of RUL; adding one requires a separate
+approved plan amendment and ablation hypothesis.
+
 ## Technology decisions
 
 - Python 3.11 is the Phase 0 baseline.

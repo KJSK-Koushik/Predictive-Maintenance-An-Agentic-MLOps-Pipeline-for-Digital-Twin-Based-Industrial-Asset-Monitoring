@@ -4,8 +4,8 @@
 
 | Field                     | Value                                    |
 | ------------------------- | ---------------------------------------- |
-| Current phase             | 4: Baseline model development            |
-| Last completed phase      | 4: Baseline model development            |
+| Current phase             | 5: Advanced model analysis               |
+| Last completed phase      | 5: Advanced model analysis               |
 | State                     | APPROVED                                 |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
@@ -13,7 +13,10 @@
 | Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`    |
 | Phase 4 started           | 2026-08-14 by explicit `START PHASE 4`   |
 | Phase 4 approved          | 2026-08-14 by explicit `APPROVE PHASE 4` |
-| Next permitted transition | Explicit `PLAN PHASE 5`                  |
+| Phase 5 planned           | 2026-08-20 by explicit `PLAN PHASE 5`    |
+| Phase 5 started           | 2026-08-21 by explicit `START PHASE 5`   |
+| Phase 5 approved          | 2026-08-21 by explicit `APPROVE PHASE 5` |
+| Next permitted transition | Explicit `PLAN PHASE 6`                  |
 
 ## Bootstrap record
 
@@ -78,6 +81,13 @@ feature or initializing a cloud service.
 | Phase 4 GitHub Actions    | Passed: run `31773869033`, job `Phase 4 quality`                   |
 | Phase 4 completion CI     | Passed: run `31774309963`, job `Phase 4 quality`                   |
 | Phase 4 owner approval    | Received explicitly on 2026-08-14                                  |
+| Phase 5 implementation    | Complete and owner-approved                                        |
+| Phase 5 local tests       | 234 passed; 14 later/cloud tests deselected                        |
+| Phase 5 product coverage  | 91.23% branch-aware                                                |
+| Phase 5 actual FD001      | Two complete deterministic runs passed in 42 minutes 44 seconds    |
+| Phase 5 implementation CI | Passed: run `32499093174`, job `Phase 4 quality`                   |
+| Phase 5 completion CI     | Passed: run `32500149019`, job `Phase 4 quality`                   |
+| Phase 5 owner approval    | Received explicitly on 2026-08-21                                  |
 
 ## Repository observations
 
@@ -151,8 +161,47 @@ does not use Supabase as an MLflow backend, change a Supabase schema, register
 or promote a model, add Airflow training, deploy a service, monitor, retrain,
 add agents, or implement dashboard work.
 
-The owner explicitly approved Phase 4 on 2026-08-14. No later phase is planned
-or active.
+The owner explicitly approved Phase 4 on 2026-08-14.
+
+## Phase 5 approved boundary
+
+Phase 5 is complete and owner-approved. It compares the approved linear
+baselines with one bounded histogram-gradient-boosting family per task using
+nested engine-group cross-validation over NASA source-training engines. A
+paired whole-engine bootstrap and practical guardrails decide whether the
+extra complexity is justified; retaining a Phase 4 baseline is a valid result.
+
+The NASA test partition was evaluated and reported in Phase 4. Phase 5
+therefore treated it as a locked benchmark and did not claim that it was blind or
+previously unseen. Tuning code must not access it, and a separate benchmark
+step requires a locked selection record.
+
+Phase 5 also implemented exploratory telemetry-state clustering, novelty scoring,
+evaluation uncertainty, explainability, and error analysis. C-MAPSS has no
+ground-truth health-state or anomaly labels, so these outputs cannot be called
+verified failure detection or maintenance authority. A multi-task neural model
+is not justified by default because the risk label is derived directly from
+RUL and FD001 has only 100 source-training engines.
+
+Implementation is limited to the approved Phase 5 boundary. Supabase mutation,
+registry action, serving, deployment, monitoring, agent, and dashboard work
+remain unauthorized.
+
+## Phase 5 local validation result
+
+Local implementation and validation are complete. The actual FD001 comparison
+selected histogram gradient boosting for RUL regression and retained the Phase
+4 logistic baseline for failure-risk classification. Two stable exploratory
+telemetry clusters and a reproducible novelty-score pattern were found, without
+claiming ground-truth states or anomaly accuracy.
+
+The complete owner-data repeat passed in 42 minutes 44 seconds. The clean
+non-dataset coverage command passed 234 tests at 91.23% branch-aware coverage;
+PostgreSQL, MLflow, Airflow, formatting, typing, Markdown, YAML, Docker, and
+dependency/security checks also pass locally. GitHub Actions run `32499093174`
+passed every protected check on the implementation commit, and run
+`32500149019` passed on the documentation-only completion commit. The owner
+explicitly approved Phase 5 on 2026-08-21.
 
 ## Phase history
 
@@ -163,4 +212,5 @@ or active.
 | 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
 | 3     | APPROVED    | `docs/phases/phase-03/COMPLETION_REPORT.md` |
 | 4     | APPROVED    | `docs/phases/phase-04/COMPLETION_REPORT.md` |
-| 5-10  | NOT_PLANNED | Await explicit `PLAN PHASE 5`               |
+| 5     | APPROVED    | `docs/phases/phase-05/COMPLETION_REPORT.md` |
+| 6-10  | NOT_PLANNED | Await explicit `PLAN PHASE 6`               |

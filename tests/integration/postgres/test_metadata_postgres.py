@@ -296,7 +296,7 @@ def test_constraints_reject_bad_hash_and_self_lineage(tmp_path: Path) -> None:
             "a" * 64,
             1,
             "verified",
-            datetime.now(UTC) + timedelta(minutes=10),
+            timedelta(minutes=10),
         ),
         ("/absolute", "raw", "a" * 64, 1, "verified", datetime.now(UTC)),
         ("trailing/", "raw", "a" * 64, 1, "verified", datetime.now(UTC)),
@@ -309,8 +309,13 @@ def test_object_state_hash_size_and_timestamp_checks(
     sha256: str,
     byte_size: int,
     state: str,
-    verified_at: datetime,
+    verified_at: datetime | timedelta,
 ) -> None:
+    effective_verified_at = (
+        datetime.now(UTC) + verified_at
+        if isinstance(verified_at, timedelta)
+        else verified_at
+    )
     with (
         psycopg.connect(_dsn()) as connection,
         pytest.raises(psycopg.errors.CheckViolation),
@@ -326,7 +331,7 @@ def test_object_state_hash_size_and_timestamp_checks(
                 'text/plain', %s, %s
             )
             """,
-            (object_key, zone, sha256, byte_size, state, verified_at),
+            (object_key, zone, sha256, byte_size, state, effective_verified_at),
         )
 
 

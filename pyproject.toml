@@ -37,6 +37,7 @@ dependencies = [
 [project.scripts]
 publish-fd001 = "predictive_maintenance.cloud.cli:main"
 run-fd001-etl = "predictive_maintenance.etl.cli:main"
+evaluate-fd001-advanced = "predictive_maintenance.modeling.phase5_cli:main"
 train-fd001-baselines = "predictive_maintenance.modeling.cli:main"
 validate-fd001 = "predictive_maintenance.data.cli:main"
 
@@ -46,6 +47,7 @@ dev = [
   "mdformat-gfm>=0.4.1,<0.5",
   "mypy>=1.15,<2",
   "pandas-stubs>=2.2,<3",
+  "pip>=26.2,<27",
   "pip-audit>=2.8,<3",
   "pytest>=8.3,<10",
   "pytest-cov>=6,<8",

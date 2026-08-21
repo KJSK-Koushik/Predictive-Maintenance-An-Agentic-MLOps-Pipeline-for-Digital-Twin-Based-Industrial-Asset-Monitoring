@@ -47,9 +47,13 @@ remote CI, documentation, evidence, and severity requirements are satisfied.
 - Phase 1 establishes what the data can and cannot support.
 - Phase 4 establishes non-agentic predictive baselines.
 - Phase 4 uses one engine-disjoint split, fixed Ridge and logistic candidates,
-  dummy-relative eligibility gates, and local MLflow. It remains pending
-  completion approval until local gates and GitHub Actions both pass.
-- Phase 5 determines whether complexity adds measurable value.
+  dummy-relative eligibility gates, and local MLflow. It is complete and
+  owner-approved.
+- Phase 5 determines whether bounded nonlinear complexity adds measurable
+  value through nested engine-group comparison and may retain the linear
+  baseline.
+- Phase 5 calls unsupervised outputs exploratory telemetry states and novelty
+  scores because FD001 has no ground-truth health-state or anomaly labels.
 - Phase 7 establishes a conventional monitored MLOps workflow.
 - Phase 8 compares agents with that fixed conventional baseline.
 - Phase 10 reports exercised capabilities and avoids generalizing beyond FD001.
@@ -58,9 +62,10 @@ remote CI, documentation, evidence, and severity requirements are satisfied.
 
 The following require evidence from earlier phases:
 
-- whether a versioned capped RUL target improves an advanced model;
+- whether a versioned capped RUL target is worth a separate later experiment;
 - absolute promotion-level model-performance thresholds;
-- whether a neural multi-task model is justified;
+- whether any later dataset provides independent supervision that could
+  justify a neural multi-task model;
 - whether Evidently adds value beyond custom metrics;
 - remote MLflow topology;
 - staging and production hosting targets;

@@ -210,11 +210,23 @@ PostgreSQL, so ordinary CI excludes it.
 
 ### Phase 5
 
-- fixed-protocol model comparison and justified tuning;
-- uncertainty and calibration improvement validation;
-- clustering and anomaly-analysis validation;
-- explainability and error analysis; and
-- proof that added complexity improves a predeclared measure.
+- five-outer/four-inner engine-group fold identity, coverage, and leakage tests;
+- bounded histogram-gradient-boosting comparison against the exact Phase 4
+  linear candidates;
+- paired 2,000-sample whole-engine bootstrap and practical complexity gates;
+- locked selection-record and separate NASA benchmark isolation tests;
+- calibration guardrails and explicit evaluation-uncertainty semantics;
+- engine-balanced KMeans stability and label-independent Isolation Forest
+  novelty tests;
+- held-out-fold permutation importance and bounded lifecycle/engine error
+  analysis;
+- proof that failed added complexity correctly retains the baseline; and
+- real local MLflow plus separate actual-FD001 evidence, while ordinary CI
+  remains synthetic and credential-free.
+
+NASA test is not described as blind in Phase 5 because its Phase 4 results are
+already known. Clustering and novelty tests prove software behavior and
+stability, not ground-truth health-state or anomaly-detection accuracy.
 
 ### Phases 6-7
 

@@ -16,6 +16,7 @@ The project will address:
 owner-approved. **Phase 2: Cloud data foundation** is also complete and
 owner-approved. **Phase 3: ETL and orchestration** is complete and
 owner-approved. **Phase 4: Baseline model development** is also complete and
+owner-approved. **Phase 5: Advanced model analysis** is also complete and
 owner-approved.
 Leakage-safe Ridge and logistic candidates, dummy references, aggregate
 evaluation, and local SQLite-backed MLflow tracking are implemented and have
@@ -87,6 +88,29 @@ engine-disjoint 80/20 development split, and the NASA test partition only as
 the final holdout. Outputs are simulated research evidence, not a deployed
 model or physical digital twin.
 
+## Phase 5 local advanced analysis
+
+Phase 5 uses two explicit commands so tuning finishes and its immutable
+selection record exists before the previously observed NASA benchmark is read:
+
+```shell
+uv run evaluate-fd001-advanced develop \
+  --feature-snapshot-id <explicit-phase-3-feature-snapshot-id> \
+  --selection-path artifacts/phase5/selection.json
+
+uv run evaluate-fd001-advanced benchmark \
+  --feature-snapshot-id <same-feature-snapshot-id> \
+  --selection-path artifacts/phase5/selection.json
+```
+
+Development uses five outer and four inner engine-group folds, a finite
+histogram-gradient-boosting grid, and 2,000 paired whole-engine bootstrap
+replicates. Failure of a complexity gate keeps the Phase 4 baseline. KMeans
+outputs are exploratory telemetry states, Isolation Forest outputs are novelty
+scores, and neither has ground-truth anomaly or maintenance authority. The
+full FD001 path is an offline research run, not real-time or continuous
+retraining.
+
 ## Claim boundaries
 
 The initial system is a digital-twin-inspired **asset-health digital shadow**,
@@ -112,6 +136,7 @@ maintenance decisions.
 - [Phase 2 plan](docs/phases/phase-02/PLAN.md)
 - [Phase 3 plan](docs/phases/phase-03/PLAN.md)
 - [Phase 4 plan](docs/phases/phase-04/PLAN.md)
+- [Phase 5 plan](docs/phases/phase-05/PLAN.md)
 
 ## Development
 
