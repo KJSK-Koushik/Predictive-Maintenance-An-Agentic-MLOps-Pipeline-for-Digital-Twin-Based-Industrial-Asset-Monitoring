@@ -177,6 +177,22 @@ The service does not manufacture a per-prediction confidence interval. Errors
 use stable codes and bounded messages without telemetry dumps, credentials,
 private endpoints, stack traces, or absolute paths.
 
+## Early UI design boundary
+
+Phase 6 defines the technology-neutral screen hierarchy, low-fidelity layouts,
+shared states, safety wording, accessibility expectations, and backend
+dependency map in [`../../UI_ARCHITECTURE.md`](../../UI_ARCHITECTURE.md).
+
+This design work does not add a frontend framework, browser bundle, dashboard
+service, direct database access, or live screen. The Phase 6 inference contract
+may become one stable dependency for later screens, but no screen connects to
+it in this phase. Monitoring contracts belong to Phase 7, agent and
+recommendation contracts belong to Phase 8, and the working UI plus
+screen-by-screen integration belong to Phase 9.
+
+A static example or mock may inform design review only when visibly labelled
+`DESIGN ONLY`. It is not API, container, staging, or integration evidence.
+
 ## Container and staging topology
 
 The default Phase 6 staging target is one loopback-only Docker Compose service
@@ -245,7 +261,7 @@ staging workflow execution.
 - automatic production deployment or automatic model promotion;
 - per-prediction uncertainty intervals;
 - monitoring, drift, delayed-label performance, or retraining triggers;
-- digital-shadow persistence or dashboard work;
+- digital-shadow persistence or working dashboard implementation;
 - Supabase Auth, Realtime, agents, streaming, or physical-control integration;
 - FD002-FD004 generalization; and
 - claims of real-time, autonomous, safety-critical, or field-validated use.

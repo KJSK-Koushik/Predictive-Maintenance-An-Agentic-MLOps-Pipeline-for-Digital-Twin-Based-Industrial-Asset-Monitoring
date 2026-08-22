@@ -38,10 +38,12 @@ Phase 6 will:
 - extend pull-request CI with container and API gates without deployment
   credentials;
 - add a separate manual protected-environment staging workflow; and
+- establish technology-neutral UI screen designs, states, safety wording, and
+  backend dependency gates without adding frontend code; and
 - preserve a hard denial for production deployment.
 
 Phase 6 will not select a different model, tune on NASA test, implement
-monitoring, or claim production readiness.
+monitoring or a working dashboard, or claim production readiness.
 
 ## Work breakdown after start authorization
 
@@ -49,6 +51,9 @@ monitoring, or claim production readiness.
    local MLflow source runs if the ignored local evidence is unavailable.
 1. Verify current locked MLflow, FastAPI, Pydantic, Uvicorn, Docker, GitHub
    Actions, and Supabase APIs before dependency or configuration changes.
+1. Review the early screen architecture against the final Phase 6 API fields,
+   errors, provenance, freshness, and safety wording; keep every screen in
+   `DESIGN ONLY` state.
 1. Add canonical release, approval, registry, deployment, and rollback domain
    contracts below infrastructure adapters.
 1. Generate one forward-only Phase 6 migration with the Supabase CLI and test
@@ -120,11 +125,12 @@ supabase/migrations/<cli-generated>_phase_06_model_releases.sql
 docs/adr/0027-*.md
 docs/adr/0028-*.md
 docs/adr/0029-*.md
+docs/UI_ARCHITECTURE.md
 ```
 
 Files may be combined when that makes the design smaller and clearer. Phase 6
 will not create a microservice fleet, Kubernetes manifests, a public gateway,
-or a production deployment target.
+frontend application, or a production deployment target.
 
 ## Existing files expected to change
 
@@ -219,21 +225,22 @@ classification accepted in the completion report.
 
 ## Planning risks
 
-| Risk                                                   | Planned treatment                                                                                        |
-| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| Registration is mistaken for approval                  | Keep candidate registration, operational approval, aliasing, and deployment as separate events           |
-| A mutable alias changes serving silently               | Bake an immutable release ID into the image; never resolve aliases per request                           |
-| Phase 5 model files are unavailable                    | Reproduce the approved run from immutable inputs before registration and compare all identities          |
-| Packaging changes predictions                          | Verify signatures, trusted types, digests, and prediction parity before and inside the container         |
-| Two task versions become inconsistent                  | Bind both versions in one canonical release manifest and deploy them atomically                          |
-| Evaluation intervals are shown as predictive intervals | Return an explicit `not_available` uncertainty status                                                    |
-| API accepts malformed or abusive input                 | Strict schema, finite values, extra-field rejection, batch and body limits, bounded errors               |
-| Model loading enables code execution                   | Continue inspected `skops` loading; reject pickle, joblib, cloudpickle, and unknown types                |
-| Failed rollout causes an outage                        | Test in a candidate slot and keep the previous immutable release available                               |
-| Local staging is overstated as production              | Use loopback/ephemeral terminology and publish no SLA, HA, TLS, or field claim                           |
-| CI silently deploys                                    | Keep CI credential-free; use a separate manual protected-environment workflow                            |
-| Supabase artifacts or records become public            | Private bucket, private `ops` schema, denied client roles, hash verification, advisors                   |
-| Phase 6 grows into monitoring/dashboard work           | Defer service monitoring, digital-shadow state, retraining, agents, and dashboard to their owning phases |
+| Risk                                                   | Planned treatment                                                                                            |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| Registration is mistaken for approval                  | Keep candidate registration, operational approval, aliasing, and deployment as separate events               |
+| A mutable alias changes serving silently               | Bake an immutable release ID into the image; never resolve aliases per request                               |
+| Phase 5 model files are unavailable                    | Reproduce the approved run from immutable inputs before registration and compare all identities              |
+| Packaging changes predictions                          | Verify signatures, trusted types, digests, and prediction parity before and inside the container             |
+| Two task versions become inconsistent                  | Bind both versions in one canonical release manifest and deploy them atomically                              |
+| Evaluation intervals are shown as predictive intervals | Return an explicit `not_available` uncertainty status                                                        |
+| API accepts malformed or abusive input                 | Strict schema, finite values, extra-field rejection, batch and body limits, bounded errors                   |
+| Model loading enables code execution                   | Continue inspected `skops` loading; reject pickle, joblib, cloudpickle, and unknown types                    |
+| Failed rollout causes an outage                        | Test in a candidate slot and keep the previous immutable release available                                   |
+| Local staging is overstated as production              | Use loopback/ephemeral terminology and publish no SLA, HA, TLS, or field claim                               |
+| CI silently deploys                                    | Keep CI credential-free; use a separate manual protected-environment workflow                                |
+| Supabase artifacts or records become public            | Private bucket, private `ops` schema, denied client roles, hash verification, advisors                       |
+| Phase 6 grows into monitoring/dashboard work           | Defer service monitoring, digital-shadow state, retraining, agents, and dashboard to their owning phases     |
+| UI connects to a draft or mocked backend               | Track contract maturity per screen and permit real connection only in Phase 9 after owner-approved contracts |
 
 ## Stop condition
 

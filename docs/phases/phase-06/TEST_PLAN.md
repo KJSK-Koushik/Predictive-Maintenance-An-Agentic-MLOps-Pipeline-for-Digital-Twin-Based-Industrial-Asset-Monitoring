@@ -17,6 +17,21 @@
 No evidence may be renamed as production, public-service, physical-engine,
 real-time, predictive-interval, or safety evidence.
 
+## UI design contract checks
+
+Phase 6 documentation tests must verify that:
+
+- the early UI architecture and all planned screens are present;
+- every screen records its owning backend phase and earliest connection phase;
+- contract stability requires deterministic tests, a non-mocked integration,
+  required CI, documented permissions, and owner approval;
+- working UI, frontend dependencies, and browser-to-private-schema access stay
+  outside Phase 6; and
+- design mocks remain labelled and are not counted as integration evidence.
+
+No browser or visual regression test belongs to Phase 6 because no working UI
+is authorized. Those tests enter with the Phase 9 implementation.
+
 ## Unit and contract tests
 
 ### Release identity and gate

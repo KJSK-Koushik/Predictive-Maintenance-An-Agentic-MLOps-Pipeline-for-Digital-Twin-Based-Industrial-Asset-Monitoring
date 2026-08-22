@@ -32,6 +32,7 @@ REQUIRED_FILES = (
     "docs/SECURITY_AND_SECRETS.md",
     "docs/TEST_STRATEGY.md",
     "docs/DATA_CONTRACT.md",
+    "docs/UI_ARCHITECTURE.md",
     "docs/adr/README.md",
     "docs/adr/0015-phase-2-object-storage.md",
     "docs/adr/0016-phase-2-postgres-security.md",
@@ -431,3 +432,23 @@ def test_charter_contains_claim_boundaries() -> None:
     )
     missing = [term for term in required_terms if term not in normalized]
     assert not missing, f"Missing claim-boundary terms: {missing}"
+
+
+@pytest.mark.foundation
+def test_ui_design_is_early_but_integration_is_contract_gated() -> None:
+    ui_architecture = (ROOT / "docs/UI_ARCHITECTURE.md").read_text(encoding="utf-8")
+    normalized = re.sub(r"\s+", " ", ui_architecture).lower()
+
+    required_terms = (
+        "design only",
+        "contract stable",
+        "connect",
+        "phase 9",
+        "non-mocked integration test",
+        "owner-approved",
+    )
+    missing = [term for term in required_terms if term not in normalized]
+    assert not missing, f"Missing UI delivery terms: {missing}"
+
+    assert "frontend framework" in normalized
+    assert "must not add" in normalized

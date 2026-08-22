@@ -221,8 +221,13 @@ The default staging target is a loopback-only Docker Compose service, with a
 separate ephemeral GitHub protected-environment validation workflow. No public
 or production target exists. Actual staging promotion requires a separate
 explicit owner approval containing the immutable release ID. Monitoring,
-retraining, digital-shadow persistence, agents, and dashboard work remain
-outside Phase 6.
+retraining, digital-shadow persistence, agents, and working dashboard code
+remain outside Phase 6.
+
+The owner added a design-first UI rule on 2026-08-22. Phase 6 now includes a
+technology-neutral screen architecture and backend dependency map. The working
+UI remains Phase 9, and each screen may connect only after all of its versioned
+backend contracts are implemented, tested, CI-validated, and owner-approved.
 
 ## Phase history
 

@@ -8,8 +8,12 @@
   reconfirmed.
 - [ ] The actual release is not promoted or deployed until the owner explicitly
   approves its exact release ID.
-- [ ] No monitoring, retraining, agent, dashboard, public API, production,
-  FD002-FD004, paid resource, or physical-control feature is introduced.
+- [ ] No monitoring, retraining, agent, working dashboard, public API,
+  production, FD002-FD004, paid resource, or physical-control feature is
+  introduced.
+- [ ] UI work is limited to technology-neutral screen design; no frontend
+  dependency, browser bundle, dashboard service, or live backend connection is
+  introduced.
 
 ## Registry and selected-model integrity
 
@@ -113,6 +117,11 @@
 
 ## Regression tests and documentation
 
+- [ ] `docs/UI_ARCHITECTURE.md` defines the screen hierarchy, low-fidelity
+  layouts, shared states, backend owners, maturity gate, safety wording, and
+  Phase 9 connection boundary.
+- [ ] Every screen remains explicitly `Design only`; mock examples are not
+  reported as working UI or integration evidence.
 - [ ] All applicable Phase 0-5 regression tests continue to pass.
 - [ ] Product code maintains at least 90% branch-aware coverage.
 - [ ] Formatting, linting, strict typing, lock, Markdown, YAML, migration,

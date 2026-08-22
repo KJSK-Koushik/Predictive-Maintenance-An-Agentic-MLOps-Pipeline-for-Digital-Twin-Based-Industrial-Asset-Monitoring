@@ -45,6 +45,8 @@ while using AI agents only where recommendations can be independently checked.
 - Gated FastAPI model serving with containerized local/staging validation.
 - Batch monitoring, drift investigation, and retraining candidate generation.
 - A cycle-level asset-health digital-shadow state.
+- Early technology-neutral UI design followed by a contract-gated working
+  dashboard in its approved phase.
 - Bounded, audited agent recommendations.
 - GitHub Actions CI and separately approved deployment.
 
@@ -108,6 +110,7 @@ independently observed failure event.
 | FR-011 | Represent each replayed asset's current health state and provenance.  |
 | FR-012 | Audit every agent input, tool call, recommendation, and disposition.  |
 | FR-013 | Compare agent-assisted work against a non-agentic baseline.           |
+| FR-014 | Connect each UI screen only after its backend contract is stable.     |
 
 ## Non-functional requirements
 
@@ -123,6 +126,7 @@ independently observed failure event.
 | NFR-008 | Honesty: mocked, emulated, and real integrations reported separately.    |
 | NFR-009 | Cost control: no paid resource provisioning without approval.            |
 | NFR-010 | Governance: exactly one active phase and explicit phase transitions.     |
+| NFR-011 | Usability: accessible states expose freshness, provenance, and failures. |
 
 ## Stakeholders and authority
 

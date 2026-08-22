@@ -17,6 +17,8 @@ components remain designs rather than working integrations.
 1. Metadata has one authoritative owner; references prevent duplication.
 1. Mocked, emulated, replayed, staging, and production evidence are distinct.
 1. Failure, rollback, and recovery paths are first-class architecture.
+1. UI design starts early, but a screen connects only after its versioned
+   backend contract is stable and tested.
 
 ## System context
 
@@ -77,8 +79,9 @@ Arrows show intended information flow, not current implementation.
 | Airflow               | Schedule and observe already-tested batch functions         | 3              |
 | Monitor               | Evaluate data, prediction, service, and performance signals | 7              |
 | Retraining controller | Open candidate evaluations without promotion authority      | 7              |
-| Digital-shadow store  | Hold the latest versioned asset-health state                | 6              |
-| Dashboard             | Render state, uncertainty, provenance, and audit evidence   | 9              |
+| Digital-shadow store  | Hold the latest versioned asset-health state                | 9              |
+| Dashboard design      | Define screen hierarchy, states, wording, and dependencies  | 6              |
+| Dashboard runtime     | Render stable state, provenance, monitoring, and audit APIs | 9              |
 
 ### Agent plane
 
@@ -217,6 +220,21 @@ does not infer an environment from a credential value.
 Every crossing requires authenticated identity, least privilege, input
 validation, logging, and a documented failure mode.
 
+## UI delivery boundary
+
+The dashboard follows a design-first, contract-gated sequence documented in
+[`UI_ARCHITECTURE.md`](UI_ARCHITECTURE.md). Phase 6 creates technology-neutral
+screen designs and dependency maps only. Phases 6 through 8 stabilize the
+release, inference, monitoring, recommendation, and audit contracts owned by
+those phases. Phase 9 selects the frontend stack, implements the working UI,
+and connects one screen at a time after all of that screen's dependencies are
+stable.
+
+The browser never reads internal PostgreSQL schemas, Storage objects, or MLflow
+directly. A later versioned read boundary provides only the fields required by
+the dashboard. Mock or fixture data may support design and component tests but
+cannot be called a connected integration.
+
 ## Failure and recovery design
 
 | Failure                  | Required behavior                                    |
@@ -341,7 +359,9 @@ to loopback with candidate-slot smoke testing and rollback to a previous
 immutable release. Pull-request CI builds and tests a synthetic release but
 does not deploy. A separate manual workflow references a protected `staging`
 environment. There is no Phase 6 public endpoint, production target, automatic
-promotion, monitoring, agent, dashboard, or digital-shadow persistence.
+promotion, monitoring, agent, working dashboard, or digital-shadow persistence.
+Phase 6 does create the early technology-neutral UI design and screen-to-contract
+map; it adds no frontend code or live connection.
 
 ## Technology decisions
 
