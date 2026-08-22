@@ -17,18 +17,17 @@ owner-approved. **Phase 2: Cloud data foundation** is also complete and
 owner-approved. **Phase 3: ETL and orchestration** is complete and
 owner-approved. **Phase 4: Baseline model development** is also complete and
 owner-approved. **Phase 5: Advanced model analysis** is also complete and
-owner-approved. **Phase 6: Model registry and deployment** is in progress after
-the explicit `START PHASE 6`. Candidate registry, private release-governance
-metadata, a strict FastAPI contract, and synthetic loopback-container evidence
-are implemented and under pre-release validation. The actual FD001 pair still requires exact release-ID
-approval before packaging, publication, aliasing, or staging. The dashboard has
-an early technology-neutral screen design, but working UI code and backend
-connections remain Phase 9 work.
+owner-approved. **Phase 6: Model registry and deployment** is in completion
+validation. The exact FD001 release was owner-approved, published to private
+Supabase Storage, recorded in private PostgreSQL metadata, and deployed to the
+loopback-only staging service. API parity and a controlled rollback drill pass.
+The dashboard has an early technology-neutral screen design, but working UI
+code and backend connections remain Phase 9 work.
 Leakage-safe Ridge and logistic candidates, dummy references, aggregate
 evaluation, and local SQLite-backed MLflow tracking are implemented and have
 passed local synthetic and actual-FD001 checks. Required GitHub Actions run
-`31773869033` also passed every Phase 4 quality gate. No model has been
-approved for an actual Phase 6 staging release or deployed.
+`31773869033` also passed every Phase 4 quality gate. Phase 6 is staging-only;
+no model has been promoted to production or exposed through a public endpoint.
 
 Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
 filesystem Storage substitute. The approved hosted Supabase project has passed

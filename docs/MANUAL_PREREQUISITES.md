@@ -253,14 +253,17 @@ accepts the recommended values unless the owner changes one first.
   in ignored local configuration or protected environments only.
 - [x] Require a separate `APPROVE PHASE 6 STAGING RELEASE <release-id>` command
   before the actual selected models receive a staging alias or deployment.
+- [x] Owner approved exact release
+  `e230ac64e5fc3e3dd294067236210904376fe7591f776a25b03a2a6e614ccf22`.
 
 `START PHASE 6` does not approve a specific release ID, production deployment,
 public hosting, or a paid resource.
 
-The owner accepted these defaults with `START PHASE 6` on 2026-08-22. Creation
-and exercise of the GitHub environment, reviewed hosted migration, and private
-release objects still require implementation evidence; checked prerequisites
-record authorization, not a successful integration.
+The owner accepted these defaults with `START PHASE 6` on 2026-08-22. The
+GitHub environment configuration, hosted migration, private release objects,
+local staging deployment, and rollback drill were exercised separately.
+The manual GitHub staging workflow remains separate from local staging and is
+not reported as exercised until it runs from the default branch.
 
 ## Phase 8 agent prerequisites
 

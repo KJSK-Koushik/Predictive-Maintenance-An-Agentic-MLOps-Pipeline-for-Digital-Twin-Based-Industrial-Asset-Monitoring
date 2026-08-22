@@ -2,23 +2,23 @@
 
 ## Current control state
 
-| Field                     | Value                                                   |
-| ------------------------- | ------------------------------------------------------- |
-| Current phase             | 6: Model registry and deployment                        |
-| Last completed phase      | 5: Advanced model analysis                              |
-| State                     | IN_PROGRESS                                             |
-| Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`                   |
-| Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`                  |
-| Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3`                |
-| Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`                   |
-| Phase 4 started           | 2026-08-14 by explicit `START PHASE 4`                  |
-| Phase 4 approved          | 2026-08-14 by explicit `APPROVE PHASE 4`                |
-| Phase 5 planned           | 2026-08-20 by explicit `PLAN PHASE 5`                   |
-| Phase 5 started           | 2026-08-21 by explicit `START PHASE 5`                  |
-| Phase 5 approved          | 2026-08-21 by explicit `APPROVE PHASE 5`                |
-| Phase 6 planned           | 2026-08-21 by explicit `PLAN PHASE 6`                   |
-| Phase 6 started           | 2026-08-22 by explicit `START PHASE 6`                  |
-| Next permitted transition | Exact staging-release approval after candidate creation |
+| Field                     | Value                                        |
+| ------------------------- | -------------------------------------------- |
+| Current phase             | 6: Model registry and deployment             |
+| Last completed phase      | 5: Advanced model analysis                   |
+| State                     | IN_PROGRESS                                  |
+| Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`        |
+| Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`       |
+| Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3`     |
+| Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`        |
+| Phase 4 started           | 2026-08-14 by explicit `START PHASE 4`       |
+| Phase 4 approved          | 2026-08-14 by explicit `APPROVE PHASE 4`     |
+| Phase 5 planned           | 2026-08-20 by explicit `PLAN PHASE 5`        |
+| Phase 5 started           | 2026-08-21 by explicit `START PHASE 5`       |
+| Phase 5 approved          | 2026-08-21 by explicit `APPROVE PHASE 5`     |
+| Phase 6 planned           | 2026-08-21 by explicit `PLAN PHASE 6`        |
+| Phase 6 started           | 2026-08-22 by explicit `START PHASE 6`       |
+| Next permitted transition | Final local and GitHub completion validation |
 
 ## Bootstrap record
 
@@ -91,12 +91,19 @@ feature or initializing a cloud service.
 | Phase 5 completion CI      | Passed: run `32500149019`, job `Phase 4 quality`                    |
 | Phase 5 owner approval     | Received explicitly on 2026-08-21                                   |
 | Phase 6 pre-approval tests | 276 passed; 90.75% branch-aware coverage                            |
+| Phase 6 final local tests  | 250 non-PostgreSQL plus 27 PostgreSQL checks passed                 |
+| Phase 6 final coverage     | 90.75% branch-aware                                                 |
 | Phase 6 PostgreSQL         | 27 migration, security, append-only, and recovery checks passed     |
 | Phase 6 container          | Synthetic image build, health, isolation, smoke, and parity passed  |
 | Phase 6 Airflow regression | Fresh image build and 6 runtime checks passed                       |
 | Phase 6 hosted migration   | Applied to the approved dev/test Supabase project; advisors checked |
-| Phase 6 actual release     | Not generated or approved; exact release-ID gate remains closed     |
-| Phase 6 implementation CI  | Pending implementation commit and real GitHub Actions evidence      |
+| Phase 6 actual release     | Owner-approved exact release is active on loopback staging          |
+| Phase 6 release ID         | `e230ac64e5fc3e3dd294067236210904376fe7591f776a25b03a2a6e614ccf22`  |
+| Phase 6 actual parity      | Passed before deployment and after rollback                         |
+| Phase 6 rollback           | Wrong release rejected; approved release restored in 12.61 seconds  |
+| Phase 6 Supabase release   | Four private objects plus approval and deployment records verified  |
+| Phase 6 implementation CI  | Passed: run `32563410951`, job `Phase 4 quality`                    |
+| Phase 6 completion CI      | Pending completion-validation commit                                |
 
 ## Repository observations
 
@@ -212,26 +219,26 @@ passed every protected check on the implementation commit, and run
 `32500149019` passed on the documentation-only completion commit. The owner
 explicitly approved Phase 5 on 2026-08-21.
 
-## Phase 6 planned boundary
+## Phase 6 implemented boundary
 
 Phase 6 started on 2026-08-22. It implements local MLflow candidate
 registration for the exact Phase 5 selected RUL and failure-risk artifacts, a
 deterministic release gate, private PostgreSQL approval/deployment evidence,
 and one content-addressed package for both task models.
 
-The planned FastAPI service accepts bounded cycle-level batches with the exact
+The implemented FastAPI service accepts bounded cycle-level batches with the exact
 24 telemetry features and returns RUL plus 30-cycle failure-risk evidence. It
 will state that per-prediction uncertainty is unavailable because Phase 5
 bootstrap intervals describe evaluation uncertainty only.
 
 The default staging target is a loopback-only Docker Compose service, with a
 separate ephemeral GitHub protected-environment validation workflow. No public
-or production target exists. Actual staging promotion requires a separate
-explicit owner approval containing the immutable release ID. Monitoring,
+or production target exists. The owner approved the exact immutable release ID,
+and the selected pair is now active only on loopback staging. Monitoring,
 retraining, digital-shadow persistence, agents, and working dashboard code
 remain outside Phase 6.
 
-The owner added a design-first UI rule on 2026-08-22. Phase 6 now includes a
+The owner added a design-first UI rule on 2026-08-22. Phase 6 includes a
 technology-neutral screen architecture and backend dependency map. The working
 UI remains Phase 9, and each screen may connect only after all of its versioned
 backend contracts are implemented, tested, CI-validated, and owner-approved.

@@ -27,7 +27,7 @@ def test_container_is_ready_has_exact_contract_and_matches_direct_model() -> Non
     fixture = json.loads((bundle / "verification-fixture.json").read_bytes())
     observations = fixture["observations"]
     expected = predictor.predict(observations)
-    base = "http://127.0.0.1:18000"
+    base = os.environ.get("PM_INFERENCE_URL", "http://127.0.0.1:18000")
     with httpx.Client(base_url=base, timeout=10) as client:
         ready = client.get("/health/ready")
         assert ready.status_code == 200

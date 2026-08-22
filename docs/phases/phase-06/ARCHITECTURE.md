@@ -66,10 +66,10 @@ tags, and aliases. Phase 6 uses the existing database-backed loopback server and
 local artifact root. It does not introduce an unauthenticated remote MLflow
 server.
 
-The planned registered names are:
+The implemented registered names are:
 
-- `fd001-rul-regressor`; and
-- `fd001-failure-risk-classifier`.
+- `fd001-rul-regression`; and
+- `fd001-failure-risk-classification`.
 
 Each version must point to the exact verified Phase 5 run artifact. Registration
 copies no untrusted pickle or joblib object. The existing `skops` digest,
@@ -77,7 +77,7 @@ signature, trusted-type, provenance, and prediction-parity checks remain
 mandatory.
 
 Operational PostgreSQL, not MLflow tags or aliases, owns approval and deployment
-events. A forward-only Phase 6 migration will add private `ops` records for:
+events. The forward-only Phase 6 migration adds private `ops` records for:
 
 - a release candidate and its immutable evidence snapshot;
 - human approval or rejection events;
@@ -200,7 +200,7 @@ on the owner workstation. A separate ephemeral GitHub protected-environment
 workflow may repeat the same deployment mechanics with a synthetic release. It
 does not create a persistent public service.
 
-The inference image will:
+The inference image:
 
 - use an official Python 3.11 base pinned by digest;
 - install from the committed lock-derived runtime dependency set;
@@ -232,12 +232,16 @@ previous immutable release and records both the failed and restored release
 IDs. The planned local recovery-time objective is five minutes; it becomes an
 evidence claim only if measured successfully.
 
+The actual rollback drill rejected the known synthetic release by immutable
+release ID and restored the approved release in 12.61 seconds. The approved
+service passed prediction parity after restoration. This is local staging
+evidence, not a public availability claim.
+
 GitHub pull-request CI remains credential-free and never deploys. A separate
 manual staging workflow uses `workflow_dispatch` and a protected `staging`
 environment. Because a newly added manual workflow is not dispatchable until
-it exists on the default branch, Phase 6 will report its first real run
-separately and will not confuse a PR container smoke test with a protected
-staging workflow execution.
+it exists on the default branch, its first real run remains unexercised. A PR
+container smoke test is not protected staging-workflow evidence.
 
 ## Security boundary
 

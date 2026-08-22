@@ -275,6 +275,6 @@ threshold 0.5, immutable release/model references, and
 evaluation uncertainty and cannot be converted into per-request prediction
 intervals.
 
-This contract is implemented and under Phase 6 validation. It is not a
-production, public, real-time, or safety contract, and no screen connects to it
-before Phase 9.
+This contract is implemented and exercised by the owner-approved loopback
+staging release. It is not a production, public, real-time, or safety contract,
+and no screen connects to it before Phase 9.
