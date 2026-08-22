@@ -2,7 +2,7 @@
 
 ## Status
 
-**COMPLETION VALIDATION IN PROGRESS**
+**AWAITING APPROVAL**
 
 Implementation was authorized by `START PHASE 6` on 2026-08-22. The owner then
 approved exact staging release
@@ -71,7 +71,7 @@ Only the `staging` aliases were set. No production alias exists.
 | Airflow regression             | Fresh image and all 6 runtime, retry, and backfill checks passed                                                                                                                       |
 | Dependency/security            | Lock, audit, secret scan, trusted-type checks, and image inspection passed                                                                                                             |
 | Implementation GitHub CI       | [Run 32563410951](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/actions/runs/32563410951) passed |
-| Completion GitHub CI           | Pending the completion-validation commit                                                                                                                                               |
+| Completion GitHub CI           | [Run 32571957238](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/actions/runs/32571957238) passed |
 | Manual GitHub staging workflow | Configured but unexercised because it is not yet on the default branch                                                                                                                 |
 | Production/public deployment   | Not configured and not exercised                                                                                                                                                       |
 
@@ -140,13 +140,13 @@ or access-control gate depends on them.
 - The service is decision support for a research prototype and has no physical
   maintenance-control authority.
 
-## Remaining completion gates
+## Completion gates
 
-1. Push the correction and documentation evidence.
-1. Obtain a real passing GitHub Actions run on that commit.
-1. Change project status to `AWAITING_APPROVAL`, run the final documentation
-   CI check, and request `APPROVE PHASE 6`.
+Every Phase 6 acceptance criterion is satisfied. The final status-only commit
+must retain a passing GitHub Actions result before the handoff is complete.
 
 ## Approval
 
-Not yet eligible for final phase approval while completion CI is pending.
+Phase 6 is ready for owner review. The required next command is:
+
+`APPROVE PHASE 6`
