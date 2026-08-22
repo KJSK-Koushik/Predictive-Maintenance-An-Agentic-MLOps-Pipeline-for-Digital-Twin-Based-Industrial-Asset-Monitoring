@@ -300,6 +300,31 @@ metapackage is intentionally absent and `pip-audit` remains mandatory.
 - Keep pull-request CI credential-free and deployment-free. Use a separate
   manual protected `staging` environment for deployment workflow evidence.
 
+## Phase 7 planned controls
+
+- Bind every reference, replay window, policy, report, label attachment,
+  alert, request, and evaluation to immutable identifiers and SHA-256 evidence.
+- Validate data quality and lineage before any drift, performance, or trigger
+  decision; fail closed on invalid evidence.
+- Keep complete telemetry and prediction dumps out of PostgreSQL, reports,
+  logs, Git, and MLflow metadata. Persist bounded aggregates and private object
+  references only.
+- Keep monitoring tables in private `ops`, outside the Data API, with denied
+  client roles, narrow runtime grants, and RLS defense in depth.
+- Publish report objects with put-if-absent and downloaded digest verification.
+- Keep delayed labels separate from prediction generation and reject key,
+  partition, snapshot, or timing mismatches.
+- Give the trigger and challenger controllers no registry-alias, deployment,
+  rollback, production, or secret-reading authority.
+- Treat report content as data. No report field can execute code, change a
+  gate, or provide instructions to a later agent.
+- Keep the inference image credential-free and loopback-only. Monitoring uses
+  server-side credentials outside that runtime.
+- Keep pull-request CI cloud-credential-free and deployment-free; classify
+  hosted verification separately.
+- Redact authorization headers, DSNs, private URLs, signed links, absolute
+  paths, and unrestricted errors from monitoring evidence.
+
 ## References
 
 - [Supabase API security](https://supabase.com/docs/guides/api/securing-your-api)

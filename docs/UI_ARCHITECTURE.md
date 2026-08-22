@@ -234,6 +234,32 @@ The service can report `live` while returning `not ready` when its immutable
 release fails verification. A later screen must preserve that difference and
 must not turn unavailable readiness into a green health state.
 
+## Phase 7 monitoring contract draft
+
+Phase 7 planning defines the future Monitoring screen input as one versioned,
+immutable report. The contract is not stable until Phase 7 implementation,
+non-mocked integration, CI, owner approval, and security checks pass.
+
+Planned report sections are:
+
+| Section             | Required meaning                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------- |
+| Window              | immutable source, engine/cycle membership, replay order, release, policy, and freshness           |
+| Data quality        | validation state, bounded rule counts, lineage, and blocking failures                             |
+| Feature shift       | all 24 inputs, reference/current effect sizes, lifecycle mix, adequacy, and threshold identity    |
+| Prediction shift    | RUL and risk distribution changes without claiming performance degradation                        |
+| Service             | sampled readiness, status counts, and latency summaries without an SLA claim                      |
+| Delayed performance | explicit unavailable/insufficient/available state plus aggregate metrics when exact labels exist  |
+| Trigger             | investigation or candidate-request result, deterministic reason, evidence, and human-review state |
+
+The UI must display `unavailable`, `insufficient_data`, and `invalid` as distinct
+states. It must not render any of them as zero, green, healthy, or approved. A
+drift alert must say `Distribution changed`; it must not say `Model failed`
+unless matching delayed performance evidence supports that separate statement.
+
+This remains a technology-neutral design contract. Phase 7 creates no browser
+endpoint or screen connection.
+
 ## Cross-phase delivery
 
 | Phase | UI responsibility                                                                         |

@@ -85,6 +85,11 @@ REQUIRED_FILES = (
     "docs/phases/phase-06/ACCEPTANCE_CRITERIA.md",
     "docs/phases/phase-06/TEST_PLAN.md",
     "docs/phases/phase-06/COMPLETION_REPORT.md",
+    "docs/phases/phase-07/ARCHITECTURE.md",
+    "docs/phases/phase-07/PLAN.md",
+    "docs/phases/phase-07/ACCEPTANCE_CRITERIA.md",
+    "docs/phases/phase-07/TEST_PLAN.md",
+    "docs/phases/phase-07/COMPLETION_REPORT.md",
 )
 
 ADR_REQUIRED_HEADINGS = (
@@ -136,7 +141,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         assert state_match.group(1) == "APPROVED"
         assert re.search(r"\|\s*Last completed phase\s*\|\s*1:", status)
     else:
-        assert current_phase.startswith(("0", "1", "2", "3", "4", "5", "6"))
+        assert current_phase.startswith(("0", "1", "2", "3", "4", "5", "6", "7"))
 
     phase_directories = sorted((ROOT / "docs/phases").glob("phase-*"))
     assert [path.name for path in phase_directories] == [
@@ -147,6 +152,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         "phase-04",
         "phase-05",
         "phase-06",
+        "phase-07",
     ]
 
 

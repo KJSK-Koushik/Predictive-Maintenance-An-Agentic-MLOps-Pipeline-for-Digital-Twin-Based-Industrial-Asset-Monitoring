@@ -278,3 +278,37 @@ intervals.
 This contract is implemented and exercised by the owner-approved loopback
 staging release. It is not a production, public, real-time, or safety contract,
 and no screen connects to it before Phase 9.
+
+## Phase 7 planned monitoring contract
+
+Phase 7 will not change the FD001 telemetry, feature, target, split, comparison,
+selection, release, or inference contracts. It will add separate versioned
+monitoring evidence over the exact Phase 6 release.
+
+`fd001-monitor-reference-v1` will bind an engine-balanced aggregate profile of
+the approved source-training inputs and release outputs. It contains fixed
+reference bins, bounded distribution summaries, lifecycle and operating-setting
+composition, sample-adequacy rules, and versioned thresholds. It contains no
+complete telemetry or prediction dump.
+
+`fd001-monitoring-window-v1` will bind one explicit source partition and
+ordered `(engine_id, cycle)` membership, the exact feature and release
+identities, replay sequence, policy, code, dependencies, and optional
+delayed-label snapshot. Replay sequence and processing time are metadata; they
+do not turn `cycle` into event time.
+
+`fd001-monitoring-report-v1` will keep data quality, feature shift, prediction
+shift, sampled service behavior, and delayed-label performance in separate
+sections. Signal states are limited to `pass`, `warning`, `alert`,
+`insufficient_data`, `unavailable`, and `invalid`. Invalid quality blocks later
+signals. Missing labels produce `unavailable`, never a zero-degradation value.
+
+Delayed labels may be attached only after prediction evidence is immutable and
+only when source partition, snapshot, row keys, and counts match exactly. The
+attachment creates new content-addressed performance evidence rather than
+editing the original report.
+
+`fd001-retraining-request-v1` and `fd001-challenger-evaluation-v1` will reference
+immutable monitoring evidence and data cutoffs. NASA test rows are prohibited
+from fitting and configuration selection. Eligibility remains separate from
+registration, human approval, alias changes, deployment, and rollback.

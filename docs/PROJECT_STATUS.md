@@ -4,9 +4,9 @@
 
 | Field                     | Value                                    |
 | ------------------------- | ---------------------------------------- |
-| Current phase             | 6: Model registry and deployment         |
+| Current phase             | 7: Monitoring and retraining             |
 | Last completed phase      | 6: Model registry and deployment         |
-| State                     | APPROVED                                 |
+| State                     | PLANNED                                  |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
 | Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
@@ -19,7 +19,8 @@
 | Phase 6 planned           | 2026-08-21 by explicit `PLAN PHASE 6`    |
 | Phase 6 started           | 2026-08-22 by explicit `START PHASE 6`   |
 | Phase 6 approved          | 2026-08-22 by explicit `APPROVE PHASE 6` |
-| Next permitted transition | Explicit owner command `PLAN PHASE 7`    |
+| Phase 7 planned           | 2026-08-22 by explicit `PLAN PHASE 7`    |
+| Next permitted transition | Explicit owner command `START PHASE 7`   |
 
 ## Bootstrap record
 
@@ -39,8 +40,8 @@ feature or initializing a cloud service.
 
 | Evidence                   | Status                                                              |
 | -------------------------- | ------------------------------------------------------------------- |
-| Source-of-truth documents  | Phase 6 completion and owner approval recorded                      |
-| Accepted ADRs              | 26; Phase 5 comparison, gates, and exploratory decisions added      |
+| Source-of-truth documents  | Phase 7 plan recorded; implementation not started                   |
+| Accepted ADRs              | 29; Phase 6 release, inference, staging, and rollback decisions     |
 | Phase 1 implementation     | Complete and owner-approved                                         |
 | Unit/contract tests        | Phase 1 evidence: passed locally, 46                                |
 | Integration tests          | Phase 1 evidence: passed locally, 9                                 |
@@ -107,6 +108,7 @@ feature or initializing a cloud service.
 | Phase 6 completion CI      | Passed: run `32571957238`, job `Phase 4 quality`                    |
 | Phase 6 final status CI    | Passed: run `32572525259`, job `Phase 4 quality`                    |
 | Phase 6 owner approval     | Received explicitly on 2026-08-22                                   |
+| Phase 7 planning           | Objective, architecture, criteria, tests, prerequisites, risks set  |
 
 ## Repository observations
 
@@ -246,6 +248,23 @@ technology-neutral screen architecture and backend dependency map. The working
 UI remains Phase 9, and each screen may connect only after all of its versioned
 backend contracts are implemented, tested, CI-validated, and owner-approved.
 
+## Phase 7 planned boundary
+
+Phase 7 planning was authorized on 2026-08-22. The planned scope is
+deterministic batch monitoring of immutable FD001 replay windows, private
+monitoring evidence, delayed-label performance, rule-based investigation and
+retraining-candidate requests, and fixed champion/challenger evaluation.
+
+The plan keeps data quality, distribution shift, service probes, and model
+performance as separate signals. A trigger cannot train, register, promote,
+deploy, or roll back a model automatically. NASA test rows remain prohibited
+from training, and the actual FD001 path may correctly end as no-change or
+`blocked_no_new_training_data`.
+
+Phase 7 does not add Evidently, a metrics platform, Realtime, Auth, agents,
+working UI, public ingress, production, or paid resources by default. No Phase
+7 implementation is authorized before `START PHASE 7`.
+
 ## Phase history
 
 | Phase | State       | Evidence                                    |
@@ -257,4 +276,5 @@ backend contracts are implemented, tested, CI-validated, and owner-approved.
 | 4     | APPROVED    | `docs/phases/phase-04/COMPLETION_REPORT.md` |
 | 5     | APPROVED    | `docs/phases/phase-05/COMPLETION_REPORT.md` |
 | 6     | APPROVED    | `docs/phases/phase-06/COMPLETION_REPORT.md` |
-| 7-10  | NOT_PLANNED | Await explicit `PLAN PHASE 7`               |
+| 7     | PLANNED     | `docs/phases/phase-07/PLAN.md`              |
+| 8-10  | NOT_PLANNED | Await Phase 7 implementation and approval   |

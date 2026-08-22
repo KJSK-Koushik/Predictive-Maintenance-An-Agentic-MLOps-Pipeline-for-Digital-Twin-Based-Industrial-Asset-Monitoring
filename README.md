@@ -29,6 +29,13 @@ passed local synthetic and actual-FD001 checks. Required GitHub Actions run
 `31773869033` also passed every Phase 4 quality gate. Phase 6 is staging-only;
 no model has been promoted to production or exposed through a public endpoint.
 
+**Phase 7: Monitoring and retraining** is planned but not started. Its approved
+planning boundary uses deterministic FD001 cycle replay, private monitoring
+reports, delayed-label performance, rule-based retraining-candidate requests,
+and promotion-denied champion/challenger evaluation. It does not authorize
+continuous retraining, NASA test-data fitting, a working UI, or model
+deployment.
+
 Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
 filesystem Storage substitute. The approved hosted Supabase project has passed
 private-bucket, raw-object, checksum, overwrite-denial, metadata, lineage,
@@ -144,6 +151,7 @@ maintenance decisions.
 - [Phase 4 plan](docs/phases/phase-04/PLAN.md)
 - [Phase 5 plan](docs/phases/phase-05/PLAN.md)
 - [Phase 6 plan](docs/phases/phase-06/PLAN.md)
+- [Phase 7 plan](docs/phases/phase-07/PLAN.md)
 
 ## Development
 

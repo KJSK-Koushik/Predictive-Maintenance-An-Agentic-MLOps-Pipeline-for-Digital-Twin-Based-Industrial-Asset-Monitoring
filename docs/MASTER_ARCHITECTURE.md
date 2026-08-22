@@ -6,7 +6,8 @@ This is the master target architecture. Phases 0 through 6 are implemented,
 validated, and owner-approved. The exact Phase 6 FD001 release passed the
 deterministic gate, was published privately, and is active only on the loopback
 staging service. Production, public ingress, automatic promotion, and working
-UI remain unavailable.
+UI remain unavailable. Phase 7 monitoring and retraining-candidate work is
+planned but not started.
 
 ## Architectural principles
 
@@ -365,6 +366,31 @@ environment. There is no Phase 6 public endpoint, production target, automatic
 promotion, monitoring, agent, working dashboard, or digital-shadow persistence.
 Phase 6 does create the early technology-neutral UI design and screen-to-contract
 map; it adds no frontend code or live connection.
+
+## Phase 7 planned boundary
+
+Phase 7 will monitor explicit immutable cycle-replay windows against one
+engine-balanced reference profile for the exact Phase 6 release. It will keep
+data quality, feature shift, prediction shift, sampled service behavior, and
+delayed-label performance separate. Reports will expose lifecycle mix and
+sample adequacy so expected simulated degradation is not silently called model
+failure.
+
+Canonical reports will use content-addressed private Storage objects with
+private operational PostgreSQL identities, alerts, retraining requests, and
+challenger-evaluation outcomes. The existing object, lineage, least-privilege,
+RLS, reconciliation, and separate recovery boundaries remain in force.
+
+A versioned deterministic trigger may open an investigation or candidate
+evaluation. It has no model-registration, alias, approval, deployment,
+rollback, or production authority. Champion/challenger evaluation will reuse
+the Phase 5 engine-level protocol and hand eligible evidence to the existing
+Phase 6 human approval boundary. NASA test rows cannot become training input.
+
+Core monitoring remains typed Python. A thin parameterized Airflow wrapper may
+run only after the direct path passes. Static replay is not live monitoring,
+and no Evidently, Prometheus stack, message broker, Realtime, agent, working UI,
+or public service is planned by default.
 
 ## Technology decisions
 

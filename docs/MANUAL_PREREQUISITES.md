@@ -265,6 +265,38 @@ local staging deployment, and rollback drill were exercised separately.
 The manual GitHub staging workflow remains separate from local staging and is
 not reported as exercised until it runs from the default branch.
 
+## Phase 7 monitoring prerequisites
+
+Complete or explicitly accept these before `START PHASE 7` implementation:
+
+- [ ] Merge the owner-approved, passing Phase 6 PR 12 into `main` and verify
+  the required check on the merged revision.
+- [ ] Confirm the exact approved Phase 6 loopback release may receive bounded
+  Phase 7 replay probes.
+- [ ] Accept that FD001 monitoring uses static simulated cycle replay and is
+  not live, real-time, production, or field evidence.
+- [ ] Keep NASA test rows prohibited from training and configuration selection.
+- [ ] Accept that without new approved labeled training data, an actual
+  retraining request may validly end as no-change or
+  `blocked_no_new_training_data`.
+- [ ] Approve ignored local monitoring evidence under
+  `artifacts/monitoring/`.
+- [ ] Approve the reviewed Phase 7 forward migration in the existing
+  development/test Supabase project only after local migration tests pass.
+- [ ] Approve private derived-bucket writes only under content-addressed
+  `reports/monitoring/`, `reports/retraining/`, and generated integration
+  prefixes.
+- [ ] Confirm no Supabase Auth, Realtime, Cron, public endpoint, paid add-on,
+  managed metrics platform, or paging integration will be provisioned.
+- [ ] Keep all Supabase, PostgreSQL, MLflow, GitHub, and staging configuration
+  in ignored local files or approved secret stores.
+- [ ] Confirm `KJSK-Koushik` remains the human reviewer for any challenger
+  eligibility result.
+
+`START PHASE 7` will accept these recommended values unless the owner changes
+one first. It will not approve a new release, alias change, deployment,
+production action, public service, or paid resource.
+
 ## Phase 8 agent prerequisites
 
 - [ ] Select an LLM provider and approve its data-handling terms.
