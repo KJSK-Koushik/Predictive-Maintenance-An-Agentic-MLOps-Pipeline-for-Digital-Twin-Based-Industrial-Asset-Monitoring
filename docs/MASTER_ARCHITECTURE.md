@@ -2,11 +2,11 @@
 
 ## Status
 
-This is the master target architecture. Phases 0 through 5 are implemented,
-validated, and owner-approved. Phase 6 is in completion validation. Its exact
-FD001 release passed the deterministic gate and owner approval, was published
-privately, and is active only on the loopback staging service. Production,
-public ingress, automatic promotion, and working UI remain unavailable.
+This is the master target architecture. Phases 0 through 6 are implemented,
+validated, and owner-approved. The exact Phase 6 FD001 release passed the
+deterministic gate, was published privately, and is active only on the loopback
+staging service. Production, public ingress, automatic promotion, and working
+UI remain unavailable.
 
 ## Architectural principles
 

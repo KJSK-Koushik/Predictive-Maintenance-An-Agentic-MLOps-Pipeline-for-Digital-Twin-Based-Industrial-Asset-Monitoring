@@ -17,8 +17,8 @@ owner-approved. **Phase 2: Cloud data foundation** is also complete and
 owner-approved. **Phase 3: ETL and orchestration** is complete and
 owner-approved. **Phase 4: Baseline model development** is also complete and
 owner-approved. **Phase 5: Advanced model analysis** is also complete and
-owner-approved. **Phase 6: Model registry and deployment** is in completion
-validation. The exact FD001 release was owner-approved, published to private
+owner-approved. **Phase 6: Model registry and deployment** is complete and
+owner-approved. The exact FD001 release was published to private
 Supabase Storage, recorded in private PostgreSQL metadata, and deployed to the
 loopback-only staging service. API parity and a controlled rollback drill pass.
 The dashboard has an early technology-neutral screen design, but working UI

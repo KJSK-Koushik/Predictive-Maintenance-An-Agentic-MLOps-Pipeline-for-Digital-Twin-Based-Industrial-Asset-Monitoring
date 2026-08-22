@@ -2,7 +2,7 @@
 
 ## Status
 
-**AWAITING APPROVAL**
+**APPROVED**
 
 Implementation was authorized by `START PHASE 6` on 2026-08-22. The owner then
 approved exact staging release
@@ -72,6 +72,7 @@ Only the `staging` aliases were set. No production alias exists.
 | Dependency/security            | Lock, audit, secret scan, trusted-type checks, and image inspection passed                                                                                                             |
 | Implementation GitHub CI       | [Run 32563410951](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/actions/runs/32563410951) passed |
 | Completion GitHub CI           | [Run 32571957238](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/actions/runs/32571957238) passed |
+| Final status GitHub CI         | [Run 32572525259](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/actions/runs/32572525259) passed |
 | Manual GitHub staging workflow | Configured but unexercised because it is not yet on the default branch                                                                                                                 |
 | Production/public deployment   | Not configured and not exercised                                                                                                                                                       |
 
@@ -143,10 +144,12 @@ or access-control gate depends on them.
 ## Completion gates
 
 Every Phase 6 acceptance criterion is satisfied. The final status-only commit
-must retain a passing GitHub Actions result before the handoff is complete.
+retained a passing GitHub Actions result in run `32572525259`.
 
 ## Approval
 
-Phase 6 is ready for owner review. The required next command is:
+The owner explicitly approved Phase 6 on 2026-08-22 with
+`APPROVE PHASE 6`. No Phase 7 planning or implementation has started. The next
+permitted command is:
 
-`APPROVE PHASE 6`
+`PLAN PHASE 7`

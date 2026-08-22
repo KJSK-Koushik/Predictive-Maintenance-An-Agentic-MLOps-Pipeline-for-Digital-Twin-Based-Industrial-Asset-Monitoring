@@ -5,8 +5,8 @@
 | Field                     | Value                                    |
 | ------------------------- | ---------------------------------------- |
 | Current phase             | 6: Model registry and deployment         |
-| Last completed phase      | 5: Advanced model analysis               |
-| State                     | AWAITING_APPROVAL                        |
+| Last completed phase      | 6: Model registry and deployment         |
+| State                     | APPROVED                                 |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
 | Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
@@ -18,7 +18,8 @@
 | Phase 5 approved          | 2026-08-21 by explicit `APPROVE PHASE 5` |
 | Phase 6 planned           | 2026-08-21 by explicit `PLAN PHASE 6`    |
 | Phase 6 started           | 2026-08-22 by explicit `START PHASE 6`   |
-| Next permitted transition | Explicit owner command `APPROVE PHASE 6` |
+| Phase 6 approved          | 2026-08-22 by explicit `APPROVE PHASE 6` |
+| Next permitted transition | Explicit owner command `PLAN PHASE 7`    |
 
 ## Bootstrap record
 
@@ -38,7 +39,7 @@ feature or initializing a cloud service.
 
 | Evidence                   | Status                                                              |
 | -------------------------- | ------------------------------------------------------------------- |
-| Source-of-truth documents  | Phase 6 completion report and approval handoff recorded             |
+| Source-of-truth documents  | Phase 6 completion and owner approval recorded                      |
 | Accepted ADRs              | 26; Phase 5 comparison, gates, and exploratory decisions added      |
 | Phase 1 implementation     | Complete and owner-approved                                         |
 | Unit/contract tests        | Phase 1 evidence: passed locally, 46                                |
@@ -104,6 +105,8 @@ feature or initializing a cloud service.
 | Phase 6 Supabase release   | Four private objects plus approval and deployment records verified  |
 | Phase 6 implementation CI  | Passed: run `32563410951`, job `Phase 4 quality`                    |
 | Phase 6 completion CI      | Passed: run `32571957238`, job `Phase 4 quality`                    |
+| Phase 6 final status CI    | Passed: run `32572525259`, job `Phase 4 quality`                    |
+| Phase 6 owner approval     | Received explicitly on 2026-08-22                                   |
 
 ## Repository observations
 
@@ -245,13 +248,13 @@ backend contracts are implemented, tested, CI-validated, and owner-approved.
 
 ## Phase history
 
-| Phase | State             | Evidence                                    |
-| ----- | ----------------- | ------------------------------------------- |
-| 0     | APPROVED          | `docs/phases/phase-00/COMPLETION_REPORT.md` |
-| 1     | APPROVED          | `docs/phases/phase-01/COMPLETION_REPORT.md` |
-| 2     | APPROVED          | `docs/phases/phase-02/COMPLETION_REPORT.md` |
-| 3     | APPROVED          | `docs/phases/phase-03/COMPLETION_REPORT.md` |
-| 4     | APPROVED          | `docs/phases/phase-04/COMPLETION_REPORT.md` |
-| 5     | APPROVED          | `docs/phases/phase-05/COMPLETION_REPORT.md` |
-| 6     | AWAITING_APPROVAL | `docs/phases/phase-06/COMPLETION_REPORT.md` |
-| 7-10  | NOT_PLANNED       | Await Phase 6 implementation and approval   |
+| Phase | State       | Evidence                                    |
+| ----- | ----------- | ------------------------------------------- |
+| 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
+| 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
+| 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
+| 3     | APPROVED    | `docs/phases/phase-03/COMPLETION_REPORT.md` |
+| 4     | APPROVED    | `docs/phases/phase-04/COMPLETION_REPORT.md` |
+| 5     | APPROVED    | `docs/phases/phase-05/COMPLETION_REPORT.md` |
+| 6     | APPROVED    | `docs/phases/phase-06/COMPLETION_REPORT.md` |
+| 7-10  | NOT_PLANNED | Await explicit `PLAN PHASE 7`               |
