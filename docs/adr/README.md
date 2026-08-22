@@ -44,6 +44,9 @@ and Verification.
 | [0024](0024-phase-5-nested-comparison.md)              | Nested comparison and locked benchmark    | Accepted |
 | [0025](0025-phase-5-complexity-gates.md)               | Nonlinear search and complexity gates     | Accepted |
 | [0026](0026-phase-5-exploratory-telemetry-analysis.md) | Exploratory telemetry analysis            | Accepted |
+| [0027](0027-phase-6-atomic-release-governance.md)      | Atomic two-model release governance       | Accepted |
+| [0028](0028-phase-6-inference-contract.md)             | Verified immutable inference contract     | Accepted |
+| [0029](0029-phase-6-staging-and-rollback.md)           | Loopback staging and rollback             | Accepted |
 
 New ADRs use the next four-digit identifier. Existing ADR content is not
 rewritten to hide a changed decision; create a superseding ADR instead.

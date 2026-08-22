@@ -5,10 +5,13 @@
 Planning was authorized on 2026-08-21 by the explicit command
 `PLAN PHASE 6`, after Phase 5 was owner-approved and merged.
 
-Implementation is not authorized. This plan permits documentation and
-governance changes only. Registry mutation, model approval, release packaging,
-Supabase mutation, API implementation, image building, and deployment must wait
-for `START PHASE 6` and any narrower approval described below.
+Implementation was authorized on 2026-08-22 by the explicit command
+`START PHASE 6`. Registry candidate creation, release-gate implementation,
+local migration work, API implementation, image building, synthetic tests, and
+approved development/test Supabase verification are authorized within this
+plan. Actual selected-model aliasing, packaging, publication, and staging
+deployment still require the narrower exact release-ID approval described
+below.
 
 ## Objective
 
@@ -244,9 +247,8 @@ classification accepted in the completion report.
 
 ## Stop condition
 
-Planning changes only architecture, governance, tests for those governance
-records, and Phase 6 plan documents. Stop after planning checks and GitHub CI
-are verified. Do not register, package, approve, serve, build, migrate, publish,
-or deploy until the owner sends:
+Implementation may continue only within the Phase 6 boundary. After the exact
+actual FD001 release candidate ID is generated, stop before its alias,
+packaging, publication, or deployment mutation and request:
 
-`START PHASE 6`
+`APPROVE PHASE 6 STAGING RELEASE <release-id>`

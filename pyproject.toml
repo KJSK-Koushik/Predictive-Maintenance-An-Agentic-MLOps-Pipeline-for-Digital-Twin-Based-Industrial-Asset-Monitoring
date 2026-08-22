@@ -15,6 +15,7 @@ dependencies = [
   "alembic>=1.19,<2",
   "cryptography==50.0.0",
   "docker>=4,<8",
+  "fastapi>=0.116,<1",
   "flask>=3.1,<4",
   "flask-cors>=6,<7",
   "graphene>=3,<4",
@@ -27,10 +28,12 @@ dependencies = [
   "pandera[pandas]>=0.24,<1",
   "psycopg[binary]>=3.3.4,<4",
   "pyarrow==25.0.0",
+  "pydantic>=2.11,<3",
   "scikit-learn>=1.9,<1.10",
   "skops>=0.14,<1",
   "sqlalchemy>=2,<3",
   "supabase>=2.31,<3",
+  "uvicorn>=0.35,<1",
   "waitress>=3,<4; platform_system == 'Windows'",
 ]
 
@@ -38,11 +41,21 @@ dependencies = [
 publish-fd001 = "predictive_maintenance.cloud.cli:main"
 run-fd001-etl = "predictive_maintenance.etl.cli:main"
 evaluate-fd001-advanced = "predictive_maintenance.modeling.phase5_cli:main"
+prepare-fd001-release = "predictive_maintenance.release.cli:main"
 train-fd001-baselines = "predictive_maintenance.modeling.cli:main"
 validate-fd001 = "predictive_maintenance.data.cli:main"
 
 [dependency-groups]
+inference = [
+  "fastapi>=0.116,<1",
+  "pandas>=2.2,<3",
+  "scikit-learn>=1.9,<1.10",
+  "skops>=0.14,<1",
+  "uvicorn>=0.35,<1",
+]
 dev = [
+  "httpx>=0.28,<1",
+  "httpx2>=2.12,<3",
   "mdformat>=0.7.22,<0.8",
   "mdformat-gfm>=0.4.1,<0.5",
   "mypy>=1.15,<2",
@@ -79,7 +92,9 @@ exclude = ["^Data/", "^data/"]
 [tool.pytest.ini_options]
 addopts = "--strict-config --strict-markers -ra"
 testpaths = ["tests"]
+pythonpath = ["tests"]
 markers = [
+  "api: tests for the Phase 6 inference HTTP contract",
   "cloud: tests that require the explicitly approved hosted Supabase project",
   "dataset: tests that require the ignored owner-provided FD001 dataset",
   "foundation: repository architecture and governance contract tests",
@@ -87,6 +102,8 @@ markers = [
   "postgres: tests that require the local PostgreSQL 17 container",
   "airflow: tests that require the pinned Airflow container",
   "mlflow: tests that start a real loopback-only MLflow tracking server",
+  "registry: tests that exercise the Phase 6 local MLflow registry",
+  "deployment: tests that exercise the Phase 6 container staging boundary",
 ]
 
 [tool.coverage.run]

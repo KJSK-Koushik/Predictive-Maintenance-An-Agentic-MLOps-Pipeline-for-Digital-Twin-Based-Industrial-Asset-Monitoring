@@ -1,5 +1,5 @@
 # yamllint disable rule:line-length
-# Phase 5 reuses these local regression services; it adds no cloud service.
+# Phase 6 adds a loopback-only inference service; PostgreSQL and Airflow remain local.
 services:
   postgres:
     image: postgres:17.10-bookworm@sha256:67870dc097790edf2bd6726658db995dcc830f799d41bb2b78ef07c9a2d5f010
@@ -16,6 +16,7 @@ services:
       - ./tests/integration/postgres/bootstrap_airflow.sql:/docker-entrypoint-initdb.d/001_bootstrap_airflow.sql:ro
       - ./supabase/migrations/20260726144446_phase_02_cloud_metadata.sql:/docker-entrypoint-initdb.d/010_phase_02_cloud_metadata.sql:ro
       - ./supabase/migrations/20260809165753_phase_03_derived_metadata.sql:/docker-entrypoint-initdb.d/020_phase_03_derived_metadata.sql:ro
+      - ./supabase/migrations/20260822070836_phase_06_model_releases.sql:/docker-entrypoint-initdb.d/030_phase_06_model_releases.sql:ro
     healthcheck:
       test:
         - CMD-SHELL
@@ -64,5 +65,28 @@ services:
       start_period: 20s
     mem_limit: 2g
     cpus: 2.0
+    restart: "no"
+
+  inference:
+    build:
+      context: .
+      dockerfile: deployment/inference/Dockerfile
+      args:
+        RELEASE_ID: ${PM_RELEASE_ID:-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+    image: predictive-maintenance-inference:${PM_RELEASE_ID:-phase6-synthetic}
+    environment:
+      APP_ENV: staging
+    ports:
+      - "127.0.0.1:${PM_INFERENCE_PORT:-18000}:8000"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 1g
+    cpus: 1.0
+    pids_limit: 128
     restart: "no"
 # yamllint enable rule:line-length

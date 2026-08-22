@@ -46,6 +46,9 @@ REQUIRED_FILES = (
     "docs/adr/0024-phase-5-nested-comparison.md",
     "docs/adr/0025-phase-5-complexity-gates.md",
     "docs/adr/0026-phase-5-exploratory-telemetry-analysis.md",
+    "docs/adr/0027-phase-6-atomic-release-governance.md",
+    "docs/adr/0028-phase-6-inference-contract.md",
+    "docs/adr/0029-phase-6-staging-and-rollback.md",
     "docs/phases/phase-00/ARCHITECTURE.md",
     "docs/phases/phase-00/PLAN.md",
     "docs/phases/phase-00/ACCEPTANCE_CRITERIA.md",
@@ -290,11 +293,41 @@ def test_current_implementation_stays_inside_approved_roots() -> None:
         "tracking.py",
         "unsupervised.py",
     }
+    release_files = {
+        path.name
+        for path in (ROOT / "src/predictive_maintenance/release").glob("*.py")
+        if path.is_file()
+    }
+    assert release_files == {
+        "__init__.py",
+        "cli.py",
+        "deployment.py",
+        "gates.py",
+        "metadata.py",
+        "models.py",
+        "packaging.py",
+        "publication.py",
+        "registry.py",
+        "trust.py",
+    }
+    serving_files = {
+        path.name
+        for path in (ROOT / "src/predictive_maintenance/serving").glob("*.py")
+        if path.is_file()
+    }
+    assert serving_files == {
+        "__init__.py",
+        "app.py",
+        "config.py",
+        "contracts.py",
+        "predictor.py",
+    }
 
     migrations = sorted((ROOT / "supabase/migrations").glob("*.sql"))
     assert [path.name for path in migrations] == [
         "20260726144446_phase_02_cloud_metadata.sql",
         "20260809165753_phase_03_derived_metadata.sql",
+        "20260822070836_phase_06_model_releases.sql",
     ]
 
 

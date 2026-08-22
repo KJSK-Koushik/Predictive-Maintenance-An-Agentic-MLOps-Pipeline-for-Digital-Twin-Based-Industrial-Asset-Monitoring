@@ -50,7 +50,7 @@ def test_official_airflow_image_and_dependencies_are_pinned() -> None:
 def test_compose_uses_small_loopback_localexecutor_topology() -> None:
     compose = _compose()
     services = compose["services"]
-    assert set(services) == {"airflow", "postgres"}
+    assert set(services) == {"airflow", "inference", "postgres"}
     airflow = services["airflow"]
     assert airflow["environment"]["AIRFLOW__CORE__EXECUTOR"] == "LocalExecutor"
     assert airflow["ports"] == ["127.0.0.1:18080:8080"]

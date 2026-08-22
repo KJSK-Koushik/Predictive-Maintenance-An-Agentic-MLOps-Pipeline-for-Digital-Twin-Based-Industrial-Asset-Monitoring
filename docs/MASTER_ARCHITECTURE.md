@@ -3,9 +3,10 @@
 ## Status
 
 This is the master target architecture. Phases 0 through 5 are implemented,
-validated, and owner-approved. Phase 6 is planned but not started. Registry,
-release, approval, FastAPI, inference-container, staging, and rollback
-components remain designs rather than working integrations.
+validated, and owner-approved. Phase 6 is in progress after the explicit
+`START PHASE 6`. Candidate registry, release governance, FastAPI, and synthetic
+container work are authorized; actual selected-model packaging, aliasing,
+publication, and staging remain blocked until exact release-ID approval.
 
 ## Architectural principles
 
@@ -334,9 +335,9 @@ multi-task neural network is excluded by default because the classification
 label is a deterministic threshold of RUL; adding one requires a separate
 approved plan amendment and ablation hypothesis.
 
-## Phase 6 planned boundary
+## Phase 6 implementation boundary
 
-Phase 6 will register the exact Phase 5 selected models as candidate versions
+Phase 6 registers the exact Phase 5 selected models as candidate versions
 in the existing database-backed local MLflow registry. MLflow owns registered
 names, versions, tags, and aliases. Private operational PostgreSQL owns
 append-only release approval, deployment, and rollback evidence. Registration
@@ -345,7 +346,9 @@ alone grants no deployment authority.
 One canonical release binds the selected regression and classification model
 versions, their trusted `skops` artifacts and signatures, all Phase 5 evidence
 identities, the exact 24-feature contract, dependency-lock digest, approval,
-and previous staging release. The service loads this immutable release at
+and previous staging release. A deterministic approval-request ID avoids a
+circular hash while the later human decision binds both the request and exact
+release IDs. The service loads this immutable release at
 startup and never follows a mutable MLflow alias for each request.
 
 The inference boundary is a bounded FastAPI `/v1` contract with separate
@@ -369,7 +372,7 @@ map; it adds no frontend code or live connection.
 - Pandera is the initial DataFrame contract library.
 - scikit-learn precedes deep learning.
 - MLflow owns experiment and registry metadata.
-- FastAPI is the planned inference boundary.
+- FastAPI is the implemented Phase 6 inference boundary.
 - Airflow is batch orchestration introduced after local ETL.
 - Supabase Storage and direct PostgreSQL are the Phase 2 cloud adapters.
   Filesystem plus PostgreSQL 17 are the exercised local substitutes.

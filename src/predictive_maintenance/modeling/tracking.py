@@ -27,6 +27,7 @@ from predictive_maintenance.modeling.models import (
     canonical_json_bytes,
     sha256_bytes,
 )
+from predictive_maintenance.release.trust import dump_deterministic
 
 EXPERIMENT_NAME = "fd001-phase-4-baselines"
 _TRUSTED_TYPE_PREFIXES = ("builtins.", "numpy.", "sklearn.")
@@ -81,7 +82,7 @@ def _log_model_artifact(model: Any, directory: Path, artifact_key: str) -> str:
     model_directory = directory / f"model-{artifact_key}"
     model_directory.mkdir()
     model_path = model_directory / "model.skops"
-    sio.dump(model, model_path)
+    dump_deterministic(model, model_path)
     digest = sha256_bytes(model_path.read_bytes())
     metadata = Model(signature=_signature())
     metadata.add_flavor(

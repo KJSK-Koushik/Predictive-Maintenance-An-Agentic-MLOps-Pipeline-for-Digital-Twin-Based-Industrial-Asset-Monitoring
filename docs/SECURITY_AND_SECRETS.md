@@ -272,7 +272,7 @@ metapackage is intentionally absent and `pip-audit` remains mandatory.
 - Add no neural framework unless a separately reviewed dependency/security
   change and owner-approved plan amendment exists.
 
-## Phase 6 planned controls
+## Phase 6 controls
 
 - Treat registration, deterministic validation, human approval, alias changes,
   release packaging, deployment, and rollback as separate attributable events.

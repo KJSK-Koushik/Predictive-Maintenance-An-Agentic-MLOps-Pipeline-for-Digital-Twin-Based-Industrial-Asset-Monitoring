@@ -213,6 +213,27 @@ traces must never be rendered.
 The `Current state` column is updated only with recorded evidence. Completing a
 backend does not automatically change a screen to connected.
 
+## Phase 6 inference contract snapshot
+
+The following backend contract is implemented in Phase 6, but every screen
+remains **Design only** until Phase 9 supplies an approved browser-facing read
+model and real screen integration:
+
+| Contract field                       | Meaning                                      |
+| ------------------------------------ | -------------------------------------------- |
+| `engine_id`, `cycle`                 | Positive replay identity; excluded from ML   |
+| 3 settings + 21 sensors              | Exact finite cycle-level model input         |
+| `rul_cycles`                         | Non-negative point estimate                  |
+| `failure_risk_probability`           | Bounded probability in `[0, 1]`              |
+| `failure_risk_label`                 | Threshold 0.5 for the 30-cycle horizon       |
+| `release_id`                         | Immutable atomic two-model release identity  |
+| model names, versions, runs, digests | Immutable task-model provenance              |
+| `predictive_uncertainty_status`      | `not_available`; no interval may be invented |
+
+The service can report `live` while returning `not ready` when its immutable
+release fails verification. A later screen must preserve that difference and
+must not turn unavailable readiness into a green health state.
+
 ## Cross-phase delivery
 
 | Phase | UI responsibility                                                                         |

@@ -230,32 +230,37 @@ mutation.
 These items must be accepted before implementation. Sending `START PHASE 6`
 accepts the recommended values unless the owner changes one first.
 
-- [ ] Accept a loopback-only Docker Compose service on the owner workstation as
+- [x] Accept a loopback-only Docker Compose service on the owner workstation as
   the actual staging target.
-- [ ] Accept an ephemeral GitHub protected-environment run as workflow evidence,
+- [x] Accept an ephemeral GitHub protected-environment run as workflow evidence,
   not as a persistent hosted service.
-- [ ] Explicitly limit Phase 6 to staging. No production target, public ingress,
+- [x] Explicitly limit Phase 6 to staging. No production target, public ingress,
   TLS endpoint, or paid hosting is configured.
-- [ ] Confirm `KJSK-Koushik` as model-promotion, staging-deployment, and rollback
+- [x] Confirm `KJSK-Koushik` as model-promotion, staging-deployment, and rollback
   approver/owner.
-- [ ] Create or approve creation of the GitHub `staging` environment with the
+- [x] Create or approve creation of the GitHub `staging` environment with the
   owner as required reviewer. Leave self-review prevention disabled while this
   remains a one-person project.
-- [ ] Accept five minutes as the local rollback recovery-time test objective;
+- [x] Accept five minutes as the local rollback recovery-time test objective;
   it is not a guarantee until measured.
-- [ ] Continue using loopback-only SQLite-backed MLflow. Do not expose it as a
+- [x] Continue using loopback-only SQLite-backed MLflow. Do not expose it as a
   shared or public service.
-- [ ] Approve the reviewed Phase 6 migration in the same development/test
+- [x] Approve the reviewed Phase 6 migration in the same development/test
   Supabase project after local migration tests pass.
-- [ ] Approve private derived-bucket writes only under
+- [x] Approve private derived-bucket writes only under
   `models/releases/<release-id>/` and generated integration prefixes.
-- [ ] Keep model release, deployment, Supabase, database, and GitHub credentials
+- [x] Keep model release, deployment, Supabase, database, and GitHub credentials
   in ignored local configuration or protected environments only.
-- [ ] Require a separate `APPROVE PHASE 6 STAGING RELEASE <release-id>` command
+- [x] Require a separate `APPROVE PHASE 6 STAGING RELEASE <release-id>` command
   before the actual selected models receive a staging alias or deployment.
 
 `START PHASE 6` does not approve a specific release ID, production deployment,
 public hosting, or a paid resource.
+
+The owner accepted these defaults with `START PHASE 6` on 2026-08-22. Creation
+and exercise of the GitHub environment, reviewed hosted migration, and private
+release objects still require implementation evidence; checked prerequisites
+record authorization, not a successful integration.
 
 ## Phase 8 agent prerequisites
 
