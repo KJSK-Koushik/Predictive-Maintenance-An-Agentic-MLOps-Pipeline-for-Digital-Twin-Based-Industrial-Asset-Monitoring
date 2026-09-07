@@ -12,19 +12,19 @@ remote CI, documentation, evidence, and severity requirements are satisfied.
 
 ## Phase sequence
 
-| Phase | Outcome                                                         | Entry dependency    | Explicit exclusions                           |
-| ----- | --------------------------------------------------------------- | ------------------- | --------------------------------------------- |
-| 0     | Charter, architecture, decisions, threat model, CI foundation   | Owner start command | Feature code, data processing, cloud services |
-| 1     | Local FD001 integrity, ingestion, contract, labels, exploration | Approved Phase 0    | Supabase, Airflow, model training             |
-| 2     | Cloud object zones, PostgreSQL migrations, lineage, idempotency | Approved Phase 1    | ETL scheduling, model training                |
-| 3     | Reproducible ETL wrapped by Airflow                             | Approved Phase 2    | Model development                             |
-| 4     | Leakage-safe fixed baselines and local MLflow tracking          | Approved Phase 3    | Tuning, registry, serving, deployment         |
-| 5     | Justified tuning, uncertainty, clustering, anomaly analysis     | Approved Phase 4    | Serving and production promotion              |
-| 6     | Registry gates, release packaging, FastAPI, staging rollback    | Approved Phase 5    | Automatic production deployment               |
-| 7     | Data/model/service monitoring and retraining candidates         | Approved Phase 6    | Automatic promotion                           |
-| 8     | Bounded agents and non-agentic comparison                       | Approved Phase 7    | Approval or maintenance authority             |
-| 9     | Asset-health dashboard and optional authentication              | Approved Phase 8    | Claims of physical twin or hard real time     |
-| 10    | End-to-end evaluation, recovery demos, audits, final package    | Approved Phase 9    | Unvalidated scope expansion                   |
+| Phase | Outcome                                                          | Entry dependency    | Explicit exclusions                           |
+| ----- | ---------------------------------------------------------------- | ------------------- | --------------------------------------------- |
+| 0     | Charter, architecture, decisions, threat model, CI foundation    | Owner start command | Feature code, data processing, cloud services |
+| 1     | Local FD001 integrity, ingestion, contract, labels, exploration  | Approved Phase 0    | Supabase, Airflow, model training             |
+| 2     | Cloud object zones, PostgreSQL migrations, lineage, idempotency  | Approved Phase 1    | ETL scheduling, model training                |
+| 3     | Reproducible ETL wrapped by Airflow                              | Approved Phase 2    | Model development                             |
+| 4     | Leakage-safe fixed baselines and local MLflow tracking           | Approved Phase 3    | Tuning, registry, serving, deployment         |
+| 5     | Justified tuning, uncertainty, clustering, anomaly analysis      | Approved Phase 4    | Serving and production promotion              |
+| 6     | Registry, API, staging rollback, and early UI design             | Approved Phase 5    | Frontend code or automatic production deploy  |
+| 7     | Monitoring, retraining candidates, and stable monitor contracts  | Approved Phase 6    | Automatic promotion or frontend code          |
+| 8     | Bounded agents, comparison, and stable recommendation contracts  | Approved Phase 7    | Approval authority or frontend code           |
+| 9     | Incrementally connected asset-health dashboard and optional auth | Approved Phase 8    | Physical-twin or hard-real-time claims        |
+| 10    | End-to-end evaluation, recovery demos, audits, final package     | Approved Phase 9    | Unvalidated scope expansion                   |
 
 ## Cross-phase quality-gate growth
 
@@ -49,14 +49,33 @@ remote CI, documentation, evidence, and severity requirements are satisfied.
 - Phase 4 uses one engine-disjoint split, fixed Ridge and logistic candidates,
   dummy-relative eligibility gates, and local MLflow. It is complete and
   owner-approved.
-- Phase 5 determines whether bounded nonlinear complexity adds measurable
-  value through nested engine-group comparison and may retain the linear
-  baseline.
+- Phase 5 determined whether bounded nonlinear complexity added measurable
+  value. It selected histogram gradient boosting for RUL and retained logistic
+  regression for failure risk.
 - Phase 5 calls unsupervised outputs exploratory telemetry states and novelty
   scores because FD001 has no ground-truth health-state or anomaly labels.
+- Phase 6 packages those two selected task models into one immutable,
+  human-approved staging release. Local or ephemeral staging is not production.
+- Phase 6 also establishes technology-neutral screen designs. It adds no
+  frontend framework or working dashboard.
 - Phase 7 establishes a conventional monitored MLOps workflow.
 - Phase 8 compares agents with that fixed conventional baseline.
+- Phase 9 implements and connects one screen at a time, only after that screen's
+  versioned backend contracts have passed their owning phases.
 - Phase 10 reports exercised capabilities and avoids generalizing beyond FD001.
+
+## UI delivery sequence
+
+The source-of-truth screen designs and contract maturity rules are in
+[`UI_ARCHITECTURE.md`](UI_ARCHITECTURE.md).
+
+| Stage             | Meaning                                                              | Owning phases |
+| ----------------- | -------------------------------------------------------------------- | ------------- |
+| Design early      | Screen purpose, layout, states, wording, and dependencies exist      | 6             |
+| Stabilize APIs    | Versioned backend contracts pass deterministic and integration tests | 6-8           |
+| Build later       | The frontend shell and components are implemented                    | 9             |
+| Connect safely    | Each screen is connected only to stable contracts                    | 9             |
+| Verify end to end | Browser success, failure, security, and accessibility paths pass     | 9-10          |
 
 ## Deferred decisions
 

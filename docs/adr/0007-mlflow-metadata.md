@@ -43,4 +43,5 @@ requires access controls.
 ## Verification
 
 Later integration tests confirm cross-system identifiers, artifact retrieval,
-registry transitions, and backup/restore behavior.
+registry transitions, and backup/restore behavior. Phase 6 implements this
+boundary in [ADR 0027](0027-phase-6-atomic-release-governance.md).

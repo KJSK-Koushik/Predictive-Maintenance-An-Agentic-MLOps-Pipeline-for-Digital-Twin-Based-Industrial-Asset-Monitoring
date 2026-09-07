@@ -228,12 +228,28 @@ NASA test is not described as blind in Phase 5 because its Phase 4 results are
 already known. Clustering and novelty tests prove software behavior and
 stability, not ground-truth health-state or anomaly-detection accuracy.
 
-### Phases 6-7
+### Phase 6
 
-- registry transition tests;
-- API schema and error-contract tests;
-- container build and smoke tests;
-- staging deployment and rollback;
+- exact Phase 5 selection, source-run, signature, digest, and trusted-artifact
+  release gates;
+- real local MLflow registry version, tag, alias, retrieval, restore, and
+  promotion-denial tests;
+- private operational release/approval/deployment migration, grant, RLS,
+  idempotency, and recovery tests;
+- canonical two-model release packaging, publication, reconciliation, and
+  tamper tests;
+- FastAPI request, response, OpenAPI, liveness, readiness, error, size, and
+  redaction contract tests;
+- direct-model, packaged-model, in-process API, and container prediction parity;
+- pinned non-root container build, inspection, health, and smoke tests;
+- owner-approved local actual-FD001 staging, failed-candidate containment,
+  rollback, and measured recovery tests;
+- separate PR CI, hosted Supabase, local staging, and protected-environment
+  evidence; and
+- explicit production-target and automatic-promotion denial tests.
+
+### Phase 7
+
 - drift and retraining-trigger tests; and
 - champion/challenger promotion-denial tests.
 

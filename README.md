@@ -17,12 +17,17 @@ owner-approved. **Phase 2: Cloud data foundation** is also complete and
 owner-approved. **Phase 3: ETL and orchestration** is complete and
 owner-approved. **Phase 4: Baseline model development** is also complete and
 owner-approved. **Phase 5: Advanced model analysis** is also complete and
-owner-approved.
+owner-approved. **Phase 6: Model registry and deployment** is complete and
+owner-approved. The exact FD001 release was published to private
+Supabase Storage, recorded in private PostgreSQL metadata, and deployed to the
+loopback-only staging service. API parity and a controlled rollback drill pass.
+The dashboard has an early technology-neutral screen design, but working UI
+code and backend connections remain Phase 9 work.
 Leakage-safe Ridge and logistic candidates, dummy references, aggregate
 evaluation, and local SQLite-backed MLflow tracking are implemented and have
 passed local synthetic and actual-FD001 checks. Required GitHub Actions run
-`31773869033` also passed every Phase 4 quality gate. No model has been
-registered, promoted, served, or deployed.
+`31773869033` also passed every Phase 4 quality gate. Phase 6 is staging-only;
+no model has been promoted to production or exposed through a public endpoint.
 
 Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
 filesystem Storage substitute. The approved hosted Supabase project has passed
@@ -130,6 +135,7 @@ maintenance decisions.
 - [Security and secrets](docs/SECURITY_AND_SECRETS.md)
 - [Test strategy](docs/TEST_STRATEGY.md)
 - [Data contract](docs/DATA_CONTRACT.md)
+- [UI architecture](docs/UI_ARCHITECTURE.md)
 - [Architecture decision records](docs/adr/README.md)
 - [Phase 0 plan](docs/phases/phase-00/PLAN.md)
 - [Phase 1 plan](docs/phases/phase-01/PLAN.md)
@@ -137,6 +143,7 @@ maintenance decisions.
 - [Phase 3 plan](docs/phases/phase-03/PLAN.md)
 - [Phase 4 plan](docs/phases/phase-04/PLAN.md)
 - [Phase 5 plan](docs/phases/phase-05/PLAN.md)
+- [Phase 6 plan](docs/phases/phase-06/PLAN.md)
 
 ## Development
 

@@ -227,11 +227,43 @@ mutation.
 
 ## Phase 6 deployment prerequisites
 
-- [ ] Choose a staging target.
-- [ ] Define a production target or explicitly limit the project to staging.
-- [ ] Define the model-promotion and deployment approvers.
-- [ ] Configure protected deployment environments separately from CI.
-- [ ] Approve rollback ownership and recovery objectives.
+These items must be accepted before implementation. Sending `START PHASE 6`
+accepts the recommended values unless the owner changes one first.
+
+- [x] Accept a loopback-only Docker Compose service on the owner workstation as
+  the actual staging target.
+- [x] Accept an ephemeral GitHub protected-environment run as workflow evidence,
+  not as a persistent hosted service.
+- [x] Explicitly limit Phase 6 to staging. No production target, public ingress,
+  TLS endpoint, or paid hosting is configured.
+- [x] Confirm `KJSK-Koushik` as model-promotion, staging-deployment, and rollback
+  approver/owner.
+- [x] Create or approve creation of the GitHub `staging` environment with the
+  owner as required reviewer. Leave self-review prevention disabled while this
+  remains a one-person project.
+- [x] Accept five minutes as the local rollback recovery-time test objective;
+  it is not a guarantee until measured.
+- [x] Continue using loopback-only SQLite-backed MLflow. Do not expose it as a
+  shared or public service.
+- [x] Approve the reviewed Phase 6 migration in the same development/test
+  Supabase project after local migration tests pass.
+- [x] Approve private derived-bucket writes only under
+  `models/releases/<release-id>/` and generated integration prefixes.
+- [x] Keep model release, deployment, Supabase, database, and GitHub credentials
+  in ignored local configuration or protected environments only.
+- [x] Require a separate `APPROVE PHASE 6 STAGING RELEASE <release-id>` command
+  before the actual selected models receive a staging alias or deployment.
+- [x] Owner approved exact release
+  `e230ac64e5fc3e3dd294067236210904376fe7591f776a25b03a2a6e614ccf22`.
+
+`START PHASE 6` does not approve a specific release ID, production deployment,
+public hosting, or a paid resource.
+
+The owner accepted these defaults with `START PHASE 6` on 2026-08-22. The
+GitHub environment configuration, hosted migration, private release objects,
+local staging deployment, and rollback drill were exercised separately.
+The manual GitHub staging workflow remains separate from local staging and is
+not reported as exercised until it runs from the default branch.
 
 ## Phase 8 agent prerequisites
 

@@ -27,10 +27,13 @@ ROOT = Path(__file__).resolve().parents[3]
 EXPECTED_TABLES = {
     "data_objects",
     "dataset_snapshots",
+    "deployment_events",
     "derived_snapshot_files",
     "derived_snapshots",
     "ingestion_runs",
     "lineage_edges",
+    "model_releases",
+    "release_decisions",
     "snapshot_files",
     "transformation_runs",
 }
@@ -74,6 +77,9 @@ def clean_operational_tables() -> Iterator[None]:
         connection.execute(
             """
             truncate table
+                ops.deployment_events,
+                ops.release_decisions,
+                ops.model_releases,
                 ops.transformation_runs,
                 ops.derived_snapshot_files,
                 ops.derived_snapshots,
@@ -224,10 +230,13 @@ def test_postgres_publication_is_idempotent_and_complete(tmp_path: Path) -> None
     assert counts == {
         "data_objects": 5,
         "dataset_snapshots": 1,
+        "deployment_events": 0,
         "derived_snapshot_files": 0,
         "derived_snapshots": 0,
         "ingestion_runs": 1,
         "lineage_edges": 4,
+        "model_releases": 0,
+        "release_decisions": 0,
         "snapshot_files": 4,
         "transformation_runs": 0,
     }
@@ -528,6 +537,15 @@ def test_metadata_and_object_backup_restore_reconciles(
             restore_database,
             "--file",
             "/docker-entrypoint-initdb.d/020_phase_03_derived_metadata.sql",
+        )
+        _compose_exec(
+            "psql",
+            "--username=postgres",
+            "--set=ON_ERROR_STOP=1",
+            "--dbname",
+            restore_database,
+            "--file",
+            "/docker-entrypoint-initdb.d/030_phase_06_model_releases.sql",
         )
         _compose_exec(
             "psql",

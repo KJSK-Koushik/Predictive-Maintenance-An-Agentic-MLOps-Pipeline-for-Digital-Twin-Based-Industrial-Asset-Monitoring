@@ -32,6 +32,7 @@ REQUIRED_FILES = (
     "docs/SECURITY_AND_SECRETS.md",
     "docs/TEST_STRATEGY.md",
     "docs/DATA_CONTRACT.md",
+    "docs/UI_ARCHITECTURE.md",
     "docs/adr/README.md",
     "docs/adr/0015-phase-2-object-storage.md",
     "docs/adr/0016-phase-2-postgres-security.md",
@@ -45,6 +46,9 @@ REQUIRED_FILES = (
     "docs/adr/0024-phase-5-nested-comparison.md",
     "docs/adr/0025-phase-5-complexity-gates.md",
     "docs/adr/0026-phase-5-exploratory-telemetry-analysis.md",
+    "docs/adr/0027-phase-6-atomic-release-governance.md",
+    "docs/adr/0028-phase-6-inference-contract.md",
+    "docs/adr/0029-phase-6-staging-and-rollback.md",
     "docs/phases/phase-00/ARCHITECTURE.md",
     "docs/phases/phase-00/PLAN.md",
     "docs/phases/phase-00/ACCEPTANCE_CRITERIA.md",
@@ -76,6 +80,11 @@ REQUIRED_FILES = (
     "docs/phases/phase-05/ACCEPTANCE_CRITERIA.md",
     "docs/phases/phase-05/TEST_PLAN.md",
     "docs/phases/phase-05/COMPLETION_REPORT.md",
+    "docs/phases/phase-06/ARCHITECTURE.md",
+    "docs/phases/phase-06/PLAN.md",
+    "docs/phases/phase-06/ACCEPTANCE_CRITERIA.md",
+    "docs/phases/phase-06/TEST_PLAN.md",
+    "docs/phases/phase-06/COMPLETION_REPORT.md",
 )
 
 ADR_REQUIRED_HEADINGS = (
@@ -127,7 +136,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         assert state_match.group(1) == "APPROVED"
         assert re.search(r"\|\s*Last completed phase\s*\|\s*1:", status)
     else:
-        assert current_phase.startswith(("0", "1", "2", "3", "4", "5"))
+        assert current_phase.startswith(("0", "1", "2", "3", "4", "5", "6"))
 
     phase_directories = sorted((ROOT / "docs/phases").glob("phase-*"))
     assert [path.name for path in phase_directories] == [
@@ -137,6 +146,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         "phase-03",
         "phase-04",
         "phase-05",
+        "phase-06",
     ]
 
 
@@ -206,7 +216,7 @@ def test_committed_telemetry_fixtures_use_canonical_lf_bytes() -> None:
 
 
 @pytest.mark.foundation
-def test_phase_five_implementation_stays_inside_approved_roots() -> None:
+def test_current_implementation_stays_inside_approved_roots() -> None:
     prohibited = ("airflow", "dashboard", "services", "models")
     present = [name for name in prohibited if (ROOT / name).exists()]
     assert not present, f"Later-phase implementation roots present: {present}"
@@ -283,11 +293,41 @@ def test_phase_five_implementation_stays_inside_approved_roots() -> None:
         "tracking.py",
         "unsupervised.py",
     }
+    release_files = {
+        path.name
+        for path in (ROOT / "src/predictive_maintenance/release").glob("*.py")
+        if path.is_file()
+    }
+    assert release_files == {
+        "__init__.py",
+        "cli.py",
+        "deployment.py",
+        "gates.py",
+        "metadata.py",
+        "models.py",
+        "packaging.py",
+        "publication.py",
+        "registry.py",
+        "trust.py",
+    }
+    serving_files = {
+        path.name
+        for path in (ROOT / "src/predictive_maintenance/serving").glob("*.py")
+        if path.is_file()
+    }
+    assert serving_files == {
+        "__init__.py",
+        "app.py",
+        "config.py",
+        "contracts.py",
+        "predictor.py",
+    }
 
     migrations = sorted((ROOT / "supabase/migrations").glob("*.sql"))
     assert [path.name for path in migrations] == [
         "20260726144446_phase_02_cloud_metadata.sql",
         "20260809165753_phase_03_derived_metadata.sql",
+        "20260822070836_phase_06_model_releases.sql",
     ]
 
 
@@ -425,3 +465,23 @@ def test_charter_contains_claim_boundaries() -> None:
     )
     missing = [term for term in required_terms if term not in normalized]
     assert not missing, f"Missing claim-boundary terms: {missing}"
+
+
+@pytest.mark.foundation
+def test_ui_design_is_early_but_integration_is_contract_gated() -> None:
+    ui_architecture = (ROOT / "docs/UI_ARCHITECTURE.md").read_text(encoding="utf-8")
+    normalized = re.sub(r"\s+", " ", ui_architecture).lower()
+
+    required_terms = (
+        "design only",
+        "contract stable",
+        "connect",
+        "phase 9",
+        "non-mocked integration test",
+        "owner-approved",
+    )
+    missing = [term for term in required_terms if term not in normalized]
+    assert not missing, f"Missing UI delivery terms: {missing}"
+
+    assert "frontend framework" in normalized
+    assert "must not add" in normalized

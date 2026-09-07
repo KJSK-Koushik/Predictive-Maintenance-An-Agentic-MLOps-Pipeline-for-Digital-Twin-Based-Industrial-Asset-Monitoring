@@ -1,0 +1,78 @@
+# Manual, protected, ephemeral staging validation. No production target exists.
+name: staging-validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_id:
+        description: Expected immutable synthetic release SHA-256
+        required: true
+        type: string
+      target:
+        description: Non-production target
+        required: true
+        default: staging
+        type: choice
+        options:
+          - staging
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-${{ inputs.release_id }}
+  cancel-in-progress: false
+
+jobs:
+  validate-staging:
+    name: Protected staging validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: staging
+    env:
+      PM_RELEASE_ID: ${{ inputs.release_id }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09  # v5
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
+        with:
+          python-version: "3.11"
+
+      - name: Install locked environment manager
+        run: python -m pip install --disable-pip-version-check uv==0.11.8
+
+      - name: Synchronize locked environment
+        run: uv sync --locked --dev
+
+      - name: Reject malformed identity or non-staging target
+        shell: bash
+        run: |
+          [[ "${{ inputs.target }}" == "staging" ]]
+          [[ "${PM_RELEASE_ID}" =~ ^[0-9a-f]{64}$ ]]
+
+      - name: Reproduce exact synthetic release
+        shell: bash
+        run: |
+          actual="$(
+            PYTHONPATH=tests uv run python \
+              tests/integration/deployment/build_synthetic_release.py \
+              --output artifacts/inference-release
+          )"
+          test "${actual}" = "${PM_RELEASE_ID}"
+          release_dir="${GITHUB_WORKSPACE}/artifacts/inference-release"
+          echo "PM_CONTAINER_RELEASE_DIR=${release_dir}" >> "${GITHUB_ENV}"
+
+      - name: Build and start isolated loopback staging image
+        run: |
+          docker compose build inference
+          docker compose up -d --wait inference
+
+      - name: Run smoke and prediction parity
+        run: uv run pytest -m "deployment and not dataset and not cloud"
+
+      - name: Stop ephemeral staging containers
+        if: always()
+        run: docker compose down --volumes

@@ -50,7 +50,7 @@ def test_actions_are_pinned_to_full_commit_shas() -> None:
 
 
 @pytest.mark.integration
-def test_workflow_runs_all_phase_four_quality_gates() -> None:
+def test_workflow_runs_all_phase_six_quality_gates() -> None:
     workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
     normalized_workflow_text = " ".join(workflow_text.split())
     required_commands = (
@@ -61,18 +61,25 @@ def test_workflow_runs_all_phase_four_quality_gates() -> None:
         "mypy src tests",
         "docker compose config --quiet",
         "docker compose up -d --wait postgres",
-        '"not integration and not dataset and not postgres and not cloud"',
+        (
+            '"not integration and not dataset and not postgres and not cloud '
+            'and not deployment"'
+        ),
         (
             '"integration and not dataset and not postgres and not airflow '
-            'and not mlflow and not cloud"'
+            'and not mlflow and not cloud and not deployment"'
         ),
         '"mlflow and not dataset and not cloud"',
         '"postgres and not dataset and not cloud"',
+        "tests/integration/deployment/build_synthetic_release.py",
+        "docker compose build inference",
+        "docker compose up -d --wait inference",
+        '"deployment and not dataset and not cloud"',
         "install -d -m 0777 artifacts/cloud-objects",
         "docker compose build airflow",
         "docker compose up -d --wait airflow",
         '"airflow and not dataset and not cloud"',
-        '"not dataset and not airflow and not cloud"',
+        '"not dataset and not airflow and not cloud and not deployment"',
         "--cov=src/predictive_maintenance",
         "--cov-fail-under=90",
         "mdformat --check",
@@ -92,13 +99,13 @@ def test_workflow_runs_all_phase_four_quality_gates() -> None:
 def test_pull_request_ci_contains_no_release_or_cloud_mutation() -> None:
     workflow = _load_workflow()
     prohibited = (
-        "deploy",
-        "release",
-        "promote",
+        "supabase db push",
+        "mlflow set-registered-model-alias",
         "supabase db",
         "supabase storage",
         "docker push",
         "mlflow register",
+        "environment: staging",
     )
     commands_and_names: list[str] = []
 
@@ -111,6 +118,21 @@ def test_pull_request_ci_contains_no_release_or_cloud_mutation() -> None:
     found = [term for term in prohibited if term in combined]
     assert not found, f"CI contains mutation/release terms: {found}"
     assert "secrets." not in WORKFLOW_PATH.read_text(encoding="utf-8")
+
+
+@pytest.mark.integration
+def test_manual_staging_workflow_is_protected_and_non_production() -> None:
+    path = ROOT / ".github/workflows/staging.yml"
+    workflow = yaml.load(path.read_text(encoding="utf-8"), Loader=yaml.BaseLoader)
+    assert isinstance(workflow, dict)
+    assert set(workflow["on"]) == {"workflow_dispatch"}
+    assert workflow["permissions"] == {"contents": "read"}
+    text = path.read_text(encoding="utf-8")
+    assert "environment: staging" in text
+    assert "pull_request:" not in text
+    assert "secrets." not in text
+    assert "production" in text.lower()
+    assert "docker compose build inference" in text
 
 
 @pytest.mark.integration

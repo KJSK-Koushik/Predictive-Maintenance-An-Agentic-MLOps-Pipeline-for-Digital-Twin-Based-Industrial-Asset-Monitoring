@@ -7,3 +7,10 @@
 !orchestration/
 !orchestration/airflow/
 !orchestration/airflow/requirements.txt
+!deployment/
+!deployment/inference/
+!deployment/inference/Dockerfile
+!deployment/inference/runtime-requirements.txt
+!artifacts/
+!artifacts/inference-release/
+!artifacts/inference-release/**

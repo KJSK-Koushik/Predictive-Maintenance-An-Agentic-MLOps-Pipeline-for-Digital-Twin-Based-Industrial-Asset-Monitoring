@@ -43,4 +43,5 @@ success.
 ## Verification
 
 Repository integration tests reject deployment commands in the CI workflow.
-Later phases test protected deployment and rollback workflows.
+Phase 6 applies the staging form of this decision in
+[ADR 0029](0029-phase-6-staging-and-rollback.md).

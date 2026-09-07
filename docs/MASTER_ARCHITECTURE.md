@@ -2,11 +2,11 @@
 
 ## Status
 
-This is the master target architecture. Phases 0 through 4 are approved.
-Phase 4 baseline modeling is implemented, validated, and owner-approved.
-It adds only verified feature loading, engine-level splitting, fixed baselines,
-aggregate evaluation, and local MLflow tracking. Components assigned to Phase
-5 or later remain designs, not working integrations.
+This is the master target architecture. Phases 0 through 6 are implemented,
+validated, and owner-approved. The exact Phase 6 FD001 release passed the
+deterministic gate, was published privately, and is active only on the loopback
+staging service. Production, public ingress, automatic promotion, and working
+UI remain unavailable.
 
 ## Architectural principles
 
@@ -18,6 +18,8 @@ aggregate evaluation, and local MLflow tracking. Components assigned to Phase
 1. Metadata has one authoritative owner; references prevent duplication.
 1. Mocked, emulated, replayed, staging, and production evidence are distinct.
 1. Failure, rollback, and recovery paths are first-class architecture.
+1. UI design starts early, but a screen connects only after its versioned
+   backend contract is stable and tested.
 
 ## System context
 
@@ -78,8 +80,9 @@ Arrows show intended information flow, not current implementation.
 | Airflow               | Schedule and observe already-tested batch functions         | 3              |
 | Monitor               | Evaluate data, prediction, service, and performance signals | 7              |
 | Retraining controller | Open candidate evaluations without promotion authority      | 7              |
-| Digital-shadow store  | Hold the latest versioned asset-health state                | 6              |
-| Dashboard             | Render state, uncertainty, provenance, and audit evidence   | 9              |
+| Digital-shadow store  | Hold the latest versioned asset-health state                | 9              |
+| Dashboard design      | Define screen hierarchy, states, wording, and dependencies  | 6              |
+| Dashboard runtime     | Render stable state, provenance, monitoring, and audit APIs | 9              |
 
 ### Agent plane
 
@@ -218,6 +221,21 @@ does not infer an environment from a credential value.
 Every crossing requires authenticated identity, least privilege, input
 validation, logging, and a documented failure mode.
 
+## UI delivery boundary
+
+The dashboard follows a design-first, contract-gated sequence documented in
+[`UI_ARCHITECTURE.md`](UI_ARCHITECTURE.md). Phase 6 creates technology-neutral
+screen designs and dependency maps only. Phases 6 through 8 stabilize the
+release, inference, monitoring, recommendation, and audit contracts owned by
+those phases. Phase 9 selects the frontend stack, implements the working UI,
+and connects one screen at a time after all of that screen's dependencies are
+stable.
+
+The browser never reads internal PostgreSQL schemas, Storage objects, or MLflow
+directly. A later versioned read boundary provides only the fields required by
+the dashboard. Mock or fixture data may support design and component tests but
+cannot be called a connected integration.
+
 ## Failure and recovery design
 
 | Failure                  | Required behavior                                    |
@@ -317,13 +335,44 @@ multi-task neural network is excluded by default because the classification
 label is a deterministic threshold of RUL; adding one requires a separate
 approved plan amendment and ablation hypothesis.
 
+## Phase 6 implementation boundary
+
+Phase 6 registers the exact Phase 5 selected models as candidate versions
+in the existing database-backed local MLflow registry. MLflow owns registered
+names, versions, tags, and aliases. Private operational PostgreSQL owns
+append-only release approval, deployment, and rollback evidence. Registration
+alone grants no deployment authority.
+
+One canonical release binds the selected regression and classification model
+versions, their trusted `skops` artifacts and signatures, all Phase 5 evidence
+identities, the exact 24-feature contract, dependency-lock digest, approval,
+and previous staging release. A deterministic approval-request ID avoids a
+circular hash while the later human decision binds both the request and exact
+release IDs. The service loads this immutable release at
+startup and never follows a mutable MLflow alias for each request.
+
+The inference boundary is a bounded FastAPI `/v1` contract with separate
+liveness and verified-model readiness. It returns non-negative RUL and
+inclusive 30-cycle failure-risk outputs with immutable provenance. It reports
+that per-prediction uncertainty is unavailable; Phase 5 evaluation intervals
+are not prediction intervals.
+
+The default staging topology is one release-specific, non-root container bound
+to loopback with candidate-slot smoke testing and rollback to a previous
+immutable release. Pull-request CI builds and tests a synthetic release but
+does not deploy. A separate manual workflow references a protected `staging`
+environment. There is no Phase 6 public endpoint, production target, automatic
+promotion, monitoring, agent, working dashboard, or digital-shadow persistence.
+Phase 6 does create the early technology-neutral UI design and screen-to-contract
+map; it adds no frontend code or live connection.
+
 ## Technology decisions
 
 - Python 3.11 is the Phase 0 baseline.
 - Pandera is the initial DataFrame contract library.
 - scikit-learn precedes deep learning.
 - MLflow owns experiment and registry metadata.
-- FastAPI is the planned inference boundary.
+- FastAPI is the implemented Phase 6 inference boundary.
 - Airflow is batch orchestration introduced after local ETL.
 - Supabase Storage and direct PostgreSQL are the Phase 2 cloud adapters.
   Filesystem plus PostgreSQL 17 are the exercised local substitutes.
