@@ -300,7 +300,7 @@ metapackage is intentionally absent and `pip-audit` remains mandatory.
 - Keep pull-request CI credential-free and deployment-free. Use a separate
   manual protected `staging` environment for deployment workflow evidence.
 
-## Phase 7 planned controls
+## Phase 7 controls
 
 - Bind every reference, replay window, policy, report, label attachment,
   alert, request, and evaluation to immutable identifiers and SHA-256 evidence.
@@ -311,7 +311,7 @@ metapackage is intentionally absent and `pip-audit` remains mandatory.
   references only.
 - Keep monitoring tables in private `ops`, outside the Data API, with denied
   client roles, narrow runtime grants, and RLS defense in depth.
-- Publish report objects with put-if-absent and downloaded digest verification.
+- Publish report objects with put-if-absent and stored-byte digest verification.
 - Keep delayed labels separate from prediction generation and reject key,
   partition, snapshot, or timing mismatches.
 - Give the trigger and challenger controllers no registry-alias, deployment,

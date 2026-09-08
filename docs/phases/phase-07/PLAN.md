@@ -5,9 +5,11 @@
 Planning was authorized on 2026-08-22 by the explicit command
 `PLAN PHASE 7`, after Phase 6 was owner-approved.
 
-This command authorizes documentation and planning only. Monitoring,
-PostgreSQL migration, Storage writes, Airflow changes, model evaluation, and
-other implementation remain prohibited until `START PHASE 7` is received.
+Implementation was authorized on 2026-09-07 by the explicit command
+`START PHASE 7`. The recommended manual prerequisites were accepted without
+changes. This authorization remains limited to the Phase 7 scope and does not
+authorize model promotion, deployment, production access, public services, or
+paid resources.
 
 ## Objective
 

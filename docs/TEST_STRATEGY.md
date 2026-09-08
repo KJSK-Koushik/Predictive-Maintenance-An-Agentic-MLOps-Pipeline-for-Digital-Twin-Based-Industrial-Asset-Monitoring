@@ -250,6 +250,10 @@ stability, not ground-truth health-state or anomaly-detection accuracy.
 
 ### Phase 7
 
+Phase 7 uses separate evidence classes so a synthetic fixture, local
+filesystem, PostgreSQL container, hosted Supabase project, actual FD001 replay,
+and GitHub runner are never presented as interchangeable proof.
+
 - canonical reference, replay-window, policy, report, label-attachment, alert,
   request, and challenger-evaluation identity tests;
 - engine-balanced data-quality, sample-adequacy, feature-shift,
@@ -258,8 +262,8 @@ stability, not ground-truth health-state or anomaly-detection accuracy.
   tests;
 - deterministic investigation, persistent-drift, performance-trigger,
   deduplication, and conflict tests;
-- synthetic champion/challenger pass, fail, no-change, whole-engine comparison,
-  and promotion-denial tests;
+- synthetic champion/challenger pass, fail, no-change, deterministic 2,000
+  resample paired whole-engine intervals, and promotion-denial tests;
 - private PostgreSQL migration, grants, RLS, append-only evidence,
   reconciliation, backup, and restore tests;
 - direct versus thin-Airflow identity, retry, and idempotency tests;

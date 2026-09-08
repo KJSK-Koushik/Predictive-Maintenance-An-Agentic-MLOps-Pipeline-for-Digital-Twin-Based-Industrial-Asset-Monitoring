@@ -279,25 +279,29 @@ This contract is implemented and exercised by the owner-approved loopback
 staging release. It is not a production, public, real-time, or safety contract,
 and no screen connects to it before Phase 9.
 
-## Phase 7 planned monitoring contract
+## Phase 7 monitoring contract
 
-Phase 7 will not change the FD001 telemetry, feature, target, split, comparison,
-selection, release, or inference contracts. It will add separate versioned
+Phase 7 does not change the FD001 telemetry, feature, target, split, comparison,
+selection, release, or inference contracts. It adds separate versioned
 monitoring evidence over the exact Phase 6 release.
 
-`fd001-monitor-reference-v1` will bind an engine-balanced aggregate profile of
-the approved source-training inputs and release outputs. It contains fixed
-reference bins, bounded distribution summaries, lifecycle and operating-setting
-composition, sample-adequacy rules, and versioned thresholds. It contains no
-complete telemetry or prediction dump.
+`fd001-monitor-reference-v1` binds an engine-balanced aggregate profile of the
+approved source-training inputs. It contains fixed per-feature bins, bounded
+distribution summaries, lifecycle and operating-setting composition, and the
+identity of `fd001-monitor-trigger-policy-v1`, which fixes sample-adequacy and
+effect-size thresholds before a window is read. Reference release-output
+distributions are supplied separately to the report calculation and their
+bounded computed signal becomes part of the report identity. Neither contract
+contains a complete telemetry or prediction dump.
 
-`fd001-monitoring-window-v1` will bind one explicit source partition and
+`fd001-monitoring-window-v1` binds one explicit source partition and
 ordered `(engine_id, cycle)` membership, the exact feature and release
 identities, replay sequence, policy, code, dependencies, and optional
-delayed-label snapshot. Replay sequence and processing time are metadata; they
-do not turn `cycle` into event time.
+lineage. A delayed-label snapshot belongs to the child report, not the window.
+Replay sequence and processing time are metadata; they do not turn `cycle`
+into event time.
 
-`fd001-monitoring-report-v1` will keep data quality, feature shift, prediction
+`fd001-monitoring-report-v1` keeps data quality, feature shift, prediction
 shift, sampled service behavior, and delayed-label performance in separate
 sections. Signal states are limited to `pass`, `warning`, `alert`,
 `insufficient_data`, `unavailable`, and `invalid`. Invalid quality blocks later
@@ -308,7 +312,7 @@ only when source partition, snapshot, row keys, and counts match exactly. The
 attachment creates new content-addressed performance evidence rather than
 editing the original report.
 
-`fd001-retraining-request-v1` and `fd001-challenger-evaluation-v1` will reference
+`fd001-retraining-trigger-v1` and `fd001-challenger-evaluation-v1` reference
 immutable monitoring evidence and data cutoffs. NASA test rows are prohibited
 from fitting and configuration selection. Eligibility remains separate from
 registration, human approval, alias changes, deployment, and rollback.
