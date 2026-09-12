@@ -25,6 +25,7 @@ from predictive_maintenance.etl.publication import reconcile_derived_snapshot
 
 ROOT = Path(__file__).resolve().parents[3]
 EXPECTED_TABLES = {
+    "challenger_evaluations",
     "data_objects",
     "dataset_snapshots",
     "deployment_events",
@@ -33,7 +34,12 @@ EXPECTED_TABLES = {
     "ingestion_runs",
     "lineage_edges",
     "model_releases",
+    "monitoring_alerts",
+    "monitoring_references",
+    "monitoring_reports",
+    "monitoring_windows",
     "release_decisions",
+    "retraining_candidate_requests",
     "snapshot_files",
     "transformation_runs",
 }
@@ -546,6 +552,15 @@ def test_metadata_and_object_backup_restore_reconciles(
             restore_database,
             "--file",
             "/docker-entrypoint-initdb.d/030_phase_06_model_releases.sql",
+        )
+        _compose_exec(
+            "psql",
+            "--username=postgres",
+            "--set=ON_ERROR_STOP=1",
+            "--dbname",
+            restore_database,
+            "--file",
+            "/docker-entrypoint-initdb.d/040_phase_07_monitoring.sql",
         )
         _compose_exec(
             "psql",

@@ -189,7 +189,10 @@ def _seed_release() -> None:
                 classification_model_version, classification_source_run_id
             ) values (
                 %s, %s, 'fd001-two-model-release-v1', %s,
-                jsonb_build_object('release_id', %s, 'approval_request_id', %s),
+                jsonb_build_object(
+                    'release_id', %s::text,
+                    'approval_request_id', %s::text
+                ),
                 %s, 'fd001-rul-regression', 1, 'phase7-test-r',
                 'fd001-failure-risk-classification', 1, 'phase7-test-c'
             )
