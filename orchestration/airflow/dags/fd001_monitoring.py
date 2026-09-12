@@ -109,26 +109,26 @@ def fd001_monitoring_replay() -> None:
         return params
 
     @task(execution_timeout=timedelta(minutes=20))
-    def monitor_window(params: dict[str, Any]) -> dict[str, str | bool]:
+    def monitor_window(request: dict[str, Any]) -> dict[str, str | bool]:
         from predictive_maintenance.monitoring.runtime import (
             load_policy,
             run_monitoring_files,
         )
 
         report, _, reused = run_monitoring_files(
-            Path(params["features_path"]),
-            Path(params["current_predictions_path"]),
-            Path(params["reference_predictions_path"]),
-            Path(params["reference_path"]),
-            Path(params["output_dir"]),
+            Path(request["features_path"]),
+            Path(request["current_predictions_path"]),
+            Path(request["reference_predictions_path"]),
+            Path(request["reference_path"]),
+            Path(request["output_dir"]),
             policy=load_policy(None),
-            raw_snapshot_id=params["raw_snapshot_id"],
-            processed_snapshot_id=params["processed_snapshot_id"],
-            feature_snapshot_id=params["feature_snapshot_id"],
-            source_partition=params["source_partition"],
-            replay_sequence=params["replay_sequence"],
+            raw_snapshot_id=request["raw_snapshot_id"],
+            processed_snapshot_id=request["processed_snapshot_id"],
+            feature_snapshot_id=request["feature_snapshot_id"],
+            source_partition=request["source_partition"],
+            replay_sequence=request["replay_sequence"],
             code_revision=os.environ.get("PM_CODE_REVISION", "phase7-local"),
-            dependency_lock_sha256=params["dependency_lock_sha256"],
+            dependency_lock_sha256=request["dependency_lock_sha256"],
         )
         result = _validated_result(
             {
@@ -138,7 +138,7 @@ def fd001_monitoring_replay() -> None:
             }
         )
         context = get_current_context()
-        if bool(params["inject_retryable_failure"]) and context["ti"].try_number == 1:
+        if bool(request["inject_retryable_failure"]) and context["ti"].try_number == 1:
             raise AirflowException(
                 "Controlled retryable failure after exact report publication."
             )

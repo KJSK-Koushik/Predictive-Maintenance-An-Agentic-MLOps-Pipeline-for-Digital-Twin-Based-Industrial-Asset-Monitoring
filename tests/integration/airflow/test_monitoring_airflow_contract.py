@@ -27,6 +27,12 @@ def test_monitoring_dag_is_manual_thin_and_parse_safe() -> None:
     assert "catchup=False" in source
     assert "max_active_runs=1" in source
     assert "run_monitoring_files" in source
+    monitor_window = next(
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.FunctionDef) and node.name == "monitor_window"
+    )
+    assert [argument.arg for argument in monitor_window.args.args] == ["request"]
     top_level_calls = [
         node.value.func.id
         for node in tree.body
