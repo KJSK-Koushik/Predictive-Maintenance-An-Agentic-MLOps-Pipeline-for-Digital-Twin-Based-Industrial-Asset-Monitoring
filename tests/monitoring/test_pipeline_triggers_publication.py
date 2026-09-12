@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
@@ -341,13 +342,13 @@ def test_partial_metadata_failure_retry_and_reconciliation_report_gaps(
         / "pm-derived-test"
         / Path(*recovered.identity.object_key.split("/"))
     )
-    if not str(stored_path).startswith("\\\\?\\"):
+    if os.name == "nt" and not str(stored_path).startswith("\\\\?\\"):
         stored_path = Path("\\\\?\\" + str(stored_path.resolve()))
     stored_path.write_bytes(b"different bytes")
     prefix = f"reports/monitoring/{report.window.release_id}/{report.window.window_id}"
     orphan_key = f"{prefix}/orphan.json"
     orphan_path = object_root / "pm-derived-test" / Path(*orphan_key.split("/"))
-    if not str(orphan_path).startswith("\\\\?\\"):
+    if os.name == "nt" and not str(orphan_path).startswith("\\\\?\\"):
         orphan_path = Path("\\\\?\\" + str(orphan_path.resolve()))
     orphan_path.write_bytes(b"orphan")
     missing = ObjectIdentity(
@@ -369,3 +370,4 @@ def test_partial_metadata_failure_retry_and_reconciliation_report_gaps(
         "mismatched",
         "orphaned",
     }
+
