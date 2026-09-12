@@ -17,6 +17,7 @@ services:
       - ./supabase/migrations/20260726144446_phase_02_cloud_metadata.sql:/docker-entrypoint-initdb.d/010_phase_02_cloud_metadata.sql:ro
       - ./supabase/migrations/20260809165753_phase_03_derived_metadata.sql:/docker-entrypoint-initdb.d/020_phase_03_derived_metadata.sql:ro
       - ./supabase/migrations/20260822070836_phase_06_model_releases.sql:/docker-entrypoint-initdb.d/030_phase_06_model_releases.sql:ro
+      - ./supabase/migrations/20260907042647_phase_07_monitoring.sql:/docker-entrypoint-initdb.d/040_phase_07_monitoring.sql:ro
     healthcheck:
       test:
         - CMD-SHELL
@@ -55,6 +56,7 @@ services:
     volumes:
       - ./orchestration/airflow/dags:/opt/airflow/dags:ro
       - ./artifacts/cloud-objects:/opt/airflow/artifacts/cloud-objects
+      - ./artifacts/monitoring:/opt/airflow/artifacts/monitoring
     healthcheck:
       test:
         - CMD-SHELL

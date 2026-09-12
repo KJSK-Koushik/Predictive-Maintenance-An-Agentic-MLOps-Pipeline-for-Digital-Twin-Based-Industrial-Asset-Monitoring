@@ -265,6 +265,42 @@ local staging deployment, and rollback drill were exercised separately.
 The manual GitHub staging workflow remains separate from local staging and is
 not reported as exercised until it runs from the default branch.
 
+## Phase 7 monitoring prerequisites
+
+Complete or explicitly accept these before `START PHASE 7` implementation:
+
+- [x] Merge the owner-approved, passing Phase 6 PR 12 into `main` and verify
+  the required check on the merged revision.
+- [x] Confirm the exact approved Phase 6 loopback release may receive bounded
+  Phase 7 replay probes.
+- [x] Accept that FD001 monitoring uses static simulated cycle replay and is
+  not live, real-time, production, or field evidence.
+- [x] Keep NASA test rows prohibited from training and configuration selection.
+- [x] Accept that without new approved labeled training data, an actual
+  retraining request may validly end as no-change or
+  `blocked_no_new_training_data`.
+- [x] Approve ignored local monitoring evidence under
+  `artifacts/monitoring/`.
+- [x] Approve the reviewed Phase 7 forward migration in the existing
+  development/test Supabase project only after local migration tests pass.
+- [x] Approve private derived-bucket writes only under content-addressed
+  `reports/monitoring/`, `reports/retraining/`, and generated integration
+  prefixes.
+- [x] Confirm no Supabase Auth, Realtime, Cron, public endpoint, paid add-on,
+  managed metrics platform, or paging integration will be provisioned.
+- [x] Keep all Supabase, PostgreSQL, MLflow, GitHub, and staging configuration
+  in ignored local files or approved secret stores.
+- [x] Confirm `KJSK-Koushik` remains the human reviewer for any challenger
+  eligibility result.
+
+`START PHASE 7` will accept these recommended values unless the owner changes
+one first. It will not approve a new release, alias change, deployment,
+production action, public service, or paid resource.
+
+The owner accepted these defaults with `START PHASE 7` on 2026-09-07. Phase 6
+PR 12 was merged the same day. GitHub Actions run `34081887096` passed all 28
+steps on exact merge commit `cdad44f8d3c4347c5aea46bf2e6ccc3381cca68c`.
+
 ## Phase 8 agent prerequisites
 
 - [ ] Select an LLM provider and approve its data-handling terms.

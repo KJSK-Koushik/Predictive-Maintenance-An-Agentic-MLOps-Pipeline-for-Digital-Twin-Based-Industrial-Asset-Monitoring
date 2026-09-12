@@ -49,6 +49,9 @@ REQUIRED_FILES = (
     "docs/adr/0027-phase-6-atomic-release-governance.md",
     "docs/adr/0028-phase-6-inference-contract.md",
     "docs/adr/0029-phase-6-staging-and-rollback.md",
+    "docs/adr/0030-phase-7-monitoring-reference-and-windows.md",
+    "docs/adr/0031-phase-7-monitoring-persistence.md",
+    "docs/adr/0032-phase-7-trigger-and-challenger-governance.md",
     "docs/phases/phase-00/ARCHITECTURE.md",
     "docs/phases/phase-00/PLAN.md",
     "docs/phases/phase-00/ACCEPTANCE_CRITERIA.md",
@@ -85,6 +88,11 @@ REQUIRED_FILES = (
     "docs/phases/phase-06/ACCEPTANCE_CRITERIA.md",
     "docs/phases/phase-06/TEST_PLAN.md",
     "docs/phases/phase-06/COMPLETION_REPORT.md",
+    "docs/phases/phase-07/ARCHITECTURE.md",
+    "docs/phases/phase-07/PLAN.md",
+    "docs/phases/phase-07/ACCEPTANCE_CRITERIA.md",
+    "docs/phases/phase-07/TEST_PLAN.md",
+    "docs/phases/phase-07/COMPLETION_REPORT.md",
 )
 
 ADR_REQUIRED_HEADINGS = (
@@ -136,7 +144,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         assert state_match.group(1) == "APPROVED"
         assert re.search(r"\|\s*Last completed phase\s*\|\s*1:", status)
     else:
-        assert current_phase.startswith(("0", "1", "2", "3", "4", "5", "6"))
+        assert current_phase.startswith(("0", "1", "2", "3", "4", "5", "6", "7"))
 
     phase_directories = sorted((ROOT / "docs/phases").glob("phase-*"))
     assert [path.name for path in phase_directories] == [
@@ -147,6 +155,7 @@ def test_single_planned_or_active_phase_is_declared() -> None:
         "phase-04",
         "phase-05",
         "phase-06",
+        "phase-07",
     ]
 
 
@@ -322,12 +331,37 @@ def test_current_implementation_stays_inside_approved_roots() -> None:
         "contracts.py",
         "predictor.py",
     }
+    monitoring_files = {
+        path.name
+        for path in (ROOT / "src/predictive_maintenance/monitoring").glob("*.py")
+        if path.is_file()
+    }
+    assert monitoring_files == {
+        "__init__.py",
+        "cli.py",
+        "metadata.py",
+        "metrics.py",
+        "models.py",
+        "pipeline.py",
+        "publication.py",
+        "reference.py",
+        "runtime.py",
+        "service.py",
+        "triggers.py",
+    }
+    retraining_files = {
+        path.name
+        for path in (ROOT / "src/predictive_maintenance/retraining").glob("*.py")
+        if path.is_file()
+    }
+    assert retraining_files == {"__init__.py", "evaluation.py"}
 
     migrations = sorted((ROOT / "supabase/migrations").glob("*.sql"))
     assert [path.name for path in migrations] == [
         "20260726144446_phase_02_cloud_metadata.sql",
         "20260809165753_phase_03_derived_metadata.sql",
         "20260822070836_phase_06_model_releases.sql",
+        "20260907042647_phase_07_monitoring.sql",
     ]
 
 

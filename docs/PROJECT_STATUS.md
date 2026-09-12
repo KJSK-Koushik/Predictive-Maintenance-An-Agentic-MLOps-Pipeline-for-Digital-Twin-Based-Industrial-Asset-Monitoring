@@ -4,9 +4,9 @@
 
 | Field                     | Value                                    |
 | ------------------------- | ---------------------------------------- |
-| Current phase             | 6: Model registry and deployment         |
+| Current phase             | 7: Monitoring and retraining             |
 | Last completed phase      | 6: Model registry and deployment         |
-| State                     | APPROVED                                 |
+| State                     | IN_PROGRESS                              |
 | Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
 | Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
 | Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
@@ -19,7 +19,10 @@
 | Phase 6 planned           | 2026-08-21 by explicit `PLAN PHASE 6`    |
 | Phase 6 started           | 2026-08-22 by explicit `START PHASE 6`   |
 | Phase 6 approved          | 2026-08-22 by explicit `APPROVE PHASE 6` |
-| Next permitted transition | Explicit owner command `PLAN PHASE 7`    |
+| Phase 7 planned           | 2026-08-22 by explicit `PLAN PHASE 7`    |
+| Phase 7 started           | 2026-09-07 by explicit `START PHASE 7`   |
+| Phase 6 merged CI         | Passed: GitHub Actions run `34081887096` |
+| Next permitted transition | Phase 7 completion or blocked report     |
 
 ## Bootstrap record
 
@@ -39,8 +42,8 @@ feature or initializing a cloud service.
 
 | Evidence                   | Status                                                              |
 | -------------------------- | ------------------------------------------------------------------- |
-| Source-of-truth documents  | Phase 6 completion and owner approval recorded                      |
-| Accepted ADRs              | 26; Phase 5 comparison, gates, and exploratory decisions added      |
+| Source-of-truth documents  | Phase 7 implementation and validation in progress                   |
+| Accepted ADRs              | 32; Phase 7 monitoring, persistence, and trigger decisions          |
 | Phase 1 implementation     | Complete and owner-approved                                         |
 | Unit/contract tests        | Phase 1 evidence: passed locally, 46                                |
 | Integration tests          | Phase 1 evidence: passed locally, 9                                 |
@@ -107,6 +110,13 @@ feature or initializing a cloud service.
 | Phase 6 completion CI      | Passed: run `32571957238`, job `Phase 4 quality`                    |
 | Phase 6 final status CI    | Passed: run `32572525259`, job `Phase 4 quality`                    |
 | Phase 6 owner approval     | Received explicitly on 2026-08-22                                   |
+| Phase 7 planning           | Objective, architecture, criteria, tests, prerequisites, risks set  |
+| Phase 7 focused tests      | 35 monitoring, trigger, evaluation, CLI, and DAG checks passed      |
+| Phase 7 local regression   | 278 unit/contract plus 10 integration checks passed                 |
+| Phase 7 static typing      | Strict mypy passed for 150 source/test files                        |
+| Phase 7 actual FD001       | 100 engines and 2,000 replay rows; deterministic identities passed  |
+| Phase 7 Docker/PostgreSQL  | Pending: Docker Desktop engine is not running                       |
+| Phase 7 hosted migration   | Not applied; correctly waiting for local PostgreSQL validation      |
 
 ## Repository observations
 
@@ -246,6 +256,31 @@ technology-neutral screen architecture and backend dependency map. The working
 UI remains Phase 9, and each screen may connect only after all of its versioned
 backend contracts are implemented, tested, CI-validated, and owner-approved.
 
+## Phase 7 implementation boundary
+
+Phase 7 planning was authorized on 2026-08-22 and implementation on
+2026-09-07. The implemented scope is
+deterministic batch monitoring of immutable FD001 replay windows, private
+monitoring evidence, delayed-label performance, rule-based investigation and
+retraining-candidate requests, and fixed champion/challenger evaluation.
+
+The plan keeps data quality, distribution shift, service probes, and model
+performance as separate signals. A trigger cannot train, register, promote,
+deploy, or roll back a model automatically. NASA test rows remain prohibited
+from training, and the actual FD001 path may correctly end as no-change or
+`blocked_no_new_training_data`.
+
+The actual static replay used 100 simulated NASA test engines and 2,000
+engine-balanced rows against release
+`e230ac64e5fc3e3dd294067236210904376fe7591f776a25b03a2a6e614ccf22`.
+Its distribution alerts are interpreted with lifecycle mix and are not called
+performance failure. Repeated evidence produced the same identities. Phase 7
+does not add Evidently, a metrics platform, Realtime, Auth, agents, working UI,
+public ingress, production, or paid resources. Phase 6 PR 12 was merged into
+`main`, and required GitHub Actions run `34081887096` passed on the exact merge
+revision. Phase 7 remains `IN_PROGRESS` until Docker/PostgreSQL, Airflow,
+hosted Supabase, full coverage/security, and completion GitHub checks pass.
+
 ## Phase history
 
 | Phase | State       | Evidence                                    |
@@ -257,4 +292,5 @@ backend contracts are implemented, tested, CI-validated, and owner-approved.
 | 4     | APPROVED    | `docs/phases/phase-04/COMPLETION_REPORT.md` |
 | 5     | APPROVED    | `docs/phases/phase-05/COMPLETION_REPORT.md` |
 | 6     | APPROVED    | `docs/phases/phase-06/COMPLETION_REPORT.md` |
-| 7-10  | NOT_PLANNED | Await explicit `PLAN PHASE 7`               |
+| 7     | IN_PROGRESS | `docs/phases/phase-07/COMPLETION_REPORT.md` |
+| 8-10  | NOT_PLANNED | Await Phase 7 implementation and approval   |

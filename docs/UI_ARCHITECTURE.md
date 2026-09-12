@@ -234,6 +234,51 @@ The service can report `live` while returning `not ready` when its immutable
 release fails verification. A later screen must preserve that difference and
 must not turn unavailable readiness into a green health state.
 
+## Phase 7 monitoring contract implementation
+
+Phase 7 implements the future Monitoring screen input as one versioned,
+immutable report. The backend contract is implemented but remains
+`UNAPPROVED` until non-mocked integration, completion CI, owner approval, and
+security checks pass. No screen is connected.
+
+Implemented report sections are:
+
+| Section             | Required meaning                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------- |
+| Window              | immutable source, engine/cycle membership, replay order, release, policy, and freshness           |
+| Data quality        | validation state, bounded rule counts, lineage, and blocking failures                             |
+| Feature shift       | all 24 inputs, reference/current effect sizes, lifecycle mix, adequacy, and threshold identity    |
+| Prediction shift    | RUL and risk distribution changes without claiming performance degradation                        |
+| Service             | sampled readiness, status counts, and latency summaries without an SLA claim                      |
+| Delayed performance | explicit unavailable/insufficient/available state plus aggregate metrics when exact labels exist  |
+| Trigger             | investigation or candidate-request result, deterministic reason, evidence, and human-review state |
+
+The UI must display `unavailable`, `insufficient_data`, and `invalid` as distinct
+states. It must not render any of them as zero, green, healthy, or approved. A
+drift alert must say `Distribution changed`; it must not say `Model failed`
+unless matching delayed performance evidence supports that separate statement.
+
+This remains a technology-neutral design contract. Phase 7 creates no browser
+endpoint or screen connection.
+
+### Monitoring field and state rules
+
+| Field or state                                                     | Future-screen meaning                                                                          |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `window_id`, `reference_id`, `policy_id`, `release_id`             | Immutable provenance; never replace with friendly mutable names                                |
+| `source_partition`, `row_count`, `engine_count`, `replay_sequence` | Replay scope; sequence is not time or freshness                                                |
+| signal `status`                                                    | Exactly `pass`, `warning`, `alert`, `insufficient_data`, `unavailable`, or `invalid`           |
+| `reason_codes`                                                     | Stable bounded identifiers suitable for help text, not executable instructions                 |
+| `lifecycle_mix`, operating summaries                               | Context for interpreting shift; nullable/empty after invalid quality                           |
+| `parent_report_id`, `label_snapshot_id`                            | Both null before labels; both present on an immutable delayed-performance child                |
+| candidate request                                                  | Evaluation-only evidence with a fixed cutoff; not training, approval, promotion, or deployment |
+
+Freshness must later be calculated by a Phase 9 read model from explicitly
+stored observation/publication metadata. Phase 7 does not invent event time.
+An absent report is `empty`; an unreadable or contract-mismatched report is an
+`error`; a report with some unavailable sections is `partial`. A future stale
+threshold must be versioned and owner-approved before connection.
+
 ## Cross-phase delivery
 
 | Phase | UI responsibility                                                                         |

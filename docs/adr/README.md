@@ -16,37 +16,40 @@ and Verification.
 
 ## Index
 
-| ADR                                                    | Decision                                  | Status   |
-| ------------------------------------------------------ | ----------------------------------------- | -------- |
-| [0001](0001-phase-governance.md)                       | Phase governance and bootstrap            | Accepted |
-| [0002](0002-claim-boundaries.md)                       | Research terminology and claim boundaries | Accepted |
-| [0003](0003-modular-monolith-local-first.md)           | Modular monolith and local-first delivery | Accepted |
-| [0004](0004-python-toolchain.md)                       | Python toolchain and dependency locking   | Accepted |
-| [0005](0005-data-validation.md)                        | Pandera as initial contract library       | Accepted |
-| [0006](0006-supabase-boundary.md)                      | Supabase storage/database boundary        | Accepted |
-| [0007](0007-mlflow-metadata.md)                        | MLflow metadata ownership and topology    | Accepted |
-| [0008](0008-airflow-orchestration.md)                  | Airflow as deferred batch orchestrator    | Accepted |
-| [0009](0009-ci-cd-and-approval.md)                     | CI/CD and promotion separation            | Accepted |
-| [0010](0010-agent-authority.md)                        | Agent authority and audit boundary        | Accepted |
-| [0011](0011-monitoring-retraining.md)                  | Monitoring and retraining semantics       | Accepted |
-| [0012](0012-digital-shadow.md)                         | Digital-shadow state and replay semantics | Accepted |
-| [0013](0013-fd001-raw-identity.md)                     | FD001 raw identity and overwrite denial   | Accepted |
-| [0014](0014-fd001-label-semantics.md)                  | RUL and risk-label semantics              | Accepted |
-| [0015](0015-phase-2-object-storage.md)                 | Phase 2 object-storage layout             | Accepted |
-| [0016](0016-phase-2-postgres-security.md)              | Private operational PostgreSQL            | Accepted |
-| [0017](0017-phase-2-publication-recovery.md)           | Publication and recovery behavior         | Accepted |
-| [0018](0018-phase-3-derived-contracts.md)              | Deterministic derived data contracts      | Accepted |
-| [0019](0019-phase-3-derived-publication.md)            | Derived publication and lineage           | Accepted |
-| [0020](0020-phase-3-airflow-runtime.md)                | Thin Airflow LocalExecutor runtime        | Accepted |
-| [0021](0021-phase-4-engine-split.md)                   | Engine split and final holdout            | Accepted |
-| [0022](0022-phase-4-baseline-protocol.md)              | Fixed baseline evaluation protocol        | Accepted |
-| [0023](0023-phase-4-local-mlflow.md)                   | Local MLflow and trusted artifacts        | Accepted |
-| [0024](0024-phase-5-nested-comparison.md)              | Nested comparison and locked benchmark    | Accepted |
-| [0025](0025-phase-5-complexity-gates.md)               | Nonlinear search and complexity gates     | Accepted |
-| [0026](0026-phase-5-exploratory-telemetry-analysis.md) | Exploratory telemetry analysis            | Accepted |
-| [0027](0027-phase-6-atomic-release-governance.md)      | Atomic two-model release governance       | Accepted |
-| [0028](0028-phase-6-inference-contract.md)             | Verified immutable inference contract     | Accepted |
-| [0029](0029-phase-6-staging-and-rollback.md)           | Loopback staging and rollback             | Accepted |
+| ADR                                                       | Decision                                  | Status   |
+| --------------------------------------------------------- | ----------------------------------------- | -------- |
+| [0001](0001-phase-governance.md)                          | Phase governance and bootstrap            | Accepted |
+| [0002](0002-claim-boundaries.md)                          | Research terminology and claim boundaries | Accepted |
+| [0003](0003-modular-monolith-local-first.md)              | Modular monolith and local-first delivery | Accepted |
+| [0004](0004-python-toolchain.md)                          | Python toolchain and dependency locking   | Accepted |
+| [0005](0005-data-validation.md)                           | Pandera as initial contract library       | Accepted |
+| [0006](0006-supabase-boundary.md)                         | Supabase storage/database boundary        | Accepted |
+| [0007](0007-mlflow-metadata.md)                           | MLflow metadata ownership and topology    | Accepted |
+| [0008](0008-airflow-orchestration.md)                     | Airflow as deferred batch orchestrator    | Accepted |
+| [0009](0009-ci-cd-and-approval.md)                        | CI/CD and promotion separation            | Accepted |
+| [0010](0010-agent-authority.md)                           | Agent authority and audit boundary        | Accepted |
+| [0011](0011-monitoring-retraining.md)                     | Monitoring and retraining semantics       | Accepted |
+| [0012](0012-digital-shadow.md)                            | Digital-shadow state and replay semantics | Accepted |
+| [0013](0013-fd001-raw-identity.md)                        | FD001 raw identity and overwrite denial   | Accepted |
+| [0014](0014-fd001-label-semantics.md)                     | RUL and risk-label semantics              | Accepted |
+| [0015](0015-phase-2-object-storage.md)                    | Phase 2 object-storage layout             | Accepted |
+| [0016](0016-phase-2-postgres-security.md)                 | Private operational PostgreSQL            | Accepted |
+| [0017](0017-phase-2-publication-recovery.md)              | Publication and recovery behavior         | Accepted |
+| [0018](0018-phase-3-derived-contracts.md)                 | Deterministic derived data contracts      | Accepted |
+| [0019](0019-phase-3-derived-publication.md)               | Derived publication and lineage           | Accepted |
+| [0020](0020-phase-3-airflow-runtime.md)                   | Thin Airflow LocalExecutor runtime        | Accepted |
+| [0021](0021-phase-4-engine-split.md)                      | Engine split and final holdout            | Accepted |
+| [0022](0022-phase-4-baseline-protocol.md)                 | Fixed baseline evaluation protocol        | Accepted |
+| [0023](0023-phase-4-local-mlflow.md)                      | Local MLflow and trusted artifacts        | Accepted |
+| [0024](0024-phase-5-nested-comparison.md)                 | Nested comparison and locked benchmark    | Accepted |
+| [0025](0025-phase-5-complexity-gates.md)                  | Nonlinear search and complexity gates     | Accepted |
+| [0026](0026-phase-5-exploratory-telemetry-analysis.md)    | Exploratory telemetry analysis            | Accepted |
+| [0027](0027-phase-6-atomic-release-governance.md)         | Atomic two-model release governance       | Accepted |
+| [0028](0028-phase-6-inference-contract.md)                | Verified immutable inference contract     | Accepted |
+| [0029](0029-phase-6-staging-and-rollback.md)              | Loopback staging and rollback             | Accepted |
+| [0030](0030-phase-7-monitoring-reference-and-windows.md)  | Immutable reference and replay windows    | Accepted |
+| [0031](0031-phase-7-monitoring-persistence.md)            | Private immutable monitoring persistence  | Accepted |
+| [0032](0032-phase-7-trigger-and-challenger-governance.md) | Trigger and challenger governance         | Accepted |
 
 New ADRs use the next four-digit identifier. Existing ADR content is not
 rewritten to hide a changed decision; create a superseding ADR instead.

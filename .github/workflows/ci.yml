@@ -1,4 +1,4 @@
-# Repository-wide Phase 0-6 quality gates. This workflow never deploys.
+# Repository-wide Phase 0-7 quality gates. This workflow never deploys.
 name: quality-gates
 
 on:
@@ -102,8 +102,8 @@ jobs:
       - name: Run synthetic container contract and parity tests
         run: uv run pytest -m "deployment and not dataset and not cloud"
 
-      - name: Prepare disposable shared object directory
-        run: install -d -m 0777 artifacts/cloud-objects
+      - name: Prepare disposable shared object directories
+        run: install -d -m 0777 artifacts/cloud-objects artifacts/monitoring
 
       - name: Build pinned Airflow image
         run: docker compose build airflow
