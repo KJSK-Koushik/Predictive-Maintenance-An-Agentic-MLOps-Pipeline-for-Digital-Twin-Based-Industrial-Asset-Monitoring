@@ -234,6 +234,7 @@ def test_postgres_publication_is_idempotent_and_complete(tmp_path: Path) -> None
             assert row is not None
             counts[table] = row[0]
     assert counts == {
+        "challenger_evaluations": 0,
         "data_objects": 5,
         "dataset_snapshots": 1,
         "deployment_events": 0,
@@ -242,7 +243,12 @@ def test_postgres_publication_is_idempotent_and_complete(tmp_path: Path) -> None
         "ingestion_runs": 1,
         "lineage_edges": 4,
         "model_releases": 0,
+        "monitoring_alerts": 0,
+        "monitoring_references": 0,
+        "monitoring_reports": 0,
+        "monitoring_windows": 0,
         "release_decisions": 0,
+        "retraining_candidate_requests": 0,
         "snapshot_files": 4,
         "transformation_runs": 0,
     }
