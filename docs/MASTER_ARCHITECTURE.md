@@ -412,6 +412,9 @@ stack, message broker, Realtime, agent, working UI, or public service is added.
 - MLflow owns experiment and registry metadata.
 - FastAPI is the implemented Phase 6 inference boundary.
 - Airflow is batch orchestration introduced after local ETL.
+- The active Phase 7 orchestration image uses pinned slim Airflow 3.3.2 with
+  a complete pinned runtime inventory. Development, Airflow, and inference
+  Python dependency audits are separate quality gates (ADR 0033).
 - Supabase Storage and direct PostgreSQL are the Phase 2 cloud adapters.
   Filesystem plus PostgreSQL 17 are the exercised local substitutes.
 - Evidently remains optional; custom, testable metrics are the baseline.

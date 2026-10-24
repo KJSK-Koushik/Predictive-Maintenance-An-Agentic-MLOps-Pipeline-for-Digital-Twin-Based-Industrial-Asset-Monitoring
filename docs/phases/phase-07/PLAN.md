@@ -129,6 +129,16 @@ Files may be combined when a smaller design remains clear. No new service
 fleet, message broker, metrics stack, frontend application, or production
 target is planned.
 
+### Security remediation during final validation
+
+On 2026-10-24, separate installed-image audits identified dependencies not
+covered by the development lock audit. ADR 0033 records the bounded repair:
+slim Airflow 3.3.2, pinned installed runtime inventory, required PostgreSQL
+drivers, patched installer tools, uv 0.13.4, and separate CI image audits.
+This changes no data/model contract and introduces no new agent, service, or
+production capability. The actual staging-container restart needs owner
+confirmation; its approved model release cannot change.
+
 ## Existing files expected to change
 
 ```text

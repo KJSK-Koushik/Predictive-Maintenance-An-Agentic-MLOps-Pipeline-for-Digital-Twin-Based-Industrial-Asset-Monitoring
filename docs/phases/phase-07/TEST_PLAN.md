@@ -236,11 +236,19 @@ uv run pytest -m "not dataset and not airflow and not cloud and not deployment" 
 uv run mdformat --check README.md CONTRIBUTING.md docs
 uv run yamllint .
 uv run pip-audit
+
+uv run python tests/container_audit_support.py --image predictive-maintenance-airflow:3.3.2-phase7 --output-dir artifacts/security/airflow
+uv run python tests/container_audit_support.py --image predictive-maintenance-inference:<tested-release-id> --output-dir artifacts/security/inference
 docker compose down --volumes
 ```
 
 Actual FD001 and hosted Supabase commands run separately with ignored local
 configuration and are recorded by evidence class.
+
+Use uv 0.13.4 or later. The installed-image helper checks pip compatibility and
+audits a complete pinned package inventory; its pure unit tests do not count as
+real image-audit evidence. Installer packages are included. OS/native-library
+scanning remains a separate, unclaimed capability.
 
 ## Exit criteria
 

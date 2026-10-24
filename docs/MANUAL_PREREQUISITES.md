@@ -309,6 +309,16 @@ applied through the project connector, which recorded version
 Hosted metadata verification uses scoped SQL because this connector cannot
 assume the runtime role; direct restricted-role adapter tests run locally.
 
+Container audits discovered older dependencies outside the refreshed development
+lock. Phase 7 therefore requires slim Airflow 3.3.2, pinned runtime packages, and
+separate installed-image audits. A local Airflow database backup is retained
+under ignored monitoring artifacts before the patch-version migration. Rebuilding
+and restarting the approved actual staging service for installer-only security
+fixes requires owner confirmation; its model release ID must remain unchanged.
+
+Use uv 0.13.4 or later. The project-owned patched Windows executable is available
+at `artifacts/security-tools/bin/uv.exe`; it does not replace shared system tools.
+
 ## Phase 8 agent prerequisites
 
 - [ ] Select an LLM provider and approve its data-handling terms.

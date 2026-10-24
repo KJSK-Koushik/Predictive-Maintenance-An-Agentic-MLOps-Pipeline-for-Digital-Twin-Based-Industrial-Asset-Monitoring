@@ -40,7 +40,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install locked environment manager
-        run: python -m pip install --disable-pip-version-check uv==0.11.8
+        run: python -m pip install --disable-pip-version-check uv==0.13.4
 
       - name: Synchronize locked development environment
         run: uv sync --locked --dev
@@ -96,6 +96,12 @@ jobs:
       - name: Build pinned inference image
         run: docker compose build inference
 
+      - name: Audit inference image Python dependencies
+        run: >-
+          uv run python tests/container_audit_support.py
+          --image predictive-maintenance-inference:${{ env.PM_RELEASE_ID }}
+          --output-dir artifacts/security/inference
+
       - name: Start loopback inference smoke service
         run: docker compose up -d --wait inference
 
@@ -107,6 +113,12 @@ jobs:
 
       - name: Build pinned Airflow image
         run: docker compose build airflow
+
+      - name: Audit Airflow image Python dependencies
+        run: >-
+          uv run python tests/container_audit_support.py
+          --image predictive-maintenance-airflow:3.3.2-phase7
+          --output-dir artifacts/security/airflow
 
       - name: Start Airflow LocalExecutor runtime
         run: docker compose up -d --wait airflow

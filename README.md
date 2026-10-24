@@ -169,7 +169,7 @@ maintenance decisions.
 
 ## Development
 
-The foundation environment uses Python 3.11 and `uv`.
+The foundation environment uses Python 3.11 and `uv` 0.13.4 or later.
 
 ```shell
 uv sync --locked --dev

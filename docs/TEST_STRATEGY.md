@@ -272,6 +272,9 @@ and GitHub runner are never presented as interchangeable proof.
 - separately classified actual FD001 replay and hosted Supabase evidence; and
 - Phase 6 inference, staging-alias immutability, rollback, security, coverage,
   and CI regression gates.
+- Separate installed-image Python dependency inventories, pip compatibility,
+  and advisory audits for Airflow and inference, including their installer
+  tools. These checks do not certify OS/native-library security.
 
 ### Phases 8-10
 

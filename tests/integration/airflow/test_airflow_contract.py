@@ -31,8 +31,8 @@ def test_official_airflow_image_and_dependencies_are_pinned() -> None:
         encoding="utf-8"
     )
     assert (
-        "apache/airflow:3.3.0-python3.11@sha256:"
-        "7c7eda27057370576b845ced1269ec539e50588fb43ad0d3d9d20eff5f629fb6"
+        "apache/airflow:slim-3.3.2-python3.11@sha256:"
+        "63acdf77e25af684857e819fff0855b274cc58097cc7a1026e4d41151ddcefa8"
     ) in dockerfile
     assert '"apache-airflow==${AIRFLOW_VERSION}"' in dockerfile
     package_lines = [

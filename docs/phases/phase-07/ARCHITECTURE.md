@@ -246,6 +246,13 @@ explicit immutable replay window after the direct path is stable. It will not
 use Airflow logical dates as data identity, schedule unattended retraining, or
 perform deployment.
 
+ADR 0033 updates the active orchestration runtime to the digest-pinned slim
+Airflow 3.3.2 image. Its full Python inventory and PostgreSQL drivers are pinned
+separately from the development lock and inference runtime. All three
+environments receive separate compatibility/advisory checks. The Airflow image
+imports project source without installing unrelated training/registry package
+metadata. This security repair does not change monitoring or model contracts.
+
 The monitor calls only the approved loopback inference contract for actual
 service evidence. CI uses a deterministic synthetic release. Hosted Supabase
 verification is separate, credentialed evidence and cannot be replaced by the

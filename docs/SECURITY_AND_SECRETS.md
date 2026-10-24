@@ -326,6 +326,12 @@ metapackage is intentionally absent and `pip-audit` remains mandatory.
   server-side credentials outside that runtime.
 - Keep pull-request CI cloud-credential-free and deployment-free; classify
   hosted verification separately.
+- Audit installed Python dependencies in both built images, not only the
+  development environment. Use the minimal pinned Airflow image and require
+  compatibility checks; do not ignore advisory findings from unused providers.
+- Use uv 0.13.4 or later for project package operations. Earlier bundled CA
+  roots are affected by GHSA-hq85-5cpj-mr62. The workstation's shared tool is
+  not silently overwritten; a patched workspace-owned copy may be used.
 - Redact authorization headers, DSNs, private URLs, signed links, absolute
   paths, and unrestricted errors from monitoring evidence.
 
