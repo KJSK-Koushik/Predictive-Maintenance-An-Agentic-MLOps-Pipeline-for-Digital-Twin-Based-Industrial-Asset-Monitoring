@@ -322,6 +322,7 @@ class MonitoringReport:
     lifecycle_mix: dict[str, float]
     operating_setting_summary: dict[str, float]
     limitations: tuple[str, ...]
+    prediction_sha256: str | None = None
     parent_report_id: str | None = None
     label_snapshot_id: str | None = None
     report_contract_version: str = REPORT_CONTRACT_VERSION
@@ -329,6 +330,8 @@ class MonitoringReport:
     def __post_init__(self) -> None:
         require_sha256(self.reference_id, "reference_id")
         require_sha256(self.policy_id, "policy_id")
+        if self.prediction_sha256 is not None:
+            require_sha256(self.prediction_sha256, "prediction_sha256")
         if self.reference_id != self.window.reference_id:
             raise MonitoringError(
                 "report.reference_mismatch", "Report and window reference differ."

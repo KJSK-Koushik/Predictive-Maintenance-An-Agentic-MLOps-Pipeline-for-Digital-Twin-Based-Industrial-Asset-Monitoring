@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 from pathlib import Path
@@ -10,9 +11,15 @@ from typing import Any, cast
 import pandas as pd
 
 from predictive_maintenance.cloud.object_store import FilesystemObjectRepository
+from predictive_maintenance.etl.models import (
+    ColumnContract,
+    DerivedManifest,
+    ManifestFile,
+)
 from predictive_maintenance.monitoring.models import (
     MonitoringPolicy,
     canonical_json_bytes,
+    sha256_bytes,
 )
 from predictive_maintenance.monitoring.pipeline import (
     attach_delayed_labels,
@@ -52,19 +59,63 @@ def _file(name: str) -> Path:
     return matches[0]
 
 
+def _verified_feature_manifest(expected_snapshot_id: str) -> DerivedManifest:
+    value = json.loads(_file("manifest.json").read_bytes())
+    files = []
+    for entry in value["files"]:
+        entry = dict(entry)
+        entry["columns"] = tuple(
+            ColumnContract(**column) for column in entry["columns"]
+        )
+        record = ManifestFile(**entry)
+        payload = _file(record.logical_filename).read_bytes()
+        if len(payload) != record.byte_size or sha256_bytes(payload) != record.sha256:
+            raise RuntimeError("Feature snapshot file failed integrity verification.")
+        files.append(record)
+    manifest = DerivedManifest(
+        **{
+            key: value[key]
+            for key in (
+                "artifact_kind",
+                "source_snapshot_id",
+                "parent_snapshot_id",
+                "contract_version",
+                "transformation_version",
+                "serializer_version",
+                "code_revision",
+            )
+        },
+        files=tuple(files),
+    )
+    if manifest.snapshot_id != expected_snapshot_id:
+        raise RuntimeError(
+            "Feature manifest differs from the approved release snapshot."
+        )
+    return manifest
+
+
 def _load_or_probe(
     name: str,
     frame: pd.DataFrame,
     *,
     release_id: str,
     base_url: str,
+    output_dir: Path,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
-    prediction_path = OUTPUT / f"{name}-predictions.parquet"
-    service_path = OUTPUT / f"{name}-service.json"
+    prediction_path = output_dir / f"{name}-predictions.parquet"
+    service_path = output_dir / f"{name}-service.json"
     if prediction_path.exists() and service_path.exists():
+        service = cast(
+            dict[str, Any], json.loads(service_path.read_text(encoding="ascii"))
+        )
+        if service.get("release_id") != release_id:
+            raise RuntimeError(
+                "Cached predictions do not bind the expected release; "
+                "use a new output directory."
+            )
         return (
             pd.read_parquet(prediction_path),
-            cast(dict[str, Any], json.loads(service_path.read_text(encoding="ascii"))),
+            service,
         )
     result = probe_loopback_service(
         frame, base_url=base_url, expected_release_id=release_id
@@ -73,20 +124,34 @@ def _load_or_probe(
         raise RuntimeError(
             "The exact approved loopback release did not serve all rows."
         )
-    OUTPUT.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
     result.predictions.to_parquet(prediction_path, index=False)
-    service_path.write_bytes(canonical_json_bytes(result.service_evidence))
+    service_path.write_bytes(
+        canonical_json_bytes({"release_id": release_id, **result.service_evidence})
+    )
     return result.predictions, result.service_evidence
 
 
 def main() -> int:
     """Run reference, replay, delayed labels, trigger, and exact reuse."""
-    manifest = verify_release_bundle(RELEASE_DIR)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--release-dir", type=Path, default=RELEASE_DIR)
+    parser.add_argument("--output-dir", type=Path, default=OUTPUT)
+    parser.add_argument("--expected-release-id", required=True)
+    parser.add_argument("--code-revision", required=True)
+    args = parser.parse_args()
+    output = args.output_dir
+    manifest = verify_release_bundle(args.release_dir)
+    if manifest.release_id != args.expected_release_id:
+        raise RuntimeError(
+            "Replay package differs from the explicitly approved release."
+        )
     policy = MonitoringPolicy(max_rows_per_engine=20)
+    feature_manifest = _verified_feature_manifest(manifest.feature_snapshot_id)
+    lock_sha256 = sha256_bytes((ROOT / "uv.lock").read_bytes())
     train_features = pd.read_parquet(_file("train_features.parquet"))
     train_targets = pd.read_parquet(_file("train_targets.parquet"))
     test_features = pd.read_parquet(_file("test_features.parquet"))
-    test_targets = pd.read_parquet(_file("test_targets.parquet"))
     train = train_features.merge(
         train_targets, on=["engine_id", "cycle"], validate="one_to_one"
     )
@@ -95,17 +160,25 @@ def main() -> int:
         release_id=manifest.release_id,
         feature_snapshot_id=manifest.feature_snapshot_id,
         policy=policy,
-        code_revision=manifest.code_revision,
-        dependency_lock_sha256=manifest.dependency_lock_sha256,
+        code_revision=args.code_revision,
+        dependency_lock_sha256=lock_sha256,
     )
     reference_rows = engine_balanced_sample(train_features, policy.max_rows_per_engine)
     replay_rows = engine_balanced_sample(test_features, policy.max_rows_per_engine)
     base_url = "http://127.0.0.1:18000"
     reference_predictions, _ = _load_or_probe(
-        "reference", reference_rows, release_id=manifest.release_id, base_url=base_url
+        "reference",
+        reference_rows,
+        release_id=manifest.release_id,
+        base_url=base_url,
+        output_dir=output,
     )
     current_predictions, service_evidence = _load_or_probe(
-        "replay", replay_rows, release_id=manifest.release_id, base_url=base_url
+        "replay",
+        replay_rows,
+        release_id=manifest.release_id,
+        base_url=base_url,
+        output_dir=output,
     )
     window = create_window(
         replay_rows,
@@ -116,8 +189,8 @@ def main() -> int:
         feature_snapshot_id=manifest.feature_snapshot_id,
         source_partition="test",
         replay_sequence=1,
-        code_revision=manifest.code_revision,
-        dependency_lock_sha256=manifest.dependency_lock_sha256,
+        code_revision=args.code_revision,
+        dependency_lock_sha256=lock_sha256,
     )
     original = build_monitoring_report(
         replay_rows,
@@ -128,17 +201,11 @@ def main() -> int:
         policy=policy,
         service_evidence=service_evidence,
     )
-    replay_targets = replay_rows.loc[:, ["engine_id", "cycle"]].merge(
-        test_targets,
-        on=["engine_id", "cycle"],
-        how="left",
-        validate="one_to_one",
-    )
     attached = attach_delayed_labels(
         original,
-        replay_targets,
         current_predictions,
-        label_snapshot_id="8cf2571bbbd294efd9a48efe81ff1f960de2e90cfa2ab7ba7895337d59f51c1b",
+        label_payload=_file("test_targets.parquet").read_bytes(),
+        feature_manifest=feature_manifest,
         expected_source_partition="test",
     )
     repeated = build_monitoring_report(
@@ -152,7 +219,7 @@ def main() -> int:
     )
     if repeated.report_id != original.report_id:
         raise RuntimeError("Repeated actual replay did not preserve report identity.")
-    objects = FilesystemObjectRepository(OUTPUT / "object-store")
+    objects = FilesystemObjectRepository(output / "object-store")
     reference_put = publish_reference_profile(
         reference, bucket="pm-derived-phase7-local", repository=objects
     )
@@ -198,8 +265,8 @@ def main() -> int:
             "NASA test rows were evaluated only and never used for training.",
         ],
     }
-    OUTPUT.mkdir(parents=True, exist_ok=True)
-    (OUTPUT / "summary.json").write_bytes(canonical_json_bytes(summary))
+    output.mkdir(parents=True, exist_ok=True)
+    (output / "summary.json").write_bytes(canonical_json_bytes(summary))
     print(json.dumps(summary, sort_keys=True))
     return 0
 

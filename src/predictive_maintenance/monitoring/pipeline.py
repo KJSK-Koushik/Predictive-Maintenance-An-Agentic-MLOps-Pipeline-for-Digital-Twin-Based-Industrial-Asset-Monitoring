@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import io
 from dataclasses import replace
 from typing import Any
 
 import pandas as pd
 
+from predictive_maintenance.etl.models import FEATURE_SPEC_VERSION, DerivedManifest
 from predictive_maintenance.monitoring.metrics import (
     data_quality_signal,
     delayed_performance_signal,
@@ -35,6 +37,24 @@ DEFAULT_LIMITATIONS = (
     "Distribution shift does not by itself prove model degradation or a fault.",
     "Loopback probes are bounded service evidence, not production availability.",
 )
+
+PREDICTION_COLUMNS = (
+    "engine_id",
+    "cycle",
+    "rul_cycles",
+    "failure_risk_probability",
+    "failure_risk_label",
+)
+
+
+def prediction_sha256(predictions: pd.DataFrame) -> str:
+    """Bind exact ordered prediction values without storing the row dump."""
+    if tuple(predictions.columns) != PREDICTION_COLUMNS:
+        raise MonitoringError(
+            "prediction.invalid_contract",
+            "Prediction columns do not match the contract.",
+        )
+    return sha256_bytes(canonical_json_bytes(predictions.to_dict(orient="records")))
 
 
 def membership_sha256(frame: pd.DataFrame, source_partition: str) -> str:
@@ -102,6 +122,8 @@ def build_monitoring_report(
     if (
         window.reference_id != reference.reference_id
         or window.policy_id != policy.policy_id
+        or window.release_id != reference.release_id
+        or reference.policy_id != policy.policy_id
     ):
         raise MonitoringError(
             "pipeline.lineage_mismatch", "Window, reference, and policy do not align."
@@ -161,15 +183,20 @@ def build_monitoring_report(
             operating_setting_summary(frame) if quality.status != "invalid" else {}
         ),
         limitations=DEFAULT_LIMITATIONS,
+        prediction_sha256=(
+            prediction_sha256(current_predictions)
+            if quality.status != "invalid" and prediction_shift.status != "invalid"
+            else None
+        ),
     )
 
 
 def attach_delayed_labels(
     report: MonitoringReport,
-    labels: pd.DataFrame,
     predictions: pd.DataFrame,
     *,
-    label_snapshot_id: str,
+    label_payload: bytes,
+    feature_manifest: DerivedManifest,
     expected_source_partition: str,
 ) -> MonitoringReport:
     """Create new immutable performance evidence after prediction evidence is fixed."""
@@ -182,7 +209,71 @@ def attach_delayed_labels(
         raise MonitoringError(
             "performance.partition_mismatch", "Label source partition does not align."
         )
-    keys = predictions.loc[:, list(KEY_COLUMNS)]
+    if (
+        report.data_quality.status != "pass"
+        or report.prediction_shift.status in {"invalid", "insufficient_data"}
+        or report.prediction_sha256 is None
+        or prediction_sha256(predictions) != report.prediction_sha256
+    ):
+        raise MonitoringError(
+            "performance.prediction_evidence_mismatch",
+            "Performance requires the exact valid predictions in the parent report.",
+        )
+    if (
+        len(predictions) != report.window.row_count
+        or membership_sha256(predictions, expected_source_partition)
+        != report.window.membership_sha256
+    ):
+        raise MonitoringError(
+            "performance.membership_mismatch", "Predictions do not match the window."
+        )
+    if (
+        feature_manifest.snapshot_id != report.window.feature_snapshot_id
+        or feature_manifest.source_snapshot_id != report.window.raw_snapshot_id
+        or feature_manifest.parent_snapshot_id != report.window.processed_snapshot_id
+        or feature_manifest.artifact_kind != "feature"
+        or feature_manifest.contract_version != FEATURE_SPEC_VERSION
+    ):
+        raise MonitoringError(
+            "performance.snapshot_mismatch",
+            "Label manifest does not match window lineage.",
+        )
+    files = [
+        item
+        for item in feature_manifest.files
+        if item.logical_filename == f"{expected_source_partition}_targets.parquet"
+    ]
+    if (
+        len(files) != 1
+        or files[0].sha256 != sha256_bytes(label_payload)
+        or files[0].byte_size != len(label_payload)
+    ):
+        raise MonitoringError(
+            "performance.label_integrity",
+            "Label bytes do not match the fixed manifest.",
+        )
+    try:
+        targets = pd.read_parquet(io.BytesIO(label_payload))
+        if (
+            tuple(targets.columns) != (*KEY_COLUMNS, "rul", "failure_risk_30")
+            or len(targets) != files[0].row_count
+            or targets.duplicated(list(KEY_COLUMNS)).any()
+            or targets.isna().any().any()
+            or (targets["rul"] < 0).any()
+            or not (targets["failure_risk_30"] == (targets["rul"] <= 30)).all()
+        ):
+            raise ValueError
+        keys = predictions.loc[:, list(KEY_COLUMNS)]
+        labels = keys.merge(
+            targets, on=list(KEY_COLUMNS), how="left", validate="one_to_one"
+        )
+        if labels.isna().any().any():
+            raise ValueError
+    except (OSError, ValueError, KeyError) as error:
+        raise MonitoringError(
+            "performance.invalid_label_snapshot",
+            "Label snapshot cannot supply valid targets.",
+        ) from error
     signal = delayed_performance_signal(keys, labels, predictions)
     if signal.status == "invalid":
         raise MonitoringError(
@@ -194,5 +285,5 @@ def attach_delayed_labels(
         delayed_performance=signal,
         lifecycle_mix=lifecycle_mix(labels),
         parent_report_id=report.report_id,
-        label_snapshot_id=label_snapshot_id,
+        label_snapshot_id=files[0].sha256,
     )

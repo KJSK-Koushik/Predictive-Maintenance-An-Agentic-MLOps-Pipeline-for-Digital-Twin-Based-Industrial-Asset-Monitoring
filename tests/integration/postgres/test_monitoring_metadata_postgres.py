@@ -15,6 +15,7 @@ from phase7_support import identity, prediction_frame, telemetry_frame
 from predictive_maintenance.cloud.models import ObjectIdentity
 from predictive_maintenance.monitoring.metadata import PostgresMonitoringRepository
 from predictive_maintenance.monitoring.models import (
+    MonitoringError,
     MonitoringPolicy,
     MonitoringReport,
     MonitoringWindow,
@@ -331,6 +332,81 @@ def test_metadata_writes_are_idempotent_and_append_only() -> None:
             assert connection.execute(
                 f"select count(*) from ops.{table}"
             ).fetchone() == (1,)
+
+
+@pytest.mark.parametrize(
+    "kind", ["reference", "window", "report", "alert", "request", "evaluation"]
+)
+def test_altered_database_evidence_cannot_be_silently_reused(kind: str) -> None:
+    _record_monitoring_evidence()
+    policy, reference, window, report = _evidence()
+    repository = PostgresMonitoringRepository(_dsn())
+    request = CandidateRequest(
+        release_id=identity("release"),
+        policy_id=policy.policy_id,
+        requested_task="both",
+        data_cutoff_window_id=window.window_id,
+        evidence_report_ids=(report.report_id,),
+        reason="persistent_shift",
+    )
+    evaluation = blocked_no_new_training_data(request)
+    updates = {
+        "reference": (
+            "update ops.monitoring_references set profile_sha256 = repeat('a',64)"
+        ),
+        "window": "update ops.monitoring_windows set row_count = row_count + 1",
+        "report": "update ops.monitoring_reports set report_sha256 = repeat('a',64)",
+        "alert": "update ops.monitoring_alerts set category = 'service'",
+        "request": (
+            "update ops.retraining_candidate_requests set requested_task = 'regression'"
+        ),
+        "evaluation": "update ops.challenger_evaluations set outcome = 'no_change'",
+    }
+    with psycopg.connect(_dsn(), autocommit=True) as connection:
+        connection.execute(updates[kind])
+    now = datetime.now(UTC)
+    code = "alert_conflict" if kind == "alert" else f"{kind}_conflict"
+    with pytest.raises(MonitoringError, match=code):
+        if kind == "reference":
+            repository.record_reference(
+                reference,
+                _object_identity(
+                    bucket="pm-derived",
+                    key=f"reports/monitoring/{reference.release_id}/references/{reference.reference_id}.json",
+                    payload=reference.canonical_bytes(),
+                ),
+                verified_at=now,
+            )
+        elif kind == "window":
+            repository.record_window(window)
+        elif kind == "report":
+            repository.record_report(
+                report,
+                _object_identity(
+                    bucket="pm-derived",
+                    key=monitoring_report_key(report),
+                    payload=report.canonical_bytes(),
+                ),
+                verified_at=now,
+            )
+        elif kind == "alert":
+            repository.record_investigation(
+                Investigation(
+                    report.report_id, "distribution_shift", ("shift.investigation",)
+                )
+            )
+        elif kind == "request":
+            repository.record_candidate_request(request)
+        else:
+            repository.record_evaluation(
+                evaluation,
+                _object_identity(
+                    bucket="pm-derived",
+                    key=f"reports/retraining/{request.request_id}/{evaluation.evaluation_id}.json",
+                    payload=canonical_json_bytes(evaluation.to_dict()),
+                ),
+                verified_at=now,
+            )
 
 
 def test_phase7_schema_reapply_indexes_and_data_restore() -> None:

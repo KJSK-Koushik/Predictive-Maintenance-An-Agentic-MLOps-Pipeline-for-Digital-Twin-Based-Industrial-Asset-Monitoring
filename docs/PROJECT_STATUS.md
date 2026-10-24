@@ -115,8 +115,12 @@ feature or initializing a cloud service.
 | Phase 7 local regression   | 278 unit/contract plus 10 integration checks passed                 |
 | Phase 7 static typing      | Strict mypy passed for 150 source/test files                        |
 | Phase 7 actual FD001       | 100 engines and 2,000 replay rows; deterministic identities passed  |
-| Phase 7 Docker/PostgreSQL  | Pending: Docker Desktop engine is not running                       |
-| Phase 7 hosted migration   | Not applied; correctly waiting for local PostgreSQL validation      |
+| Phase 7 Docker/PostgreSQL  | Engine 29.7.2 healthy; 31 PostgreSQL checks passed                  |
+| Phase 7 Airflow runtime    | 10 real DAG, retry, parity, and backfill tests passed               |
+| Phase 7 hosted migration   | Applied 2026-10-24; six private tables, RLS and grants verified     |
+| Phase 7 hosted reports     | Three objects verified; reference/window/report metadata recorded   |
+| Phase 7 security refresh   | Patched lockfile; dependency audit reports no known vulnerabilities |
+| Phase 7 implementation CI  | Previous run failed 90% coverage gate; final validation in progress |
 
 ## Repository observations
 

@@ -72,8 +72,8 @@ def engine_balanced_sample(frame: pd.DataFrame, maximum: int) -> pd.DataFrame:
             "reference.invalid_sampling", "Per-engine sample limit must be positive."
         )
     positions: list[int] = []
+    count = min(maximum, int(frame.groupby("engine_id").size().min()))
     for _, group in frame.groupby("engine_id", sort=True):
-        count = min(len(group), maximum)
         indexes = np.linspace(0, len(group) - 1, count, dtype="int64")
         positions.extend(group.iloc[indexes].index.tolist())
     return frame.loc[positions].sort_values(list(KEY_COLUMNS), kind="stable")

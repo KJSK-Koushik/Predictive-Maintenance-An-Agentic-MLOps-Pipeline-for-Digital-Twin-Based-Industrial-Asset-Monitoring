@@ -69,17 +69,20 @@ deployment target.
 
 ## Monitoring window contract
 
-One `fd001-monitoring-window-v1` manifest will bind:
+One `fd001-monitoring-window-v1` manifest binds:
 
-- raw, processed, feature, target, and release identities;
+- raw, processed, feature, and release identities;
 - source partition and ordered engine/cycle membership;
 - replay sequence identity, not a fabricated event timestamp;
 - prediction request and response contract versions;
 - reference-profile and monitor-policy identities;
-- optional delayed-label snapshot identity;
-- row and engine counts plus lifecycle-band composition;
+- row and engine counts;
 - code, dependency, and monitoring-protocol versions; and
-- canonical file identities and SHA-256 values.
+- ordered membership SHA-256.
+
+The report, rather than the window, binds lifecycle/operating composition,
+the exact prediction digest, service evidence, and optional delayed-label
+snapshot and parent-report identities.
 
 The window is immutable. Re-running the same window and policy must either
 reuse the exact report or fail on conflicting bytes. A different policy,
@@ -98,9 +101,11 @@ so long trajectories do not dominate. It will contain only aggregate evidence:
 - fixed per-feature quantile bins and counts;
 - finite-value, range, median, and interquartile summaries;
 - lifecycle and operating-setting composition;
-- reference RUL and risk-output distribution summaries;
-- reference delayed-label performance evidence where valid; and
-- minimum sample requirements and calibrated alert thresholds.
+- the versioned adequacy and practical-threshold policy identity.
+
+Reference predictions are supplied separately to the report calculation.
+This implementation does not calibrate universal industrial alert thresholds
+or infer a source-training performance baseline from missing evidence.
 
 Thresholds must be chosen from the reference evidence before the monitored
 window is evaluated. They are research thresholds for this versioned FD001
@@ -148,18 +153,23 @@ decisions for that window.
 - unavailable or insufficient evidence never requests promotion.
 
 The candidate-request ID hashes the release, policy, immutable data cutoff,
-window/report evidence, and requested task. Repeated evaluation is idempotent;
+window/report evidence, and requested task. Histories must share release,
+reference, partition, and policy, with strictly increasing, distinct replay
+sequences. Every persistence window needs valid, adequate signals and a passing
+service probe. Repeated evaluation is idempotent;
 conflicting evidence fails closed.
 
 ## Delayed-label behavior
 
 Predictions are generated and fixed before labels are attached. A separate
-operation accepts one exact target-snapshot reference, verifies row-key
-alignment, and creates a new performance-evidence identity. It cannot replace
+operation rehashes the exact ordered predictions, verifies window membership,
+then checks target Parquet bytes against the content-addressed feature manifest
+and its raw/processed lineage. It verifies target semantics, unique keys and
+complete window coverage, and creates a new performance-evidence identity. It cannot replace
 or edit the earlier prediction report.
 
 The first report must state `performance_status: unavailable`. After a valid
-attachment, the report may state `available` and include bounded aggregate
+attachment, the signal may state `pass` and include bounded aggregate
 metrics. A missing row, duplicate key, wrong source partition, mismatched
 snapshot, or future-label leak fails closed.
 
@@ -183,6 +193,13 @@ the actual-data path is expected to produce a deduplicated/no-change or
 `blocked_no_new_training_data` result unless the owner later approves a new
 versioned dataset. Synthetic fixtures will exercise both passing and failing
 challenger mechanics without being reported as actual-model evidence.
+
+The evaluator uses the Phase 5 cycle-level metrics and 2,000 paired whole-engine
+bootstrap samples. Regression needs at least 3% RMSE improvement, a positive
+95% interval, and MAE/NASA non-inferiority within 5%. Classification needs at
+least 0.005 absolute AP improvement, a positive interval, and Brier deterioration
+no greater than 0.01. All external release checks default to false; synthetic
+passing fixtures do not prove artifact/security validation for a new real model.
 
 If a future actual challenger becomes eligible, Phase 7 must stop before any
 alias or deployment mutation and request a separate exact release approval.

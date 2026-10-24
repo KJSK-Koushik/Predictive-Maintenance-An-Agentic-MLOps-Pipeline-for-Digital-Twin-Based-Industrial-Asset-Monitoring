@@ -10,6 +10,11 @@ from typing import Any, Literal
 import numpy as np
 import pandas as pd
 
+from predictive_maintenance.modeling.comparison import _whole_engine_bootstrap
+from predictive_maintenance.modeling.metrics import (
+    classification_metrics,
+    regression_metrics,
+)
 from predictive_maintenance.monitoring.models import (
     MonitoringError,
     canonical_json_bytes,
@@ -131,36 +136,15 @@ def blocked_no_new_training_data(request: CandidateRequest) -> ChallengerEvaluat
     )
 
 
-def _paired_improvement_interval(
-    champion: np.ndarray,
-    challenger: np.ndarray,
-) -> tuple[float, float]:
-    """Return a deterministic 95% paired bootstrap interval over whole engines."""
-    rng = np.random.default_rng(BOOTSTRAP_SEED)
-    engine_count = len(champion)
-    sample_indices = rng.integers(
-        0, engine_count, size=(BOOTSTRAP_RESAMPLES, engine_count)
-    )
-    champion_means = champion[sample_indices].mean(axis=1)
-    challenger_means = challenger[sample_indices].mean(axis=1)
-    improvements = (champion_means - challenger_means) / np.maximum(
-        champion_means, 1e-12
-    )
-    low, high = np.quantile(improvements, (0.025, 0.975))
-    return float(low), float(high)
-
-
 def evaluate_challenger(
     request: CandidateRequest,
     evidence: pd.DataFrame,
     *,
     challenger_artifact_sha256: str,
     source_partition: str,
-    minimum_regression_improvement: float = 0.01,
-    minimum_classification_improvement: float = 0.005,
     gate_checks: Mapping[str, bool] | None = None,
 ) -> ChallengerEvaluation:
-    """Compare paired engine-level losses on identical evaluation rows."""
+    """Apply the fixed Phase 5 metrics and guards to aligned row predictions."""
     if source_partition == "test":
         raise MonitoringError(
             "evaluation.test_fit_prohibited",
@@ -168,37 +152,62 @@ def evaluate_challenger(
         )
     columns = (
         "engine_id",
-        "champion_regression_loss",
-        "challenger_regression_loss",
-        "champion_classification_loss",
-        "challenger_classification_loss",
+        "cycle",
+        "rul",
+        "failure_risk_30",
+        "champion_rul_cycles",
+        "challenger_rul_cycles",
+        "champion_failure_risk_probability",
+        "challenger_failure_risk_probability",
     )
     if tuple(evidence.columns) != columns or evidence.empty:
         raise MonitoringError(
             "evaluation.invalid_contract", "Challenger evidence contract is invalid."
         )
-    if bool(evidence["engine_id"].duplicated().any()):
+    keys = evidence.loc[:, ["engine_id", "cycle"]]
+    if bool(keys.duplicated().any()):
         raise MonitoringError(
-            "evaluation.duplicate_engine", "Evaluation requires one row per engine."
+            "evaluation.duplicate_key", "Evaluation requires unique engine/cycle keys."
         )
-    values = evidence.loc[:, list(columns[1:])].to_numpy(dtype="float64")
+    values = evidence.to_numpy(dtype="float64")
     if not bool(np.isfinite(values).all()) or bool((values < 0).any()):
         raise MonitoringError(
             "evaluation.invalid_loss",
             "Evaluation losses must be finite and non-negative.",
         )
-    champion_regression = float(evidence[columns[1]].mean())
-    challenger_regression = float(evidence[columns[2]].mean())
-    champion_classification = float(evidence[columns[3]].mean())
-    challenger_classification = float(evidence[columns[4]].mean())
-    regression_improvement = (champion_regression - challenger_regression) / max(
-        champion_regression, 1e-12
+    if (
+        not bool(np.equal(values[:, :2], np.floor(values[:, :2])).all())
+        or bool((values[:, :2] <= 0).any())
+        or keys["engine_id"].nunique() < 3
+        or not bool(np.isin(values[:, 3], [0, 1]).all())
+        or len(np.unique(values[:, 3])) != 2
+        or not bool((values[:, 6:] <= 1).all())
+    ):
+        raise MonitoringError(
+            "evaluation.invalid_contract",
+            "Evaluation keys, labels, or probabilities are invalid.",
+        )
+    champion_regression = regression_metrics(
+        keys, values[:, 2], values[:, 4], clipped_count=0
     )
-    classification_improvement = (
-        champion_classification - challenger_classification
-    ) / max(champion_classification, 1e-12)
-    regression_interval = _paired_improvement_interval(values[:, 0], values[:, 1])
-    classification_interval = _paired_improvement_interval(values[:, 2], values[:, 3])
+    challenger_regression = regression_metrics(
+        keys, values[:, 2], values[:, 5], clipped_count=0
+    )
+    champion_classification = classification_metrics(keys, values[:, 3], values[:, 6])
+    challenger_classification = classification_metrics(keys, values[:, 3], values[:, 7])
+    regression_bootstrap = _whole_engine_bootstrap(
+        "regression", keys, values[:, 2], values[:, 4], values[:, 5]
+    )
+    classification_bootstrap = _whole_engine_bootstrap(
+        "classification", keys, values[:, 3], values[:, 6], values[:, 7]
+    )
+    regression_improvement = regression_bootstrap.point_improvement
+    classification_improvement = classification_bootstrap.point_improvement
+    regression_interval = (regression_bootstrap.lower_95, regression_bootstrap.upper_95)
+    classification_interval = (
+        classification_bootstrap.lower_95,
+        classification_bootstrap.upper_95,
+    )
     supplied_checks = dict(gate_checks or {})
     unknown_checks = supplied_checks.keys() - _REQUIRED_GATE_CHECKS
     if unknown_checks:
@@ -206,20 +215,30 @@ def evaluate_challenger(
             "evaluation.unknown_check", "Evaluation contains an unknown gate check."
         )
     governed_checks = {
-        name: supplied_checks.get(name, True) for name in sorted(_REQUIRED_GATE_CHECKS)
+        name: supplied_checks.get(name, False) for name in sorted(_REQUIRED_GATE_CHECKS)
     }
     checks = {
         **governed_checks,
         "identical_engine_groups": True,
         "nasa_test_excluded_from_fit": True,
-        "regression_guardrail": regression_interval[0]
-        >= minimum_regression_improvement,
-        "classification_guardrail": classification_interval[0]
-        >= minimum_classification_improvement,
+        "regression_guardrail": (
+            regression_improvement >= 0.03 * champion_regression["engine_balanced_rmse"]
+            and regression_interval[0] > 0
+            and challenger_regression["engine_balanced_mae"]
+            <= 1.05 * champion_regression["engine_balanced_mae"]
+            and challenger_regression["engine_balanced_nasa_score"]
+            <= 1.05 * champion_regression["engine_balanced_nasa_score"]
+        ),
+        "classification_guardrail": (
+            classification_improvement >= 0.005
+            and classification_interval[0] > 0
+            and challenger_classification["engine_balanced_brier_score"]
+            <= champion_classification["engine_balanced_brier_score"] + 0.01
+        ),
         "promotion_path_absent": True,
     }
-    if np.array_equal(values[:, 0], values[:, 1]) and np.array_equal(
-        values[:, 2], values[:, 3]
+    if np.array_equal(values[:, 4], values[:, 5]) and np.array_equal(
+        values[:, 6], values[:, 7]
     ):
         outcome: Literal[
             "eligible_for_human_review", "retain_champion", "no_change"

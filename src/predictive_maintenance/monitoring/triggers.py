@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import asdict, dataclass
+from itertools import pairwise
 from typing import Any, Literal
 
 from predictive_maintenance.monitoring.models import (
@@ -123,6 +124,22 @@ def evaluate_triggers(
             "trigger.policy_mismatch", "Every report must use the trigger policy."
         )
     latest = reports[-1]
+    if any(
+        report.window.release_id != latest.window.release_id
+        or report.reference_id != latest.reference_id
+        or report.window.source_partition != latest.window.source_partition
+        for report in reports
+    ):
+        raise MonitoringError(
+            "trigger.history_mismatch",
+            "Trigger history must share release, reference and partition.",
+        )
+    sequences = [report.window.replay_sequence for report in reports]
+    if any(second <= first for first, second in pairwise(sequences)):
+        raise MonitoringError(
+            "trigger.history_order",
+            "Trigger history requires distinct increasing replay windows.",
+        )
     investigations: list[Investigation] = []
     if latest.data_quality.status in {"invalid", "alert"}:
         investigations.append(
@@ -158,6 +175,11 @@ def evaluate_triggers(
     adequate_history = reports[-policy.persistent_drift_windows :]
     persistent = len(adequate_history) == policy.persistent_drift_windows and all(
         report.data_quality.status == "pass"
+        and report.service_health.status == "pass"
+        and report.feature_shift.status
+        not in {"invalid", "insufficient_data", "unavailable"}
+        and report.prediction_shift.status
+        not in {"invalid", "insufficient_data", "unavailable"}
         and (
             report.feature_shift.status == "alert"
             or report.prediction_shift.status == "alert"

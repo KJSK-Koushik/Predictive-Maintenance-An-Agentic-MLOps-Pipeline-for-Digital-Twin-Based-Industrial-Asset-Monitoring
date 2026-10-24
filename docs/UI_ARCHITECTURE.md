@@ -258,6 +258,11 @@ states. It must not render any of them as zero, green, healthy, or approved. A
 drift alert must say `Distribution changed`; it must not say `Model failed`
 unless matching delayed performance evidence supports that separate statement.
 
+`prediction_sha256` binds exact ordered predictions without exposing their full
+values. It is null if invalid evidence prevented a trustworthy binding. A
+delayed-performance child retains that digest and records the verified target
+file digest in `label_snapshot_id`; it never edits the original report.
+
 This remains a technology-neutral design contract. Phase 7 creates no browser
 endpoint or screen connection.
 

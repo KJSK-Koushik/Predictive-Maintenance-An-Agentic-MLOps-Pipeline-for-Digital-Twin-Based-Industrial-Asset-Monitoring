@@ -28,12 +28,49 @@ production, public-service, or paid-resource action is authorized.
 
 ## Completion evidence
 
-In progress. Docker Desktop is not running, so disposable PostgreSQL 17,
-container, runtime Airflow, and related recovery evidence remain pending. The
-reviewed Phase 7 Supabase migration has not been applied; hosted mutation is
-correctly waiting for local PostgreSQL validation. Full coverage, Markdown,
-YAML, dependency audit, hosted Supabase, and Phase 7 GitHub Actions evidence
-also remain pending.
+Final validation resumed on 2026-10-24. Docker Desktop 4.90.0 and Linux Engine
+29.7.2 are healthy after recoverable runtime-socket folder backups. No factory
+reset or Docker volume deletion was used.
+
+| Evidence class                      | Command or check                                                 | Result                                                                                            |
+| ----------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Unit/contract                       | `uv run pytest tests/monitoring tests/retraining -q`             | 86 passed                                                                                         |
+| Local PostgreSQL                    | `uv run pytest -m "postgres and not dataset and not cloud" -q`   | 31 passed in the earlier Docker repair validation                                                 |
+| Local Airflow                       | `uv run pytest -m "airflow and not dataset and not cloud" -q`    | 10 passed in 181.76 seconds                                                                       |
+| Synthetic inference container       | `uv run pytest -m "deployment and not dataset and not cloud" -q` | 1 passed                                                                                          |
+| Approved actual inference container | Same smoke/parity test with the exact approved bundle            | 1 passed                                                                                          |
+| Static typing                       | `uv run mypy src tests`                                          | 153 files passed                                                                                  |
+| Dependency security                 | `uv run pip-audit` and `uv pip check`                            | No known vulnerabilities; installed dependencies compatible                                       |
+| Hosted schema                       | Apply reviewed Phase 7 SQL through project-scoped migration tool | Applied as hosted version `20261024063026`                                                        |
+| Hosted access                       | Six tables, RLS, client-role denial, narrow runtime grants       | Verified using catalog queries                                                                    |
+| Hosted Storage                      | Three actual replay report objects                               | SHA-256/size/download, repeat reuse, conflict denial, anonymous denial, and reconciliation passed |
+| Hosted metadata                     | One reference, one window, original/attached report pair         | Recorded through project-scoped SQL; parent identity and object hashes verified                   |
+
+The last implementation CI run `34705014305` passed 317 tests and all Airflow,
+PostgreSQL, and inference checks but failed coverage at 88.57%. That run is
+failure evidence, not completion evidence. Additional rejection-path tests and
+a new full coverage run are pending final CI validation.
+
+The security refresh updated affected locked transitive dependencies, including
+PyJWT 2.15.1, Pillow 13.0.0, GitPython 3.2.1, and aiohttp 3.14.5. Python 3.11.9,
+NumPy 2.4.6, pandas 2.3.3, scikit-learn 1.9.0, skops 0.14.0, and MLflow 3.15.1
+remain the modeling runtime. The previous local environment is recoverably
+backed up under ignored monitoring artifacts.
+
+The challenger evaluator now reuses the Phase 5 cycle-level RMSE/AP metrics,
+2,000 whole-engine bootstrap samples, and practical guardrails. Omitted
+external checks default to false. Synthetic passing checks remain fixtures;
+they do not claim real artifact/security verification for a new challenger.
+
+The hosted direct PostgreSQL adapter is not claimed as exercised: the
+connector cannot assume the runtime role. Hosted metadata uses its own scoped
+SQL access, while restricted-role adapter behavior is exercised locally.
+Supabase Security Advisor reports zero findings. Performance Advisor retains
+informational unused-index notices and the earlier Phase 3 overlapping-policy
+warning; these are recorded separately from security findings.
+
+Full coverage, fresh actual replay, final documentation checks, and completion
+GitHub Actions evidence remain in progress.
 
 ## Known planning limitations
 

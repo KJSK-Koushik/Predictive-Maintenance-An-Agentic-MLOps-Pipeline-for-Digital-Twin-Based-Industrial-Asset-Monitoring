@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import subprocess
 import uuid
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import pytest
 from phase7_support import identity, prediction_frame, telemetry_frame
@@ -41,7 +41,7 @@ def _airflow(*arguments: str) -> subprocess.CompletedProcess[str]:
 def test_monitoring_dag_matches_direct_identity_and_reuses_after_retry() -> None:
     namespace = f"airflow-integration/{uuid.uuid4().hex}"
     host_root = ROOT / "artifacts/monitoring" / namespace
-    container_root = Path("/opt/airflow/artifacts/monitoring") / namespace
+    container_root = PurePosixPath("/opt/airflow/artifacts/monitoring") / namespace
     host_root.mkdir(parents=True)
     frame = telemetry_frame()
     predictions = prediction_frame(frame)

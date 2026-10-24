@@ -2,23 +2,31 @@
 
 from __future__ import annotations
 
+import io
 import os
 from dataclasses import replace
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import pandas as pd
 import pytest
 from phase7_support import identity, prediction_frame, telemetry_frame
 
 from predictive_maintenance.cloud.models import ObjectIdentity
 from predictive_maintenance.cloud.object_store import FilesystemObjectRepository
+from predictive_maintenance.etl.models import (
+    FEATURE_SPEC_VERSION,
+    DerivedManifest,
+    ManifestFile,
+)
 from predictive_maintenance.monitoring.models import (
     MonitoringError,
     MonitoringPolicy,
     MonitoringReport,
     ReferenceProfile,
     SignalResult,
+    sha256_bytes,
 )
 from predictive_maintenance.monitoring.pipeline import (
     attach_delayed_labels,
@@ -76,6 +84,158 @@ def _report(
             "latencies_ms": [2.0],
         },
     )
+
+
+def _label_evidence(
+    report: MonitoringReport,
+    targets: pd.DataFrame | None = None,
+) -> tuple[MonitoringReport, bytes, DerivedManifest]:
+    if targets is None:
+        targets = telemetry_frame().loc[:, ["engine_id", "cycle"]].copy()
+        targets["rul"] = 40 - targets["cycle"]
+        targets["failure_risk_30"] = (targets["rul"] <= 30).astype("int8")
+    stream = io.BytesIO()
+    targets.to_parquet(stream, index=False)
+    payload = stream.getvalue()
+    manifest = DerivedManifest(
+        artifact_kind="feature",
+        source_snapshot_id=report.window.raw_snapshot_id,
+        parent_snapshot_id=report.window.processed_snapshot_id,
+        contract_version=FEATURE_SPEC_VERSION,
+        transformation_version="test",
+        serializer_version="test",
+        code_revision="phase7-tests",
+        files=(
+            ManifestFile(
+                logical_filename="synthetic_targets.parquet",
+                file_position=1,
+                byte_size=len(payload),
+                sha256=sha256_bytes(payload),
+                content_type="application/vnd.apache.parquet",
+                row_count=len(targets),
+                columns=(),
+            ),
+        ),
+    )
+    return (
+        replace(
+            report,
+            window=replace(report.window, feature_snapshot_id=manifest.snapshot_id),
+        ),
+        payload,
+        manifest,
+    )
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        "values",
+        "keys",
+        "partition",
+        "snapshot",
+        "bytes",
+        "missing_digest",
+        "membership",
+    ],
+)
+def test_label_attachment_rejects_changed_prediction_or_label_evidence(
+    reference: ReferenceProfile,
+    policy: MonitoringPolicy,
+    change: str,
+) -> None:
+    report, payload, manifest = _label_evidence(_report(reference, policy))
+    predictions = prediction_frame(telemetry_frame())
+    partition = "synthetic"
+    if change == "values":
+        predictions.loc[0, "rul_cycles"] = 999.0
+    elif change == "keys":
+        predictions.loc[0, "cycle"] = 999
+    elif change == "partition":
+        partition = "test"
+    elif change == "snapshot":
+        manifest = replace(manifest, source_snapshot_id=identity("wrong"))
+    elif change == "bytes":
+        payload += b"changed"
+    elif change == "membership":
+        report = replace(report, window=replace(report.window, row_count=1))
+    else:
+        report = replace(report, prediction_sha256=None)
+    with pytest.raises(MonitoringError):
+        attach_delayed_labels(
+            report,
+            predictions,
+            label_payload=payload,
+            feature_manifest=manifest,
+            expected_source_partition=partition,
+        )
+
+
+@pytest.mark.parametrize("change", ["duplicate", "missing", "semantics", "schema"])
+def test_label_attachment_validates_snapshot_targets(
+    reference: ReferenceProfile,
+    policy: MonitoringPolicy,
+    change: str,
+) -> None:
+    targets = telemetry_frame().loc[:, ["engine_id", "cycle"]].copy()
+    targets["rul"] = 40 - targets["cycle"]
+    targets["failure_risk_30"] = (targets["rul"] <= 30).astype("int8")
+    if change == "duplicate":
+        targets.iloc[1] = targets.iloc[0]
+    elif change == "missing":
+        targets = targets.iloc[1:]
+    elif change == "schema":
+        targets = targets.drop(columns="rul")
+    else:
+        targets.loc[0, "failure_risk_30"] = 1
+    report, payload, manifest = _label_evidence(_report(reference, policy), targets)
+    with pytest.raises(MonitoringError, match="invalid_label_snapshot"):
+        attach_delayed_labels(
+            report,
+            prediction_frame(telemetry_frame()),
+            label_payload=payload,
+            feature_manifest=manifest,
+            expected_source_partition="synthetic",
+        )
+
+
+@pytest.mark.parametrize(
+    "change", ["release", "reference", "partition", "order", "duplicate"]
+)
+def test_trigger_history_rejects_mixed_or_repeated_windows(
+    reference: ReferenceProfile,
+    policy: MonitoringPolicy,
+    change: str,
+) -> None:
+    first = _report(reference, policy, telemetry_shift=5, sequence=1)
+    second = _report(reference, policy, telemetry_shift=5, sequence=2)
+    if change == "release":
+        second = replace(
+            second, window=replace(second.window, release_id=identity("wrong"))
+        )
+    elif change == "reference":
+        second = replace(
+            second,
+            reference_id=identity("wrong"),
+            window=replace(second.window, reference_id=identity("wrong")),
+        )
+    elif change == "partition":
+        second = replace(second, window=replace(second.window, source_partition="test"))
+    elif change == "order":
+        first, second = second, first
+    else:
+        second = first
+    with pytest.raises(MonitoringError, match=r"trigger\.history_"):
+        evaluate_triggers((first, second), policy=policy)
+
+
+def test_unhealthy_historical_window_cannot_prove_persistent_drift(
+    reference: ReferenceProfile,
+    policy: MonitoringPolicy,
+) -> None:
+    first = _report(reference, policy, telemetry_shift=5, sequence=1, ready=False)
+    second = _report(reference, policy, telemetry_shift=5, sequence=2)
+    assert evaluate_triggers((first, second), policy=policy).candidate_request is None
 
 
 def test_report_identity_is_deterministic_and_has_no_processing_time(
@@ -141,17 +301,14 @@ def test_invalid_quality_blocks_downstream_signals(
 def test_label_attachment_creates_child_without_overwrite(
     reference: ReferenceProfile, policy: MonitoringPolicy
 ) -> None:
-    original = _report(reference, policy)
+    original, payload, manifest = _label_evidence(_report(reference, policy))
     frame = telemetry_frame()
     predictions = prediction_frame(frame)
-    labels = frame.loc[:, ["engine_id", "cycle"]].copy()
-    labels["rul"] = predictions["rul_cycles"]
-    labels["failure_risk_30"] = predictions["failure_risk_label"]
     attached = attach_delayed_labels(
         original,
-        labels,
         predictions,
-        label_snapshot_id=identity("labels"),
+        label_payload=payload,
+        feature_manifest=manifest,
         expected_source_partition="synthetic",
     )
     assert original.delayed_performance.status == "unavailable"
@@ -161,9 +318,9 @@ def test_label_attachment_creates_child_without_overwrite(
     with pytest.raises(MonitoringError, match=r"performance\.already_attached"):
         attach_delayed_labels(
             attached,
-            labels,
             predictions,
-            label_snapshot_id=identity("labels"),
+            label_payload=payload,
+            feature_manifest=manifest,
             expected_source_partition="synthetic",
         )
 
@@ -217,17 +374,14 @@ def test_unavailable_performance_cannot_trigger_candidate(
 def test_available_degraded_performance_can_request_evaluation(
     reference: ReferenceProfile, policy: MonitoringPolicy
 ) -> None:
-    original = _report(reference, policy)
+    original, payload, manifest = _label_evidence(_report(reference, policy))
     frame = telemetry_frame()
     predictions = prediction_frame(frame)
-    labels = frame.loc[:, ["engine_id", "cycle"]].copy()
-    labels["rul"] = predictions["rul_cycles"]
-    labels["failure_risk_30"] = predictions["failure_risk_label"]
     attached = attach_delayed_labels(
         original,
-        labels,
         predictions,
-        label_snapshot_id=identity("labels-performance-trigger"),
+        label_payload=payload,
+        feature_manifest=manifest,
         expected_source_partition="synthetic",
     )
     decision = evaluate_triggers((attached,), policy=policy, performance_degraded=True)

@@ -301,7 +301,7 @@ lineage. A delayed-label snapshot belongs to the child report, not the window.
 Replay sequence and processing time are metadata; they do not turn `cycle`
 into event time.
 
-`fd001-monitoring-report-v1` keeps data quality, feature shift, prediction
+`fd001-monitor-report-v1` keeps data quality, feature shift, prediction
 shift, sampled service behavior, and delayed-label performance in separate
 sections. Signal states are limited to `pass`, `warning`, `alert`,
 `insufficient_data`, `unavailable`, and `invalid`. Invalid quality blocks later
@@ -311,6 +311,15 @@ Delayed labels may be attached only after prediction evidence is immutable and
 only when source partition, snapshot, row keys, and counts match exactly. The
 attachment creates new content-addressed performance evidence rather than
 editing the original report.
+
+The parent report binds the ordered prediction values with `prediction_sha256`.
+Attachment rehashes those values and verifies window membership before reading
+targets. It accepts the target Parquet bytes and the content-addressed Phase 3
+feature manifest, not an unverified label DataFrame. The manifest must match the
+window's feature, processed, and raw lineage. Its partition-specific target
+entry must match the exact byte size and SHA-256; duplicate/missing keys and
+invalid inclusive 30-cycle target semantics are rejected. The child records the
+verified target-file digest as `label_snapshot_id`.
 
 `fd001-retraining-trigger-v1` and `fd001-challenger-evaluation-v1` reference
 immutable monitoring evidence and data cutoffs. NASA test rows are prohibited

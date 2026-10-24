@@ -82,6 +82,13 @@ def test_engine_balanced_sample_bounds_each_engine() -> None:
     }
 
 
+def test_engine_balanced_sample_uses_equal_counts_for_unequal_trajectories() -> None:
+    frame = telemetry_frame()
+    frame = frame.loc[(frame.engine_id != 1) | (frame.cycle <= 3)]
+    sample = engine_balanced_sample(frame, 10)
+    assert sample.groupby("engine_id").size().to_dict() == {1: 3, 2: 3, 3: 3}
+
+
 @pytest.mark.parametrize(
     ("mutator", "code"),
     [

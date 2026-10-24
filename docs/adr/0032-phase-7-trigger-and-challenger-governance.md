@@ -32,6 +32,15 @@ MLflow alias, registry, deployment, rollback, or production credential or
 operation. Actual FD001 may honestly end as `no_change` or
 `blocked_no_new_training_data`.
 
+The evaluator consumes aligned cycle-level targets and both models' predictions,
+then reuses the Phase 5 metrics and paired whole-engine bootstrap. The RUL gate
+requires at least 3% RMSE improvement, a positive 95% interval, and MAE/NASA-score
+non-inferiority within 5%. The risk gate requires at least 0.005 absolute AP
+improvement, a positive interval, and no more than 0.01 Brier deterioration.
+External release-check evidence must be supplied explicitly; an omitted check
+is false. Synthetic check fixtures prove decision mechanics only. They do not
+prove a real model passed signature, security, or reproducibility checks.
+
 ## Consequences
 
 Phase 7 is human-governed monitoring and evaluation, not autonomous or

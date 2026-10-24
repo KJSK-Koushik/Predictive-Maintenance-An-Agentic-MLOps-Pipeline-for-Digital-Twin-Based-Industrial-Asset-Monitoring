@@ -62,6 +62,8 @@ retraining, field performance, public availability, or autonomous promotion.
 ### Delayed labels and performance
 
 - predictions are fixed before label access;
+- changing one prediction value after the parent report is fixed is rejected;
+- target bytes, the feature-manifest identity, and raw/processed lineage must match;
 - missing labels produce `unavailable` performance;
 - exact key-aligned attachment succeeds and creates a new evidence identity;
 - missing, duplicate, wrong-partition, wrong-snapshot, stale, and future-leak
@@ -80,6 +82,7 @@ retraining, field performance, public availability, or autonomous promotion.
 - delayed-performance degradation can create exactly one candidate request;
 - unavailable and insufficient evidence cannot trigger;
 - exact duplicates reuse an ID and conflicting evidence fails closed;
+- mixed releases/references/partitions and non-increasing replay histories fail closed;
 - trigger results are deterministic and reasons are bounded; and
 - no registry, alias, deployment, rollback, or production operation is
   reachable from the controller.
@@ -88,6 +91,7 @@ retraining, field performance, public availability, or autonomous promotion.
 
 - identical champion and challenger produce a no-change result;
 - synthetic improvement passes the existing practical gates;
+- omitted external release checks default to false;
 - regression, classification, robustness, calibration, and interval failures
   correctly retain the champion;
 - paired bootstrap resamples whole engines and is reproducible;

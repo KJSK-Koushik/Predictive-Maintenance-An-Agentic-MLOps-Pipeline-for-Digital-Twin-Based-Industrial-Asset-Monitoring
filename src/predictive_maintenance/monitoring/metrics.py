@@ -20,7 +20,10 @@ from predictive_maintenance.monitoring.models import (
     SignalResult,
     SignalStatus,
 )
-from predictive_maintenance.monitoring.reference import validate_feature_frame
+from predictive_maintenance.monitoring.reference import (
+    engine_balanced_sample,
+    validate_feature_frame,
+)
 
 _EPSILON = 1e-6
 
@@ -90,6 +93,9 @@ def feature_shift_signal(
     if quality.status == "invalid":
         return SignalResult("invalid", {}, ("shift.blocked_by_quality",))
     if quality.status == "insufficient_data":
+        return SignalResult("insufficient_data", {}, ("shift.insufficient_sample",))
+    frame = engine_balanced_sample(frame, policy.max_rows_per_engine)
+    if len(frame) < policy.minimum_rows:
         return SignalResult("insufficient_data", {}, ("shift.insufficient_sample",))
     rows: list[dict[str, Any]] = []
     statuses: list[SignalStatus] = []
@@ -171,6 +177,12 @@ def prediction_shift_signal(
         values = frame.loc[:, list(columns[2:])].to_numpy(dtype="float64")
         if not bool(np.isfinite(values).all()):
             return SignalResult("invalid", {}, ("prediction.nonfinite",))
+    reference_predictions = engine_balanced_sample(
+        reference_predictions, policy.max_rows_per_engine
+    )
+    current_predictions = engine_balanced_sample(
+        current_predictions, policy.max_rows_per_engine
+    )
     if (
         len(current_predictions) < policy.minimum_rows
         or current_predictions["engine_id"].nunique() < policy.minimum_engines
