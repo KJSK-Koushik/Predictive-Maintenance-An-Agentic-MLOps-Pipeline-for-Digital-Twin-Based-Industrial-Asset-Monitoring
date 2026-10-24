@@ -376,6 +376,12 @@ delayed-label performance separate. Reports expose lifecycle mix and
 sample adequacy so expected simulated degradation is not silently called model
 failure.
 
+Prediction-report identities include a digest of the exact ordered predictions.
+Delayed-label attachment verifies those values and target Parquet bytes against
+the content-addressed feature manifest and its raw/processed lineage. It creates
+a child report, never an update. Sampling uses equal bounded counts per engine,
+including when trajectories have different lengths.
+
 Canonical reports use content-addressed private Storage objects with
 private operational PostgreSQL identities, alerts, retraining requests, and
 challenger-evaluation outcomes. The existing object, lineage, least-privilege,
@@ -386,6 +392,12 @@ evaluation. It has no model-registration, alias, approval, deployment,
 rollback, or production authority. Champion/challenger evaluation reuses
 paired whole-engine evidence and hands eligible evidence to the existing
 Phase 6 human approval boundary. NASA test rows cannot become training input.
+
+Performance-trigger requests require fixed RMSE/Brier baselines in the versioned
+policy and a deterministic comparison. The request's policy digest binds those
+values. No baseline means no
+performance-trigger claim. Histories cannot mix releases or repeat replay
+sequences. External challenger release checks default to false.
 
 Core monitoring is typed Python and runs without Airflow or cloud services. A
 thin manual Airflow wrapper calls the same direct runtime after the direct path

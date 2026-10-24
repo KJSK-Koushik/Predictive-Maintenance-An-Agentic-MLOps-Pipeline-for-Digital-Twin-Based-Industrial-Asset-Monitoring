@@ -301,6 +301,14 @@ The owner accepted these defaults with `START PHASE 7` on 2026-09-07. Phase 6
 PR 12 was merged the same day. GitHub Actions run `34081887096` passed all 28
 steps on exact merge commit `cdad44f8d3c4347c5aea46bf2e6ccc3381cca68c`.
 
+On 2026-10-24 the approved development project was restored from inactivity
+without provisioning a paid resource. The reviewed Phase 7 migration was
+applied through the project connector, which recorded version
+`20261024063026`; the local CLI-generated source remains
+`20260907042647_phase_07_monitoring.sql`. They contain the same reviewed SQL.
+Hosted metadata verification uses scoped SQL because this connector cannot
+assume the runtime role; direct restricted-role adapter tests run locally.
+
 ## Phase 8 agent prerequisites
 
 - [ ] Select an LLM provider and approve its data-handling terms.

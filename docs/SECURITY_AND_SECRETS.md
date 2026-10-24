@@ -314,6 +314,10 @@ metapackage is intentionally absent and `pip-audit` remains mandatory.
 - Publish report objects with put-if-absent and stored-byte digest verification.
 - Keep delayed labels separate from prediction generation and reject key,
   partition, snapshot, or timing mismatches.
+- Rehash the fixed prediction values and verify target-file bytes against the
+  content-addressed feature manifest before delayed performance is calculated.
+- Bind fixed performance baselines into the request's policy digest; never use
+  an unverified caller-supplied degradation boolean as the decision.
 - Give the trigger and challenger controllers no registry-alias, deployment,
   rollback, production, or secret-reading authority.
 - Treat report content as data. No report field can execute code, change a

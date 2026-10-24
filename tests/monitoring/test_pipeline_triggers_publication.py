@@ -365,8 +365,12 @@ def test_persistent_shift_creates_one_deterministic_candidate(
 def test_unavailable_performance_cannot_trigger_candidate(
     reference: ReferenceProfile, policy: MonitoringPolicy
 ) -> None:
+    policy = replace(
+        policy, performance_baseline_rmse=1.0, performance_baseline_brier=0.0
+    )
+    reference = replace(reference, policy_id=policy.policy_id)
     report = _report(reference, policy)
-    decision = evaluate_triggers((report,), policy=policy, performance_degraded=True)
+    decision = evaluate_triggers((report,), policy=policy)
     assert decision.status == "no_action"
     assert decision.candidate_request is None
 
@@ -374,6 +378,10 @@ def test_unavailable_performance_cannot_trigger_candidate(
 def test_available_degraded_performance_can_request_evaluation(
     reference: ReferenceProfile, policy: MonitoringPolicy
 ) -> None:
+    policy = replace(
+        policy, performance_baseline_rmse=1.0, performance_baseline_brier=0.0
+    )
+    reference = replace(reference, policy_id=policy.policy_id)
     original, payload, manifest = _label_evidence(_report(reference, policy))
     frame = telemetry_frame()
     predictions = prediction_frame(frame)
@@ -384,11 +392,49 @@ def test_available_degraded_performance_can_request_evaluation(
         feature_manifest=manifest,
         expected_source_partition="synthetic",
     )
-    decision = evaluate_triggers((attached,), policy=policy, performance_degraded=True)
+    decision = evaluate_triggers((attached,), policy=policy)
     assert decision.status == "candidate_requested"
     assert decision.candidate_request is not None
     assert decision.candidate_request.reason == "performance_degradation"
     assert decision.candidate_request.authority == "evaluation_only"
+    assert decision.candidate_request.policy_id == policy.policy_id
+    healthy_policy = replace(
+        policy, performance_baseline_rmse=100.0, performance_baseline_brier=1.0
+    )
+    healthy_reference = replace(reference, policy_id=healthy_policy.policy_id)
+    original, payload, manifest = _label_evidence(
+        _report(healthy_reference, healthy_policy)
+    )
+    attached = attach_delayed_labels(
+        original,
+        predictions,
+        label_payload=payload,
+        feature_manifest=manifest,
+        expected_source_partition="synthetic",
+    )
+    not_degraded = evaluate_triggers((attached,), policy=healthy_policy)
+    assert not_degraded.candidate_request is None
+
+
+@pytest.mark.parametrize(
+    "rmse,brier",
+    [
+        (None, 0.1),
+        (1.0, None),
+        (0.0, 0.1),
+        (float("inf"), 0.1),
+        (1.0, -0.1),
+        (1.0, 1.1),
+    ],
+)
+def test_policy_rejects_incomplete_or_invalid_fixed_baseline(
+    rmse: float | None,
+    brier: float | None,
+) -> None:
+    with pytest.raises(MonitoringError, match=r"policy\.invalid_baseline"):
+        MonitoringPolicy(
+            performance_baseline_rmse=rmse, performance_baseline_brier=brier
+        )
 
 
 def test_candidate_request_rejects_duplicate_or_invalid_evidence() -> None:

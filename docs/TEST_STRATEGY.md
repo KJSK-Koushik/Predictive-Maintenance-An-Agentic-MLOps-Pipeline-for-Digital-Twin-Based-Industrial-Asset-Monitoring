@@ -260,6 +260,8 @@ and GitHub runner are never presented as interchangeable proof.
   prediction-shift, lifecycle-mix, and service-probe tests;
 - delayed-label unavailable, exact-attachment, mismatch, and leakage-denial
   tests;
+- exact prediction-value binding, target-file integrity, manifest lineage,
+  unequal-trajectory sampling, and fixed-baseline trigger tests;
 - deterministic investigation, persistent-drift, performance-trigger,
   deduplication, and conflict tests;
 - synthetic champion/challenger pass, fail, no-change, deterministic 2,000

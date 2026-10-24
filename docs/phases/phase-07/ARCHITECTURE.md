@@ -159,6 +159,12 @@ sequences. Every persistence window needs valid, adequate signals and a passing
 service probe. Repeated evaluation is idempotent;
 conflicting evidence fails closed.
 
+Performance degradation is computed using fixed RMSE/Brier baselines configured
+before evaluation in the versioned policy. Its digest binds those values to
+every request. A caller cannot simply assert degradation with a boolean. Both
+baselines are unset in the actual replay, so it makes no baseline-degradation
+claim or performance-trigger request.
+
 ## Delayed-label behavior
 
 Predictions are generated and fixed before labels are attached. A separate

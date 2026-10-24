@@ -90,6 +90,8 @@ class MonitoringPolicy:
     performance_rmse_ratio_alert: float = 1.10
     performance_brier_delta_alert: float = 0.05
     persistent_drift_windows: int = 2
+    performance_baseline_rmse: float | None = None
+    performance_baseline_brier: float | None = None
     policy_contract_version: str = POLICY_CONTRACT_VERSION
 
     def __post_init__(self) -> None:
@@ -125,11 +127,27 @@ class MonitoringPolicy:
             raise MonitoringError(
                 "policy.invalid_persistence", "Persistent drift requires two windows."
             )
+        baseline = (self.performance_baseline_rmse, self.performance_baseline_brier)
+        if baseline != (None, None) and (
+            any(value is None or not math.isfinite(value) for value in baseline)
+            or self.performance_baseline_rmse is None
+            or self.performance_baseline_rmse <= 0
+            or self.performance_baseline_brier is None
+            or not 0 <= self.performance_baseline_brier <= 1
+        ):
+            raise MonitoringError(
+                "policy.invalid_baseline",
+                "Both fixed performance baselines must be valid.",
+            )
 
     @property
     def policy_id(self) -> str:
         """Hash every governed policy field."""
-        return sha256_bytes(canonical_json_bytes(asdict(self)))
+        value = asdict(self)
+        for field in ("performance_baseline_rmse", "performance_baseline_brier"):
+            if value[field] is None:
+                value.pop(field)
+        return sha256_bytes(canonical_json_bytes(value))
 
     def to_dict(self) -> dict[str, Any]:
         """Return JSON-ready policy evidence."""

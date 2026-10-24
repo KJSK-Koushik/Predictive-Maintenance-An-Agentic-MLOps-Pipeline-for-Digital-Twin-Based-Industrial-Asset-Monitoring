@@ -7,6 +7,7 @@ from dataclasses import asdict, dataclass
 from itertools import pairwise
 from typing import Any, Literal
 
+from predictive_maintenance.monitoring.metrics import degradation_status
 from predictive_maintenance.monitoring.models import (
     MonitoringError,
     MonitoringPolicy,
@@ -114,7 +115,6 @@ def evaluate_triggers(
     reports: tuple[MonitoringReport, ...],
     *,
     policy: MonitoringPolicy,
-    performance_degraded: bool = False,
 ) -> TriggerDecision:
     """Apply fail-closed deterministic trigger semantics."""
     if not reports:
@@ -186,7 +186,24 @@ def evaluate_triggers(
         )
         for report in adequate_history
     )
-    available_performance = latest.delayed_performance.status == "pass"
+    available_performance = (
+        latest.delayed_performance.status == "pass"
+        and latest.data_quality.status == "pass"
+        and latest.service_health.status == "pass"
+    )
+    performance_degraded = (
+        policy.performance_baseline_rmse is not None
+        and policy.performance_baseline_brier is not None
+        and degradation_status(
+            latest.delayed_performance,
+            {
+                "engine_balanced_rmse": policy.performance_baseline_rmse,
+                "engine_balanced_brier_score": policy.performance_baseline_brier,
+            },
+            policy,
+        )
+        == "alert"
+    )
     if not persistent and not (performance_degraded and available_performance):
         return TriggerDecision(
             tuple(investigations),

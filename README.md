@@ -126,6 +126,17 @@ scores, and neither has ground-truth anomaly or maintenance authority. The
 full FD001 path is an offline research run, not real-time or continuous
 retraining.
 
+## Phase 7 monitoring
+
+Phase 7 monitors explicit FD001 cycle-replay windows against the approved
+loopback release. Reports separate data quality, feature/prediction shift,
+sampled service behavior, and verified delayed-label performance. Exact
+prediction digests and target-file/manifest checks protect the attachment path.
+Triggers open investigations or evaluation-only candidate requests; they cannot
+train, promote, deploy, or change an MLflow alias. There is no working dashboard
+yet. See the [Phase 7 evidence report](docs/phases/phase-07/COMPLETION_REPORT.md)
+for current validation status and limitations.
+
 ## Claim boundaries
 
 The initial system is a digital-twin-inspired **asset-health digital shadow**,

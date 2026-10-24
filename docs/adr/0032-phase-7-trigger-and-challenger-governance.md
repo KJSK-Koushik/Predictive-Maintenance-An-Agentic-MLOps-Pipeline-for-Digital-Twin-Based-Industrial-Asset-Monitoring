@@ -24,6 +24,19 @@ delayed-label performance degradation may create an immutable,
 evaluation-only candidate request. Unavailable or insufficient evidence
 cannot trigger a request.
 
+Performance degradation is calculated from fixed RMSE/Brier baselines in the
+versioned policy thresholds, not accepted as a caller boolean. The request
+records the policy digest, which includes configured baseline values. With no approved baseline, performance-trigger
+evaluation stays inactive; an available performance metric alone is not a
+degradation claim. Histories must share release, reference and partition and
+use distinct increasing replay sequences with adequate, valid signals.
+
+The optional `performance_baseline_rmse` and `performance_baseline_brier` must
+both be present and valid to enable that comparison. Both null means disabled;
+null optional values are omitted from policy-identity bytes to preserve the
+existing default-policy identity. The actual demonstration leaves them unset
+because no new comparable approved performance baseline is claimed.
+
 Synthetic challengers are compared with the champion on identical whole-engine
 evaluation rows using practical regression and classification guardrails and
 all required release checks. Passing means only

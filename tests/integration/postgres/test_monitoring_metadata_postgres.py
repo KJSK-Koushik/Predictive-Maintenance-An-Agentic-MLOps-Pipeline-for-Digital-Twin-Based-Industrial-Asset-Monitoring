@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import subprocess
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
@@ -332,6 +333,44 @@ def test_metadata_writes_are_idempotent_and_append_only() -> None:
             assert connection.execute(
                 f"select count(*) from ops.{table}"
             ).fetchone() == (1,)
+
+
+def test_concurrent_reference_window_and_candidate_writes_converge() -> None:
+    _record_monitoring_evidence()
+    policy, reference, window, report = _evidence()
+    repository = PostgresMonitoringRepository(_dsn())
+    request = CandidateRequest(
+        release_id=identity("release"),
+        policy_id=policy.policy_id,
+        requested_task="both",
+        data_cutoff_window_id=window.window_id,
+        evidence_report_ids=(report.report_id,),
+        reason="persistent_shift",
+    )
+    with psycopg.connect(_dsn(), autocommit=True) as connection:
+        connection.execute(
+            "truncate ops.challenger_evaluations, ops.retraining_candidate_requests"
+        )
+
+    def record(_: int) -> None:
+        repository.record_reference(
+            reference,
+            _object_identity(
+                bucket="pm-derived",
+                key=f"reports/monitoring/{reference.release_id}/references/{reference.reference_id}.json",
+                payload=reference.canonical_bytes(),
+            ),
+            verified_at=datetime.now(UTC),
+        )
+        repository.record_window(window)
+        repository.record_candidate_request(request)
+
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        list(executor.map(record, range(8)))
+    with psycopg.connect(_dsn()) as connection:
+        assert connection.execute(
+            "select count(*) from ops.retraining_candidate_requests"
+        ).fetchone() == (1,)
 
 
 @pytest.mark.parametrize(

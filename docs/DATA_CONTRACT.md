@@ -325,3 +325,9 @@ verified target-file digest as `label_snapshot_id`.
 immutable monitoring evidence and data cutoffs. NASA test rows are prohibited
 from fitting and configuration selection. Eligibility remains separate from
 registration, human approval, alias changes, deployment, and rollback.
+
+The monitoring policy may contain fixed `performance_baseline_rmse` and
+`performance_baseline_brier` values. Both must be valid or both null. Configured
+values enter the policy digest; null optional baselines are omitted from its
+identity bytes and disable performance-trigger comparison. An available metric
+without a baseline is not a degradation decision.
