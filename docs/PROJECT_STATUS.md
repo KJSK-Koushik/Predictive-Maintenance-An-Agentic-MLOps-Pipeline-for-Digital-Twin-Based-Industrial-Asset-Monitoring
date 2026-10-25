@@ -2,27 +2,28 @@
 
 ## Current control state
 
-| Field                     | Value                                    |
-| ------------------------- | ---------------------------------------- |
-| Current phase             | 7: Monitoring and retraining             |
-| Last completed phase      | 6: Model registry and deployment         |
-| State                     | IN_PROGRESS                              |
-| Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
-| Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
-| Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
-| Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`    |
-| Phase 4 started           | 2026-08-14 by explicit `START PHASE 4`   |
-| Phase 4 approved          | 2026-08-14 by explicit `APPROVE PHASE 4` |
-| Phase 5 planned           | 2026-08-20 by explicit `PLAN PHASE 5`    |
-| Phase 5 started           | 2026-08-21 by explicit `START PHASE 5`   |
-| Phase 5 approved          | 2026-08-21 by explicit `APPROVE PHASE 5` |
-| Phase 6 planned           | 2026-08-21 by explicit `PLAN PHASE 6`    |
-| Phase 6 started           | 2026-08-22 by explicit `START PHASE 6`   |
-| Phase 6 approved          | 2026-08-22 by explicit `APPROVE PHASE 6` |
-| Phase 7 planned           | 2026-08-22 by explicit `PLAN PHASE 7`    |
-| Phase 7 started           | 2026-09-07 by explicit `START PHASE 7`   |
-| Phase 6 merged CI         | Passed: GitHub Actions run `34081887096` |
-| Next permitted transition | Phase 7 completion or blocked report     |
+| Field                     | Value                                                    |
+| ------------------------- | -------------------------------------------------------- |
+| Current phase             | 7: Monitoring and retraining                             |
+| Last completed phase      | 7: Monitoring and retraining (implementation complete)   |
+| State                     | AWAITING_APPROVAL                                        |
+| Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`                    |
+| Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`                   |
+| Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3`                 |
+| Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`                    |
+| Phase 4 started           | 2026-08-14 by explicit `START PHASE 4`                   |
+| Phase 4 approved          | 2026-08-14 by explicit `APPROVE PHASE 4`                 |
+| Phase 5 planned           | 2026-08-20 by explicit `PLAN PHASE 5`                    |
+| Phase 5 started           | 2026-08-21 by explicit `START PHASE 5`                   |
+| Phase 5 approved          | 2026-08-21 by explicit `APPROVE PHASE 5`                 |
+| Phase 6 planned           | 2026-08-21 by explicit `PLAN PHASE 6`                    |
+| Phase 6 started           | 2026-08-22 by explicit `START PHASE 6`                   |
+| Phase 6 approved          | 2026-08-22 by explicit `APPROVE PHASE 6`                 |
+| Phase 7 planned           | 2026-08-22 by explicit `PLAN PHASE 7`                    |
+| Phase 7 started           | 2026-09-07 by explicit `START PHASE 7`                   |
+| Phase 6 merged CI         | Passed: GitHub Actions run `34081887096`                 |
+| Phase 7 completion CI     | Passed: GitHub Actions run `40201718270`                 |
+| Next permitted transition | Explicit `APPROVE PHASE 7`; then wait for `PLAN PHASE 8` |
 
 ## Bootstrap record
 
@@ -42,7 +43,7 @@ feature or initializing a cloud service.
 
 | Evidence                   | Status                                                               |
 | -------------------------- | -------------------------------------------------------------------- |
-| Source-of-truth documents  | Phase 7 locally validated; completion CI and owner handoff pending   |
+| Source-of-truth documents  | Phase 7 complete; owner approval pending                             |
 | Accepted ADRs              | 33; includes Phase 7 container dependency security remediation       |
 | Phase 1 implementation     | Complete and owner-approved                                          |
 | Unit/contract tests        | Phase 1 evidence: passed locally, 46                                 |
@@ -115,7 +116,7 @@ feature or initializing a cloud service.
 | Phase 7 local regression   | 397 passed; 90.86% branch-aware coverage                             |
 | Phase 7 static typing      | Strict mypy passed for 155 source/test files                         |
 | Phase 7 actual FD001       | 100 engines and 2,000 replay rows; deterministic identities passed   |
-| Phase 7 Docker/PostgreSQL  | Engine 29.7.2 healthy; 38 PostgreSQL checks pass in current CI       |
+| Phase 7 Docker/PostgreSQL  | 38 post-restart PostgreSQL checks pass in 47.71 seconds              |
 | Phase 7 Airflow runtime    | Slim 3.3.2: all 10 real retry, backfill, parity tests passed         |
 | Phase 7 hosted migration   | Applied 2026-10-24; six private tables, RLS and grants verified      |
 | Phase 7 hosted reports     | Six verified objects, two references/windows and four reports        |
@@ -282,8 +283,9 @@ performance failure. Repeated evidence produced the same identities. Phase 7
 does not add Evidently, a metrics platform, Realtime, Auth, agents, working UI,
 public ingress, production, or paid resources. Phase 6 PR 12 was merged into
 `main`, and required GitHub Actions run `34081887096` passed on the exact merge
-revision. Phase 7 remains `IN_PROGRESS` until Docker/PostgreSQL, Airflow,
-hosted Supabase, full coverage/security, and completion GitHub checks pass.
+revision. Docker/PostgreSQL, Airflow, hosted Supabase, local coverage/security,
+actual-release parity, and completion GitHub checks have passed. Phase 7 is
+`AWAITING_APPROVAL`; it is not owner-approved. Every UI screen stays `Design only`, and the monitoring contract stays `UNAPPROVED` until that owner approval.
 
 ## Resolved workstation blocker (2026-10-25)
 
@@ -310,19 +312,25 @@ Only the approved staging container was recreated, still on
 The old image is retained as `phase7-pre-security-patch`; the temporary
 candidate container was removed. No model promotion or cloud deployment was
 made. All 10 real Airflow tests passed again after restart in 248.50 seconds.
-Completion-commit CI and the owner handoff remain pending. Phase 8 has not
-been planned or implemented.
+Required completion CI run `40201718270` passed on exact revision
+`ecc83d8160711b4e4517b723eaed049aa9c87d32`: 401 coverage-selected tests,
+90.85% branch-aware coverage, 38 PostgreSQL tests, 10 Airflow tests, inference
+parity, and both installed-image audits. The final status-only revision must
+also pass its own check before handoff. The next owner command is
+`APPROVE PHASE 7`. Stop completely after that request. Phase 8 has not been
+planned or implemented; its planning still requires later explicit approval
+and `PLAN PHASE 8`.
 
 ## Phase history
 
-| Phase | State       | Evidence                                    |
-| ----- | ----------- | ------------------------------------------- |
-| 0     | APPROVED    | `docs/phases/phase-00/COMPLETION_REPORT.md` |
-| 1     | APPROVED    | `docs/phases/phase-01/COMPLETION_REPORT.md` |
-| 2     | APPROVED    | `docs/phases/phase-02/COMPLETION_REPORT.md` |
-| 3     | APPROVED    | `docs/phases/phase-03/COMPLETION_REPORT.md` |
-| 4     | APPROVED    | `docs/phases/phase-04/COMPLETION_REPORT.md` |
-| 5     | APPROVED    | `docs/phases/phase-05/COMPLETION_REPORT.md` |
-| 6     | APPROVED    | `docs/phases/phase-06/COMPLETION_REPORT.md` |
-| 7     | IN_PROGRESS | `docs/phases/phase-07/COMPLETION_REPORT.md` |
-| 8-10  | NOT_PLANNED | Await Phase 7 implementation and approval   |
+| Phase | State             | Evidence                                           |
+| ----- | ----------------- | -------------------------------------------------- |
+| 0     | APPROVED          | `docs/phases/phase-00/COMPLETION_REPORT.md`        |
+| 1     | APPROVED          | `docs/phases/phase-01/COMPLETION_REPORT.md`        |
+| 2     | APPROVED          | `docs/phases/phase-02/COMPLETION_REPORT.md`        |
+| 3     | APPROVED          | `docs/phases/phase-03/COMPLETION_REPORT.md`        |
+| 4     | APPROVED          | `docs/phases/phase-04/COMPLETION_REPORT.md`        |
+| 5     | APPROVED          | `docs/phases/phase-05/COMPLETION_REPORT.md`        |
+| 6     | APPROVED          | `docs/phases/phase-06/COMPLETION_REPORT.md`        |
+| 7     | AWAITING_APPROVAL | `docs/phases/phase-07/COMPLETION_REPORT.md`        |
+| 8-10  | NOT_PLANNED       | Await Phase 7 approval and a separate plan command |

@@ -284,6 +284,10 @@ will create the smallest browser-facing read model after Phase 7 is approved.
 
 ## Explicit exclusions
 
+The implemented boundary passed local, hosted, actual-replay, and completion-CI
+validation documented in `COMPLETION_REPORT.md`. Owner approval is still
+required; this does not authorize a screen connection or later-phase work.
+
 - automatic, continuous, online, or unattended retraining;
 - automatic MLflow alias changes, promotion, deployment, or rollback;
 - adding NASA test data to training;

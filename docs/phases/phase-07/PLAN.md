@@ -253,8 +253,9 @@ valid if the complete trigger and evaluation mechanics are exercised.
 
 ## Stop condition
 
-Planning stops after these documents are validated. No Phase 7 feature,
-migration, report object, Airflow DAG, monitoring run, or challenger evaluation
-may be created before:
+The initial plan required `START PHASE 7` before implementation; that command
+was received on 2026-09-07. Implementation and validation are now complete,
+with evidence in `COMPLETION_REPORT.md`.
 
-`START PHASE 7`
+Stop at `AWAITING_APPROVAL` and request `APPROVE PHASE 7`. No Phase 8 planning
+or implementation is authorized. After approval, wait for `PLAN PHASE 8`.

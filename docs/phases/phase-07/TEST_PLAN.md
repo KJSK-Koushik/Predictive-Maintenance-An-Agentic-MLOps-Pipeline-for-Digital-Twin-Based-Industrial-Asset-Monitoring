@@ -252,6 +252,12 @@ scanning remains a separate, unclaimed capability.
 
 ## Exit criteria
 
+Exercised results, exact commands, versions, artifact identities, actual-versus-
+synthetic limitations, and GitHub run links are recorded in
+`COMPLETION_REPORT.md`. Required completion CI passed on
+`ecc83d8160711b4e4517b723eaed049aa9c87d32`; later status-only changes are checked
+separately before the owner handoff.
+
 All acceptance criteria pass; monitoring, delayed-label, trigger,
 champion/challenger, persistence, failure, recovery, Airflow, actual replay,
 security, and CI evidence is recorded honestly; documentation matches

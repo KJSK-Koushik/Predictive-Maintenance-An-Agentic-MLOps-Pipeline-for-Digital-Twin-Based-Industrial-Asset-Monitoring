@@ -2,15 +2,15 @@
 
 ## Status
 
-**LOCAL VALIDATION COMPLETE — COMPLETION CI PENDING**
+**COMPLETE — AWAITING OWNER APPROVAL**
 
 Planning was authorized by `PLAN PHASE 7` on 2026-08-22. Implementation was
 authorized by `START PHASE 7` on 2026-09-07. Phase 6 PR 12 was merged into
 `main`, and Phase 7 PR 13 was retargeted from `codex/phase-6` to `main`.
 GitHub Actions run `34081887096` passed all 28 steps on exact merge commit
 `cdad44f8d3c4347c5aea46bf2e6ccc3381cca68c`. Phase 7 implementation and local
-validation are complete; its documentation completion revision still needs
-its own required GitHub check. The owner approved an installer-only repair of
+validation are complete. The documentation completion revision passed its own
+required GitHub check on 2026-10-25. The owner approved an installer-only repair of
 the existing local staging container. No model alias change, new model release,
 cloud deployment, production, public-service, or paid-resource action was made.
 
@@ -42,7 +42,7 @@ a factory reset or Docker volume deletion.
 | Evidence class                      | Command or check                                                        | Result                                                                                            |
 | ----------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | Local regression and coverage       | Full credential-free non-dataset selection with branch coverage         | 397 passed in 851.25 seconds; 90.86% branch-aware coverage                                        |
-| Local PostgreSQL                    | Included in full selection; migration, role, restore, concurrency tests | 38 passed locally and in implementation CI                                                        |
+| Local PostgreSQL                    | Included in full selection; migration, role, restore, concurrency tests | 38 passed; post-restart repeat: 38 passed in 47.71 seconds                                        |
 | Local Airflow                       | `uv run pytest -m "airflow and not dataset and not cloud" -q`           | Slim 3.3.2: 10 passed in 195.98 seconds                                                           |
 | Synthetic inference container       | `uv run pytest -m "deployment and not dataset and not cloud" -q`        | 1 passed                                                                                          |
 | Approved actual inference container | Same smoke/parity test with the exact approved bundle                   | Patched candidate: 1 passed in 85.20 seconds; active staging: 1 passed in 13.25 seconds           |
@@ -74,6 +74,21 @@ PostgreSQL tests, 10 Airflow tests, synthetic inference parity, and both new
 installed-image Python advisory audits passing. This is verified remote CI,
 not an inference from local commands. A later completion commit must still
 pass its own required check.
+
+[Completion GitHub Actions run 59](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/actions/runs/40201718270)
+passed on exact completion commit
+`ecc83d8160711b4e4517b723eaed049aa9c87d32`. Its logs confirm 350 unit/contract
+tests, 10 ordinary integration tests, 3 real MLflow tests, 38 PostgreSQL tests,
+1 container parity test, and 10 Airflow tests passing. The separate full
+coverage selection passed 401 tests at 90.85% branch-aware coverage. Both
+installed-image audits, development dependency audit, formatting, linting,
+typing, Docker configuration, Markdown, and YAML checks passed.
+
+The final status-only revision records this verified result; it changes no
+product code, dependency, migration, workflow, or image definition. Its own
+required check must also be verified through
+[PR 13 checks](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/pull/13/checks)
+before the owner handoff. Run 59 is not used to pretend a later revision passed.
 
 The security refresh updated affected locked transitive dependencies, including
 PyJWT 2.15.1, Pillow 13.0.0, GitPython 3.2.1, and aiohttp 3.14.5. Python 3.11.9,
@@ -253,7 +268,25 @@ uv pip check
 
 The approved actual bundle is supplied through ignored
 `PM_CONTAINER_RELEASE_DIR` and `PM_RELEASE_ID`; the synthetic CI bundle is
-tested separately. Actual replay command:
+tested separately. The installer repair built from an isolated context
+containing only `src/`, the inference Dockerfile/runtime requirements, and
+the SHA-256-verified approved bundle under `artifacts/inference-release/`.
+It did not replace the repository's synthetic bundle or include `.env` or raw
+datasets. The recorded build/audit/restart commands were:
+
+```powershell
+$env:PM_RELEASE_ID='e230ac64e5fc3e3dd294067236210904376fe7591f776a25b03a2a6e614ccf22'
+$context='artifacts/monitoring/actual-staging-security-context-20261024'
+docker build --build-arg "RELEASE_ID=$env:PM_RELEASE_ID" -f "$context/deployment/inference/Dockerfile" -t "predictive-maintenance-inference:$env:PM_RELEASE_ID" $context
+uv run --no-sync python tests/container_audit_support.py --image "predictive-maintenance-inference:$env:PM_RELEASE_ID" --output-dir artifacts/monitoring/actual-staging-security-final
+docker compose up -d --wait --no-build inference
+$env:PM_INFERENCE_URL='http://127.0.0.1:18000'
+uv run --no-sync pytest tests/integration/deployment/test_container_smoke.py -q --junitxml=artifacts/monitoring/actual-staging-security-final/staging-smoke.xml
+```
+
+These commands require patched uv 0.13.4; this workstation uses the explicit
+workspace-owned executable described in `MANUAL_PREREQUISITES.md`. The prior
+rollback image is retained offline, not restarted. Actual replay command:
 
 ```powershell
 uv run --no-sync python tests/integration/monitoring/run_actual_fd001_replay.py --release-dir $env:PM_CONTAINER_RELEASE_DIR --expected-release-id $env:PM_RELEASE_ID --code-revision bf46aad45876a3bf0de803ca56866b595dc4fd1d --output-dir artifacts/monitoring/actual-fd001-final-20261024
@@ -274,17 +307,21 @@ artifacts/monitoring/actual-staging-security-final/image.json
 artifacts/monitoring/actual-staging-security-final/audit.json
 artifacts/monitoring/actual-staging-security-final/staging-smoke.xml
 artifacts/monitoring/airflow-security-final/post-restart-tests.xml
+artifacts/monitoring/postgres-phase7-post-restart.xml
 ```
 
 Local product coverage, repaired Airflow, patched synthetic inference,
 installed-image audits, and security-remediation GitHub Actions have passed.
 Actual staging patch approval, workstation recovery, and actual staging image
-audit/smoke/parity are complete. Completion-commit GitHub Actions is the final
-remaining validation gate before the owner-approval handoff.
+audit/smoke/parity and completion-commit GitHub Actions are complete. The control
+state is now `AWAITING_APPROVAL`, not owner-approved. The final status revision
+is checked separately before handoff.
 
 ## Known limitations and deferred work
 
 - FD001 is static simulated telemetry, not a live source.
+- Failure risk predicts a derived 30-cycle RUL label, not a field-validated
+  industrial failure probability or a maintenance instruction.
 - NASA test results were already observed in earlier phases.
 - FD001 supplies no genuinely new approved training population after Phase 5.
 - The active service is loopback staging only.
@@ -293,6 +330,11 @@ remaining validation gate before the owner-approval handoff.
 - Challenger pass/fail examples are synthetic; no actual new challenger has
   been trained, trusted, promoted, or deployed.
 - Python advisory scans do not cover OS/native-library vulnerabilities.
+- Development pip-audit skips the project's own non-PyPI distribution. Its
+  third-party dependencies are audited; project source is covered separately
+  by tests, typing, linting, and repository security contracts.
+- The retained old image is an offline recovery/evidence reference and has
+  known installer advisories. It is not the active or normal staging target.
 - Docker Desktop 4.90.0 on this workstation has had recurring stale-socket
   startup failures. Recoverable socket backups and a Windows restart were
   needed; this research staging setup is not production infrastructure.
@@ -302,7 +344,7 @@ remaining validation gate before the owner-approval handoff.
 
 ## Required next command
 
-No further owner action is needed for the completed staging repair. The
-implementation owner must verify the completion revision's required GitHub
-check, update the control state, and then request `APPROVE PHASE 7`.
-Phase 8 has not been planned or implemented.
+`APPROVE PHASE 7`
+
+Stop after the completion handoff. Do not plan or implement Phase 8. After
+owner approval, wait for the separate command `PLAN PHASE 8`.
