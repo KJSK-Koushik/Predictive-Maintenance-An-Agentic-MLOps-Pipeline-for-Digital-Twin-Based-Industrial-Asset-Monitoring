@@ -2,15 +2,17 @@
 
 ## Status
 
-**IN PROGRESS**
+**LOCAL VALIDATION COMPLETE — COMPLETION CI PENDING**
 
 Planning was authorized by `PLAN PHASE 7` on 2026-08-22. Implementation was
 authorized by `START PHASE 7` on 2026-09-07. Phase 6 PR 12 was merged into
 `main`, and Phase 7 PR 13 was retargeted from `codex/phase-6` to `main`.
 GitHub Actions run `34081887096` passed all 28 steps on exact merge commit
-`cdad44f8d3c4347c5aea46bf2e6ccc3381cca68c`. Phase 7 implementation and
-validation evidence are still in progress. No model alias, deployment,
-production, public-service, or paid-resource action is authorized.
+`cdad44f8d3c4347c5aea46bf2e6ccc3381cca68c`. Phase 7 implementation and local
+validation are complete; its documentation completion revision still needs
+its own required GitHub check. The owner approved an installer-only repair of
+the existing local staging container. No model alias change, new model release,
+cloud deployment, production, public-service, or paid-resource action was made.
 
 ## Implemented outcome
 
@@ -33,8 +35,9 @@ agents, Auth, and Realtime remain excluded.
 ## Completion evidence
 
 Final validation resumed on 2026-10-24. Docker Desktop 4.90.0 and Linux Engine
-29.7.2 are healthy after recoverable runtime-socket folder backups. No factory
-reset or Docker volume deletion was used.
+29.7.2 are healthy after recoverable runtime-socket folder backups and the
+owner's Windows restart on 2026-10-25. The implementation agent did not perform
+a factory reset or Docker volume deletion.
 
 | Evidence class                      | Command or check                                                        | Result                                                                                            |
 | ----------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -42,7 +45,7 @@ reset or Docker volume deletion was used.
 | Local PostgreSQL                    | Included in full selection; migration, role, restore, concurrency tests | 38 passed locally and in implementation CI                                                        |
 | Local Airflow                       | `uv run pytest -m "airflow and not dataset and not cloud" -q`           | Slim 3.3.2: 10 passed in 195.98 seconds                                                           |
 | Synthetic inference container       | `uv run pytest -m "deployment and not dataset and not cloud" -q`        | 1 passed                                                                                          |
-| Approved actual inference container | Same smoke/parity test with the exact approved bundle                   | 1 passed                                                                                          |
+| Approved actual inference container | Same smoke/parity test with the exact approved bundle                   | Patched candidate: 1 passed in 85.20 seconds; active staging: 1 passed in 13.25 seconds           |
 | Static typing                       | `uv run mypy src tests`                                                 | 155 files passed                                                                                  |
 | Dependency security                 | `uv run pip-audit` and `uv pip check`                                   | No known vulnerabilities; installed dependencies compatible                                       |
 | Hosted schema                       | Apply reviewed Phase 7 SQL through project-scoped migration tool        | Applied as hosted version `20261024063026`                                                        |
@@ -62,6 +65,15 @@ passed that exact revision: 397 coverage-selected tests, 90.85% branch-aware
 coverage, 38 PostgreSQL tests, 10 Airflow tests, and the inference smoke check.
 These runs predate the new installed-image security gates and are not evidence
 that those later gates passed.
+
+[GitHub Actions run 58](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/actions/runs/40100809272)
+passed on security-remediation commit
+`92e98542dd7a7555358d518c79f0577e726c54c1`. Its actual GitHub logs show
+401 coverage-selected tests passing at 90.85% branch-aware coverage, 38
+PostgreSQL tests, 10 Airflow tests, synthetic inference parity, and both new
+installed-image Python advisory audits passing. This is verified remote CI,
+not an inference from local commands. A later completion commit must still
+pass its own required check.
 
 The security refresh updated affected locked transitive dependencies, including
 PyJWT 2.15.1, Pillow 13.0.0, GitPython 3.2.1, and aiohttp 3.14.5. Python 3.11.9,
@@ -110,16 +122,49 @@ The uv certificate-root issue is documented in the
 
 The disposable local Airflow database was backed up before its patch migration.
 The final slim runtime passed all 10 real DAG, retry, backfill, parity, and
-idempotency tests in 195.98 seconds. A patched synthetic inference container
+idempotency tests in 195.98 seconds, and passed all 10 again after the owner's
+Windows restart in 248.50 seconds. A patched synthetic inference container
 also passed the real contract/parity smoke test on a separate loopback port;
 the temporary container was then removed. No dataset, model bundle, or unrelated
 user container was deleted.
 
-The approved actual staging service has **not** been rebuilt or restarted for
-the security patch: owner confirmation is pending. Patched synthetic smoke
-evidence does not prove that the old actual running image was repaired.
-Until the authorized actual-image repair, real runtime recheck, and final CI
-pass, Phase 7 remains in progress.
+The owner approved the local staging security patch explicitly. The exact
+approved actual bundle passed SHA-256 verification before and after copying
+into an isolated ignored build context. The old image was tagged
+`predictive-maintenance-inference:phase7-pre-security-patch` for rollback;
+its pre-repair image ID was
+`sha256:02998c1effdf3fe881431ee57b1290287960cf64c4155a400cb276bef6f7d535`.
+After the owner's Windows restart on 2026-10-25 the exported patched image was
+verified as
+`sha256:3cdccc55aabc00c12fc7789163677fe9459a07afe3e13cc9659d4d351af8b9b5`.
+Its 31 installed Python packages pass compatibility and advisory checks with
+zero known findings. A separate loopback candidate passed exact-release,
+API-contract, and direct-model prediction parity in 85.20 seconds. The approved
+staging service was then recreated from that same image, remained restricted
+to `127.0.0.1:18000`, became healthy, and passed the same smoke/parity test in
+13.25 seconds. The temporary candidate container was stopped and removed;
+the rollback image and all model bundles were retained. No alias, model bytes,
+hosted deployment record, or production target changed.
+
+On 2026-10-25 Docker Desktop could not start: Windows could not access stale
+`sailor-ingest.sock` and `engine.sock` files. The socket-only runtime folders
+were recoverably renamed and recreated, without deleting volumes or model
+bundles. Windows then continued to list exited Docker processes and Docker's
+startup check reported lingering processes. The owner's restart resolved this
+blocker. The existing Docker images and project containers were confirmed
+present before restarting the project services. The disposable PostgreSQL
+database uses tmpfs and is expected to be reinitialized; its test data is not
+treated as durable hosted application data.
+
+The Docker log also records a factory-reset action from its UI during this
+session. The implementation agent did not issue that action. Subsequent checks
+confirmed the project's images, containers, and verified model bundle survived;
+no claim is made about unrelated application state. No additional reset, Docker
+update, volume deletion, model promotion, or cloud deployment was performed.
+The fresh local repository-foundation selection passed 18 tests. The complete
+local regression run has 397 tests; the four new audit-renderer tests passed
+separately and are included in the 401-test remote coverage selection. These
+counts describe separate runs, not one fabricated local 401-test command.
 
 These are Python advisory checks, not an OS/native-library security audit or a
 production-security certification.
@@ -225,11 +270,17 @@ artifacts/monitoring/actual-fd001-final-20261024/object-store/
 artifacts/monitoring/hosted-phase7-final/storage-evidence.json
 artifacts/monitoring/hosted-phase7-final/record-evidence.sql
 artifacts/monitoring/coverage-phase7.json
+artifacts/monitoring/actual-staging-security-final/image.json
+artifacts/monitoring/actual-staging-security-final/audit.json
+artifacts/monitoring/actual-staging-security-final/staging-smoke.xml
+artifacts/monitoring/airflow-security-final/post-restart-tests.xml
 ```
 
-Final local product coverage, repaired Airflow, patched synthetic inference,
-and installed-image audits have passed. Actual staging security-patch approval
-and completion GitHub Actions evidence remain pending.
+Local product coverage, repaired Airflow, patched synthetic inference,
+installed-image audits, and security-remediation GitHub Actions have passed.
+Actual staging patch approval, workstation recovery, and actual staging image
+audit/smoke/parity are complete. Completion-commit GitHub Actions is the final
+remaining validation gate before the owner-approval handoff.
 
 ## Known limitations and deferred work
 
@@ -237,16 +288,21 @@ and completion GitHub Actions evidence remain pending.
 - NASA test results were already observed in earlier phases.
 - FD001 supplies no genuinely new approved training population after Phase 5.
 - The active service is loopback staging only.
+- The hosted direct PostgreSQL adapter remains unexercised; scoped SQL and
+  local restricted-role tests are explicitly separate evidence.
+- Challenger pass/fail examples are synthetic; no actual new challenger has
+  been trained, trusted, promoted, or deployed.
+- Python advisory scans do not cover OS/native-library vulnerabilities.
+- Docker Desktop 4.90.0 on this workstation has had recurring stale-socket
+  startup failures. Recoverable socket backups and a Windows restart were
+  needed; this research staging setup is not production infrastructure.
 - Phase 6 PR 12 is merged and its exact merged-revision CI run passed.
 - Working UI, agents, production, public ingress, Auth, and Realtime remain
   outside Phase 7.
 
 ## Required next command
 
-Owner action required: `APPROVE LOCAL STAGING SECURITY PATCH` to rebuild/restart
-only the existing loopback staging container, preserving the exact already
-approved model release. This is not approval for a new model, alias, cloud
-deployment, public endpoint, or production operation.
-
-After that repair, verify actual smoke/parity and the exact final GitHub check,
-then request `APPROVE PHASE 7`. Phase 8 has not been planned or implemented.
+No further owner action is needed for the completed staging repair. The
+implementation owner must verify the completion revision's required GitHub
+check, update the control state, and then request `APPROVE PHASE 7`.
+Phase 8 has not been planned or implemented.

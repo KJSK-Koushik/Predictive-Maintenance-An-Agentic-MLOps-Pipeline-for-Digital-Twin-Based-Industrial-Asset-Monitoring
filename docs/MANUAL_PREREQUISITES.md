@@ -316,6 +316,15 @@ under ignored monitoring artifacts before the patch-version migration. Rebuildin
 and restarting the approved actual staging service for installer-only security
 fixes requires owner confirmation; its model release ID must remain unchanged.
 
+The owner has now explicitly approved that installer-only local staging patch.
+On 2026-10-25 Docker startup was blocked by inaccessible stale sockets and
+then lingering exited Windows processes. Runtime socket folders were preserved
+as backups; no implementation-agent factory reset or volume deletion was used.
+The owner's Windows restart resolved the blocker. Existing project containers
+and images were confirmed present. The patched actual image passed its Python
+dependency audit and exact-model parity before and after replacing only the
+loopback staging container. No further restart or patch approval is required.
+
 Use uv 0.13.4 or later. The project-owned patched Windows executable is available
 at `artifacts/security-tools/bin/uv.exe`; it does not replace shared system tools.
 

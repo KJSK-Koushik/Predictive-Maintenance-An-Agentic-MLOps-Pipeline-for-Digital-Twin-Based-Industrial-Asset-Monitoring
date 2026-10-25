@@ -4,8 +4,8 @@
 
 Accepted
 
-Phase 7 security remediation is authorized within the current phase. Runtime
-validation remains pending and acceptance does not imply those checks passed.
+Phase 7 security remediation is authorized within the current phase. Real
+Airflow and actual/synthetic inference checks are recorded separately below.
 
 ## Date
 
@@ -58,8 +58,14 @@ continues to own the separate exact model-serving dependency set.
 
 Installed-image inventories, advisory audit JSON, pip compatibility results,
 image identifiers, and real DAG/container regression results are recorded in
-ignored validation artifacts and the Phase 7 completion report. Until these
-checks pass, Phase 7 remains in progress.
+ignored validation artifacts and the Phase 7 completion report. The Airflow
+image (164 packages), synthetic inference image (31), and approved actual
+inference image (31) passed compatibility and Python advisory audits with zero
+known findings. All 10 real Airflow tests passed after remediation. The actual
+same-release staging repair was explicitly owner-approved and passed exact
+release, API, and prediction parity on 2026-10-25. Required GitHub Actions run
+`40100809272` also passed both new installed-image audit gates. Acceptance of
+this decision is not approval for a new model or production deployment.
 
 ## Limits
 
