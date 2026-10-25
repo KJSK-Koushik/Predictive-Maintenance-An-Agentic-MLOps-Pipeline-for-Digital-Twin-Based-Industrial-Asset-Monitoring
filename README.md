@@ -29,7 +29,7 @@ passed local synthetic and actual-FD001 checks. Required GitHub Actions run
 `31773869033` also passed every Phase 4 quality gate. Phase 6 is staging-only;
 no model has been promoted to production or exposed through a public endpoint.
 
-**Phase 7: Monitoring and retraining** is complete and awaiting owner approval.
+**Phase 7: Monitoring and retraining** is complete and owner-approved (2026-10-25).
 It implements
 deterministic FD001 cycle replay, engine-balanced reference profiles, separate
 quality/shift/service/performance signals, immutable delayed-label reports,

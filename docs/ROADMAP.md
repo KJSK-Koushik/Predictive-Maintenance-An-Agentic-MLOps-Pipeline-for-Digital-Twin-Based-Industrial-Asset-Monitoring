@@ -63,7 +63,8 @@ remote CI, documentation, evidence, and severity requirements are satisfied.
   loopback service probes, and delayed performance; triggers create
   evaluation-only candidate requests, never automatic promotion. Local,
   actual-replay, hosted, container-security, and completion-CI evidence passed;
-  owner approval is pending. Phase 8 remains unplanned.
+  owner approval was received on 2026-10-25. Phase 8 remains unplanned until
+  the separate `PLAN PHASE 8` command.
 - Phase 8 compares agents with that fixed conventional baseline.
 - Phase 9 implements and connects one screen at a time, only after that screen's
   versioned backend contracts have passed their owning phases.

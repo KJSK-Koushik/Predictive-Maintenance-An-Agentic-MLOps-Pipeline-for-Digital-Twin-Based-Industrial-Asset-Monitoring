@@ -237,9 +237,11 @@ must not turn unavailable readiness into a green health state.
 ## Phase 7 monitoring contract implementation
 
 Phase 7 implements the future Monitoring screen input as one versioned,
-immutable report. The backend contract is implemented but remains
-`UNAPPROVED` until non-mocked integration, completion CI, owner approval, and
-security checks pass. No screen is connected.
+immutable report. This Phase 7 report input contract is implemented, validated,
+and owner-approved as of 2026-10-25, after non-mocked integration, completion CI,
+and security checks passed. This approves only the existing report contract;
+Phase 9 still owns the browser-facing read model and every screen connection.
+No screen is connected.
 
 Implemented report sections are:
 

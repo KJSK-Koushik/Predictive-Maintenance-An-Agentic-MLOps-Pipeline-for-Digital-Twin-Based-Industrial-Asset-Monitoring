@@ -2,7 +2,12 @@
 
 ## Status
 
-**COMPLETE — AWAITING OWNER APPROVAL**
+**COMPLETE — OWNER APPROVED**
+
+The owner explicitly approved Phase 7 on 2026-10-25. The accepted final
+implementation/status revision is `69ed8f75de6895a379876f06440a8dc4f12b2395`.
+This approval record is documentation-only and does not claim a new test run,
+merge, model promotion, deployment, or authorization to begin Phase 8.
 
 Planning was authorized by `PLAN PHASE 7` on 2026-08-22. Implementation was
 authorized by `START PHASE 7` on 2026-09-07. Phase 6 PR 12 was merged into
@@ -84,11 +89,13 @@ coverage selection passed 401 tests at 90.85% branch-aware coverage. Both
 installed-image audits, development dependency audit, formatting, linting,
 typing, Docker configuration, Markdown, and YAML checks passed.
 
-The final status-only revision records this verified result; it changes no
-product code, dependency, migration, workflow, or image definition. Its own
-required check must also be verified through
-[PR 13 checks](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/pull/13/checks)
-before the owner handoff. Run 59 is not used to pretend a later revision passed.
+The final status-only revision changed no product code, dependency, migration,
+workflow, or image definition.
+[Final GitHub Actions run 60](https://github.com/KJSK-Koushik/Predictive-Maintenance-An-Agentic-MLOps-Pipeline-for-Digital-Twin-Based-Industrial-Asset-Monitoring/actions/runs/40202835973)
+passed on that exact revision, `69ed8f75de6895a379876f06440a8dc4f12b2395`:
+401 coverage-selected tests at 90.85% branch-aware coverage, 38 PostgreSQL
+tests, 10 Airflow tests, inference parity, both image audits, and every other
+required check passed. Run 59 was not used as a substitute for this evidence.
 
 The security refresh updated affected locked transitive dependencies, including
 PyJWT 2.15.1, Pillow 13.0.0, GitPython 3.2.1, and aiohttp 3.14.5. Python 3.11.9,
@@ -314,8 +321,8 @@ Local product coverage, repaired Airflow, patched synthetic inference,
 installed-image audits, and security-remediation GitHub Actions have passed.
 Actual staging patch approval, workstation recovery, and actual staging image
 audit/smoke/parity and completion-commit GitHub Actions are complete. The control
-state is now `AWAITING_APPROVAL`, not owner-approved. The final status revision
-is checked separately before handoff.
+state is now `APPROVED` following the owner's explicit approval on 2026-10-25.
+The final status revision passed its separate required CI before handoff.
 
 ## Known limitations and deferred work
 
@@ -344,7 +351,7 @@ is checked separately before handoff.
 
 ## Required next command
 
-`APPROVE PHASE 7`
+`PLAN PHASE 8`
 
-Stop after the completion handoff. Do not plan or implement Phase 8. After
-owner approval, wait for the separate command `PLAN PHASE 8`.
+Phase 7 is approved. Stop and wait for this separate planning command; do not
+plan or implement Phase 8 yet. Planning approval is not implementation approval.
