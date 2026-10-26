@@ -29,6 +29,17 @@ passed local synthetic and actual-FD001 checks. Required GitHub Actions run
 `31773869033` also passed every Phase 4 quality gate. Phase 6 is staging-only;
 no model has been promoted to production or exposed through a public endpoint.
 
+**Phase 7: Monitoring and retraining** is complete and owner-approved (2026-10-25).
+It implements
+deterministic FD001 cycle replay, engine-balanced reference profiles, separate
+quality/shift/service/performance signals, immutable delayed-label reports,
+evaluation-only retraining requests, and promotion-denied
+champion/challenger evaluation. Its actual replay used 100 simulated engines
+and 2,000 bounded rows against the exact approved Phase 6 release. This is
+static benchmark replay, not real-time or field monitoring. Phase 7 does not
+authorize continuous retraining, NASA test-data fitting, a working UI,
+automatic model promotion, or deployment.
+
 Phase 2 local development uses a loopback-only PostgreSQL 17 container and a
 filesystem Storage substitute. The approved hosted Supabase project has passed
 private-bucket, raw-object, checksum, overwrite-denial, metadata, lineage,
@@ -116,6 +127,17 @@ scores, and neither has ground-truth anomaly or maintenance authority. The
 full FD001 path is an offline research run, not real-time or continuous
 retraining.
 
+## Phase 7 monitoring
+
+Phase 7 monitors explicit FD001 cycle-replay windows against the approved
+loopback release. Reports separate data quality, feature/prediction shift,
+sampled service behavior, and verified delayed-label performance. Exact
+prediction digests and target-file/manifest checks protect the attachment path.
+Triggers open investigations or evaluation-only candidate requests; they cannot
+train, promote, deploy, or change an MLflow alias. There is no working dashboard
+yet. See the [Phase 7 evidence report](docs/phases/phase-07/COMPLETION_REPORT.md)
+for current validation status and limitations.
+
 ## Claim boundaries
 
 The initial system is a digital-twin-inspired **asset-health digital shadow**,
@@ -144,10 +166,11 @@ maintenance decisions.
 - [Phase 4 plan](docs/phases/phase-04/PLAN.md)
 - [Phase 5 plan](docs/phases/phase-05/PLAN.md)
 - [Phase 6 plan](docs/phases/phase-06/PLAN.md)
+- [Phase 7 plan](docs/phases/phase-07/PLAN.md)
 
 ## Development
 
-The foundation environment uses Python 3.11 and `uv`.
+The foundation environment uses Python 3.11 and `uv` 0.13.4 or later.
 
 ```shell
 uv sync --locked --dev

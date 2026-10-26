@@ -4,6 +4,11 @@ ignore: |
   .venv/
   Data/
   data/
+  artifacts/
+  tmp/
+  output/
+  .codex-finalizer/
+  graphify-out/
 
 rules:
   document-start: disable

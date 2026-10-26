@@ -34,6 +34,9 @@ Thumbs.db
 /reports/
 /features/
 /processed/
+/tmp/
+/output/
+/.codex-finalizer/
 
 # Local service state
 /supabase/.branches/

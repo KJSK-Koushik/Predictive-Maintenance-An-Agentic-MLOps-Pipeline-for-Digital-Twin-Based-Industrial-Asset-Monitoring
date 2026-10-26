@@ -234,6 +234,58 @@ The service can report `live` while returning `not ready` when its immutable
 release fails verification. A later screen must preserve that difference and
 must not turn unavailable readiness into a green health state.
 
+## Phase 7 monitoring contract implementation
+
+Phase 7 implements the future Monitoring screen input as one versioned,
+immutable report. This Phase 7 report input contract is implemented, validated,
+and owner-approved as of 2026-10-25, after non-mocked integration, completion CI,
+and security checks passed. This approves only the existing report contract;
+Phase 9 still owns the browser-facing read model and every screen connection.
+No screen is connected.
+
+Implemented report sections are:
+
+| Section             | Required meaning                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------- |
+| Window              | immutable source, engine/cycle membership, replay order, release, policy, and freshness           |
+| Data quality        | validation state, bounded rule counts, lineage, and blocking failures                             |
+| Feature shift       | all 24 inputs, reference/current effect sizes, lifecycle mix, adequacy, and threshold identity    |
+| Prediction shift    | RUL and risk distribution changes without claiming performance degradation                        |
+| Service             | sampled readiness, status counts, and latency summaries without an SLA claim                      |
+| Delayed performance | explicit unavailable/insufficient/available state plus aggregate metrics when exact labels exist  |
+| Trigger             | investigation or candidate-request result, deterministic reason, evidence, and human-review state |
+
+The UI must display `unavailable`, `insufficient_data`, and `invalid` as distinct
+states. It must not render any of them as zero, green, healthy, or approved. A
+drift alert must say `Distribution changed`; it must not say `Model failed`
+unless matching delayed performance evidence supports that separate statement.
+
+`prediction_sha256` binds exact ordered predictions without exposing their full
+values. It is null if invalid evidence prevented a trustworthy binding. A
+delayed-performance child retains that digest and records the verified target
+file digest in `label_snapshot_id`; it never edits the original report.
+
+This remains a technology-neutral design contract. Phase 7 creates no browser
+endpoint or screen connection.
+
+### Monitoring field and state rules
+
+| Field or state                                                     | Future-screen meaning                                                                          |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `window_id`, `reference_id`, `policy_id`, `release_id`             | Immutable provenance; never replace with friendly mutable names                                |
+| `source_partition`, `row_count`, `engine_count`, `replay_sequence` | Replay scope; sequence is not time or freshness                                                |
+| signal `status`                                                    | Exactly `pass`, `warning`, `alert`, `insufficient_data`, `unavailable`, or `invalid`           |
+| `reason_codes`                                                     | Stable bounded identifiers suitable for help text, not executable instructions                 |
+| `lifecycle_mix`, operating summaries                               | Context for interpreting shift; nullable/empty after invalid quality                           |
+| `parent_report_id`, `label_snapshot_id`                            | Both null before labels; both present on an immutable delayed-performance child                |
+| candidate request                                                  | Evaluation-only evidence with a fixed cutoff; not training, approval, promotion, or deployment |
+
+Freshness must later be calculated by a Phase 9 read model from explicitly
+stored observation/publication metadata. Phase 7 does not invent event time.
+An absent report is `empty`; an unreadable or contract-mismatched report is an
+`error`; a report with some unavailable sections is `partial`. A future stale
+threshold must be versioned and owner-approved before connection.
+
 ## Cross-phase delivery
 
 | Phase | UI responsibility                                                                         |

@@ -2,24 +2,30 @@
 
 ## Current control state
 
-| Field                     | Value                                    |
-| ------------------------- | ---------------------------------------- |
-| Current phase             | 6: Model registry and deployment         |
-| Last completed phase      | 6: Model registry and deployment         |
-| State                     | APPROVED                                 |
-| Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`    |
-| Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`   |
-| Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3` |
-| Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`    |
-| Phase 4 started           | 2026-08-14 by explicit `START PHASE 4`   |
-| Phase 4 approved          | 2026-08-14 by explicit `APPROVE PHASE 4` |
-| Phase 5 planned           | 2026-08-20 by explicit `PLAN PHASE 5`    |
-| Phase 5 started           | 2026-08-21 by explicit `START PHASE 5`   |
-| Phase 5 approved          | 2026-08-21 by explicit `APPROVE PHASE 5` |
-| Phase 6 planned           | 2026-08-21 by explicit `PLAN PHASE 6`    |
-| Phase 6 started           | 2026-08-22 by explicit `START PHASE 6`   |
-| Phase 6 approved          | 2026-08-22 by explicit `APPROVE PHASE 6` |
-| Next permitted transition | Explicit owner command `PLAN PHASE 7`    |
+| Field                     | Value                                                  |
+| ------------------------- | ------------------------------------------------------ |
+| Current phase             | 7: Monitoring and retraining                           |
+| Last completed phase      | 7: Monitoring and retraining (owner-approved)          |
+| State                     | APPROVED                                               |
+| Phase 3 planned           | 2026-07-31 by explicit `PLAN PHASE 3`                  |
+| Phase 3 started           | 2026-08-08 by explicit `START PHASE 3`                 |
+| Phase 3 approved          | 2026-08-10 by explicit `APPROVE PHASE 3`               |
+| Phase 4 planned           | 2026-08-14 by explicit `PLAN PHASE 4`                  |
+| Phase 4 started           | 2026-08-14 by explicit `START PHASE 4`                 |
+| Phase 4 approved          | 2026-08-14 by explicit `APPROVE PHASE 4`               |
+| Phase 5 planned           | 2026-08-20 by explicit `PLAN PHASE 5`                  |
+| Phase 5 started           | 2026-08-21 by explicit `START PHASE 5`                 |
+| Phase 5 approved          | 2026-08-21 by explicit `APPROVE PHASE 5`               |
+| Phase 6 planned           | 2026-08-21 by explicit `PLAN PHASE 6`                  |
+| Phase 6 started           | 2026-08-22 by explicit `START PHASE 6`                 |
+| Phase 6 approved          | 2026-08-22 by explicit `APPROVE PHASE 6`               |
+| Phase 7 planned           | 2026-08-22 by explicit `PLAN PHASE 7`                  |
+| Phase 7 started           | 2026-09-07 by explicit `START PHASE 7`                 |
+| Phase 6 merged CI         | Passed: GitHub Actions run `34081887096`               |
+| Phase 7 completion CI     | Passed: GitHub Actions run `40201718270`               |
+| Phase 7 approved          | 2026-10-25 by explicit owner approval                  |
+| Phase 7 final status CI   | Passed: GitHub Actions run `40202835973`               |
+| Next permitted transition | Wait for `PLAN PHASE 8`; no Phase 8 work is authorized |
 
 ## Bootstrap record
 
@@ -37,76 +43,87 @@ feature or initializing a cloud service.
 
 ## Current evidence
 
-| Evidence                   | Status                                                              |
-| -------------------------- | ------------------------------------------------------------------- |
-| Source-of-truth documents  | Phase 6 completion and owner approval recorded                      |
-| Accepted ADRs              | 26; Phase 5 comparison, gates, and exploratory decisions added      |
-| Phase 1 implementation     | Complete and owner-approved                                         |
-| Unit/contract tests        | Phase 1 evidence: passed locally, 46                                |
-| Integration tests          | Phase 1 evidence: passed locally, 9                                 |
-| Actual FD001 test          | Phase 1 evidence: passed locally, 1                                 |
-| Phase 1 product coverage   | Phase 1 evidence: 92.63% branch-aware                               |
-| Docker validation          | PostgreSQL 17 clean start/reset/recovery passed locally             |
-| GitHub remote              | `origin/main` created at commit `6c968e0`                           |
-| Code ownership             | `@KJSK-Koushik` recorded in `.github/CODEOWNERS`                    |
-| Repository license         | Apache-2.0                                                          |
-| GitHub authentication      | Confirmed for `KJSK-Koushik`                                        |
-| GitHub Actions run         | Passed: run `30040721136`, job `Phase 0 quality`                    |
-| Branch protection          | Required CI, PR, conversations; destructive refs off                |
-| Phase 1 GitHub Actions     | Passed: run `30153263553`, job `Phase 0 quality`                    |
-| Phase 2 local tests        | 125 passed; 2 hosted-cloud tests deliberately deselected            |
-| Product coverage           | Phase 2 CI-compatible evidence: 90.82% branch-aware                 |
-| Local quality checks       | Format, lint, typing, lock, YAML, audit passed                      |
-| Actual FD001 publication   | Local filesystem + PostgreSQL publication passed                    |
-| Backup/recovery            | `pg_dump`, restore, object restore, reconcile passed                |
-| Phase 2 GitHub Actions     | Passed: run `30329857089`, job `Phase 0 quality`                    |
-| Phase 2 branch protection  | Strict required CI/PR/review; destructive refs disabled             |
-| Phase 2 cloud evidence     | Real Storage and project-scoped PostgreSQL checks passed            |
-| Supabase target            | Exact development/test project confirmed; Free plan                 |
-| Supabase advisors          | Security: none; Performance: five informational notices             |
-| Critical/high issues       | None unresolved                                                     |
-| Phase 2 owner approval     | Received explicitly on 2026-07-30                                   |
-| Phase 3 implementation     | Complete and owner-approved                                         |
-| Phase 3 local ETL          | Deterministic direct run and actual FD001 run passed                |
-| Phase 3 PostgreSQL         | 24 checks passed, including derived backup/recovery                 |
-| Phase 3 Airflow            | Build, health, retry, and two-date backfill passed                  |
-| Phase 3 product coverage   | 90.38% branch-aware                                                 |
-| Phase 3 hosted evidence    | Migration, Storage, SQL, lineage, and advisors passed               |
-| Phase 3 GitHub Actions     | Passed: run `31327359011`, job `Phase 0 quality`                    |
-| Phase 3 owner approval     | Received explicitly on 2026-08-10                                   |
-| Phase 4 implementation     | Complete and owner-approved                                         |
-| Phase 4 unit/local tests   | 209 passed; 13 later/owner-data tests deselected                    |
-| Phase 4 product coverage   | 90.17% branch-aware                                                 |
-| Phase 4 MLflow             | Real loopback log/load/query/copy/restore test passed               |
-| Phase 4 actual FD001       | Complete baseline and model-retrieval test passed                   |
-| Phase 4 actual split       | `acce2be62a3d0e29e0a00c0567d2b33eb3f14f206e2acc52e32d81e19b93faed`  |
-| Phase 4 actual MLflow run  | Parent `27fe5e1360db430d982867d8a8983fae`; local only               |
-| Phase 4 GitHub Actions     | Passed: run `31773869033`, job `Phase 4 quality`                    |
-| Phase 4 completion CI      | Passed: run `31774309963`, job `Phase 4 quality`                    |
-| Phase 4 owner approval     | Received explicitly on 2026-08-14                                   |
-| Phase 5 implementation     | Complete and owner-approved                                         |
-| Phase 5 local tests        | 234 passed; 14 later/cloud tests deselected                         |
-| Phase 5 product coverage   | 91.23% branch-aware                                                 |
-| Phase 5 actual FD001       | Two complete deterministic runs passed in 42 minutes 44 seconds     |
-| Phase 5 implementation CI  | Passed: run `32499093174`, job `Phase 4 quality`                    |
-| Phase 5 completion CI      | Passed: run `32500149019`, job `Phase 4 quality`                    |
-| Phase 5 owner approval     | Received explicitly on 2026-08-21                                   |
-| Phase 6 pre-approval tests | 276 passed; 90.75% branch-aware coverage                            |
-| Phase 6 final local tests  | 250 non-PostgreSQL plus 27 PostgreSQL checks passed                 |
-| Phase 6 final coverage     | 90.75% branch-aware                                                 |
-| Phase 6 PostgreSQL         | 27 migration, security, append-only, and recovery checks passed     |
-| Phase 6 container          | Synthetic image build, health, isolation, smoke, and parity passed  |
-| Phase 6 Airflow regression | Fresh image build and 6 runtime checks passed                       |
-| Phase 6 hosted migration   | Applied to the approved dev/test Supabase project; advisors checked |
-| Phase 6 actual release     | Owner-approved exact release is active on loopback staging          |
-| Phase 6 release ID         | `e230ac64e5fc3e3dd294067236210904376fe7591f776a25b03a2a6e614ccf22`  |
-| Phase 6 actual parity      | Passed before deployment and after rollback                         |
-| Phase 6 rollback           | Wrong release rejected; approved release restored in 12.61 seconds  |
-| Phase 6 Supabase release   | Four private objects plus approval and deployment records verified  |
-| Phase 6 implementation CI  | Passed: run `32563410951`, job `Phase 4 quality`                    |
-| Phase 6 completion CI      | Passed: run `32571957238`, job `Phase 4 quality`                    |
-| Phase 6 final status CI    | Passed: run `32572525259`, job `Phase 4 quality`                    |
-| Phase 6 owner approval     | Received explicitly on 2026-08-22                                   |
+| Evidence                   | Status                                                               |
+| -------------------------- | -------------------------------------------------------------------- |
+| Source-of-truth documents  | Phase 7 complete and owner-approved; Phase 8 not planned             |
+| Accepted ADRs              | 33; includes Phase 7 container dependency security remediation       |
+| Phase 1 implementation     | Complete and owner-approved                                          |
+| Unit/contract tests        | Phase 1 evidence: passed locally, 46                                 |
+| Integration tests          | Phase 1 evidence: passed locally, 9                                  |
+| Actual FD001 test          | Phase 1 evidence: passed locally, 1                                  |
+| Phase 1 product coverage   | Phase 1 evidence: 92.63% branch-aware                                |
+| Docker validation          | PostgreSQL 17 clean start/reset/recovery passed locally              |
+| GitHub remote              | `origin/main` created at commit `6c968e0`                            |
+| Code ownership             | `@KJSK-Koushik` recorded in `.github/CODEOWNERS`                     |
+| Repository license         | Apache-2.0                                                           |
+| GitHub authentication      | Confirmed for `KJSK-Koushik`                                         |
+| GitHub Actions run         | Passed: run `30040721136`, job `Phase 0 quality`                     |
+| Branch protection          | Required CI, PR, conversations; destructive refs off                 |
+| Phase 1 GitHub Actions     | Passed: run `30153263553`, job `Phase 0 quality`                     |
+| Phase 2 local tests        | 125 passed; 2 hosted-cloud tests deliberately deselected             |
+| Product coverage           | Phase 2 CI-compatible evidence: 90.82% branch-aware                  |
+| Local quality checks       | Format, lint, typing, lock, YAML, audit passed                       |
+| Actual FD001 publication   | Local filesystem + PostgreSQL publication passed                     |
+| Backup/recovery            | `pg_dump`, restore, object restore, reconcile passed                 |
+| Phase 2 GitHub Actions     | Passed: run `30329857089`, job `Phase 0 quality`                     |
+| Phase 2 branch protection  | Strict required CI/PR/review; destructive refs disabled              |
+| Phase 2 cloud evidence     | Real Storage and project-scoped PostgreSQL checks passed             |
+| Supabase target            | Exact development/test project confirmed; Free plan                  |
+| Supabase advisors          | Security: none; Performance: five informational notices              |
+| Critical/high issues       | No known unresolved critical/high findings in exercised checks       |
+| Phase 2 owner approval     | Received explicitly on 2026-07-30                                    |
+| Phase 3 implementation     | Complete and owner-approved                                          |
+| Phase 3 local ETL          | Deterministic direct run and actual FD001 run passed                 |
+| Phase 3 PostgreSQL         | 24 checks passed, including derived backup/recovery                  |
+| Phase 3 Airflow            | Build, health, retry, and two-date backfill passed                   |
+| Phase 3 product coverage   | 90.38% branch-aware                                                  |
+| Phase 3 hosted evidence    | Migration, Storage, SQL, lineage, and advisors passed                |
+| Phase 3 GitHub Actions     | Passed: run `31327359011`, job `Phase 0 quality`                     |
+| Phase 3 owner approval     | Received explicitly on 2026-08-10                                    |
+| Phase 4 implementation     | Complete and owner-approved                                          |
+| Phase 4 unit/local tests   | 209 passed; 13 later/owner-data tests deselected                     |
+| Phase 4 product coverage   | 90.17% branch-aware                                                  |
+| Phase 4 MLflow             | Real loopback log/load/query/copy/restore test passed                |
+| Phase 4 actual FD001       | Complete baseline and model-retrieval test passed                    |
+| Phase 4 actual split       | `acce2be62a3d0e29e0a00c0567d2b33eb3f14f206e2acc52e32d81e19b93faed`   |
+| Phase 4 actual MLflow run  | Parent `27fe5e1360db430d982867d8a8983fae`; local only                |
+| Phase 4 GitHub Actions     | Passed: run `31773869033`, job `Phase 4 quality`                     |
+| Phase 4 completion CI      | Passed: run `31774309963`, job `Phase 4 quality`                     |
+| Phase 4 owner approval     | Received explicitly on 2026-08-14                                    |
+| Phase 5 implementation     | Complete and owner-approved                                          |
+| Phase 5 local tests        | 234 passed; 14 later/cloud tests deselected                          |
+| Phase 5 product coverage   | 91.23% branch-aware                                                  |
+| Phase 5 actual FD001       | Two complete deterministic runs passed in 42 minutes 44 seconds      |
+| Phase 5 implementation CI  | Passed: run `32499093174`, job `Phase 4 quality`                     |
+| Phase 5 completion CI      | Passed: run `32500149019`, job `Phase 4 quality`                     |
+| Phase 5 owner approval     | Received explicitly on 2026-08-21                                    |
+| Phase 6 pre-approval tests | 276 passed; 90.75% branch-aware coverage                             |
+| Phase 6 final local tests  | 250 non-PostgreSQL plus 27 PostgreSQL checks passed                  |
+| Phase 6 final coverage     | 90.75% branch-aware                                                  |
+| Phase 6 PostgreSQL         | 27 migration, security, append-only, and recovery checks passed      |
+| Phase 6 container          | Synthetic image build, health, isolation, smoke, and parity passed   |
+| Phase 6 Airflow regression | Fresh image build and 6 runtime checks passed                        |
+| Phase 6 hosted migration   | Applied to the approved dev/test Supabase project; advisors checked  |
+| Phase 6 actual release     | Owner-approved exact release is active on loopback staging           |
+| Phase 6 release ID         | `e230ac64e5fc3e3dd294067236210904376fe7591f776a25b03a2a6e614ccf22`   |
+| Phase 6 actual parity      | Passed before deployment and after rollback                          |
+| Phase 6 rollback           | Wrong release rejected; approved release restored in 12.61 seconds   |
+| Phase 6 Supabase release   | Four private objects plus approval and deployment records verified   |
+| Phase 6 implementation CI  | Passed: run `32563410951`, job `Phase 4 quality`                     |
+| Phase 6 completion CI      | Passed: run `32571957238`, job `Phase 4 quality`                     |
+| Phase 6 final status CI    | Passed: run `32572525259`, job `Phase 4 quality`                     |
+| Phase 6 owner approval     | Received explicitly on 2026-08-22                                    |
+| Phase 7 planning           | Objective, architecture, criteria, tests, prerequisites, risks set   |
+| Phase 7 focused tests      | 35 monitoring, trigger, evaluation, CLI, and DAG checks passed       |
+| Phase 7 local regression   | 397 passed; 90.86% branch-aware coverage                             |
+| Phase 7 static typing      | Strict mypy passed for 155 source/test files                         |
+| Phase 7 actual FD001       | 100 engines and 2,000 replay rows; deterministic identities passed   |
+| Phase 7 Docker/PostgreSQL  | 38 post-restart PostgreSQL checks pass in 47.71 seconds              |
+| Phase 7 Airflow runtime    | Slim 3.3.2: all 10 real retry, backfill, parity tests passed         |
+| Phase 7 hosted migration   | Applied 2026-10-24; six private tables, RLS and grants verified      |
+| Phase 7 hosted reports     | Six verified objects, two references/windows and four reports        |
+| Phase 7 security refresh   | Actual staging patched; 31-package audit and exact-model parity pass |
+| Phase 7 implementation CI  | Run 40100809272 passed, including both installed-image audits        |
 
 ## Repository observations
 
@@ -246,6 +263,70 @@ technology-neutral screen architecture and backend dependency map. The working
 UI remains Phase 9, and each screen may connect only after all of its versioned
 backend contracts are implemented, tested, CI-validated, and owner-approved.
 
+## Phase 7 implementation boundary
+
+Phase 7 planning was authorized on 2026-08-22 and implementation on
+2026-09-07. The implemented scope is
+deterministic batch monitoring of immutable FD001 replay windows, private
+monitoring evidence, delayed-label performance, rule-based investigation and
+retraining-candidate requests, and fixed champion/challenger evaluation.
+
+The plan keeps data quality, distribution shift, service probes, and model
+performance as separate signals. A trigger cannot train, register, promote,
+deploy, or roll back a model automatically. NASA test rows remain prohibited
+from training, and the actual FD001 path may correctly end as no-change or
+`blocked_no_new_training_data`.
+
+The actual static replay used 100 simulated NASA test engines and 2,000
+engine-balanced rows against release
+`e230ac64e5fc3e3dd294067236210904376fe7591f776a25b03a2a6e614ccf22`.
+Its distribution alerts are interpreted with lifecycle mix and are not called
+performance failure. Repeated evidence produced the same identities. Phase 7
+does not add Evidently, a metrics platform, Realtime, Auth, agents, working UI,
+public ingress, production, or paid resources. Phase 6 PR 12 was merged into
+`main`, and required GitHub Actions run `34081887096` passed on the exact merge
+revision. Docker/PostgreSQL, Airflow, hosted Supabase, local coverage/security,
+actual-release parity, and completion GitHub checks have passed. Phase 7 is
+`APPROVED` following explicit owner approval on 2026-10-25. The Phase 7
+monitoring-report input contract is owner-approved, but every UI screen stays
+`Design only`. No browser read API or screen connection has been added.
+
+## Resolved workstation blocker (2026-10-25)
+
+The owner approved the installer-only local staging security patch. The model
+release remains exactly
+`e230ac64e5fc3e3dd294067236210904376fe7591f776a25b03a2a6e614ccf22`.
+GitHub Actions run `40100809272` passed on commit
+`92e98542dd7a7555358d518c79f0577e726c54c1`, including both installed-image
+Python security audits and 401 coverage-selected tests at 90.85%.
+
+The owner's Windows restart cleared lingering exited Docker processes after
+recoverable runtime socket-folder backups. Existing project containers and
+images were confirmed present. The Docker UI log separately records a
+factory-reset action not issued by the implementation agent; no claim is made
+about unrelated application state. No volume or model bundle was deleted by
+the implementation agent.
+
+Patched actual image
+`sha256:3cdccc55aabc00c12fc7789163677fe9459a07afe3e13cc9659d4d351af8b9b5`
+passed compatibility and advisory audits for all 31 installed Python packages.
+Its separate loopback candidate passed exact-model parity in 85.20 seconds.
+Only the approved staging container was recreated, still on
+`127.0.0.1:18000`, and its final contract/parity test passed in 13.25 seconds.
+The old image is retained as `phase7-pre-security-patch`; the temporary
+candidate container was removed. No model promotion or cloud deployment was
+made. All 10 real Airflow tests passed again after restart in 248.50 seconds.
+Required completion CI run `40201718270` passed on exact revision
+`ecc83d8160711b4e4517b723eaed049aa9c87d32`: 401 coverage-selected tests,
+90.85% branch-aware coverage, 38 PostgreSQL tests, 10 Airflow tests, inference
+parity, and both installed-image audits. Final status CI run `40202835973`
+also passed on exact revision `69ed8f75de6895a379876f06440a8dc4f12b2395`, with
+401 coverage-selected tests and 90.85% branch-aware coverage. The owner then
+explicitly approved Phase 7 on 2026-10-25. This approval record changes only
+documentation; it does not claim a new validation run or authorize a merge,
+model promotion, deployment, or later-phase implementation. Phase 8 has not
+been planned or implemented. Wait for the separate command `PLAN PHASE 8`.
+
 ## Phase history
 
 | Phase | State       | Evidence                                    |
@@ -257,4 +338,5 @@ backend contracts are implemented, tested, CI-validated, and owner-approved.
 | 4     | APPROVED    | `docs/phases/phase-04/COMPLETION_REPORT.md` |
 | 5     | APPROVED    | `docs/phases/phase-05/COMPLETION_REPORT.md` |
 | 6     | APPROVED    | `docs/phases/phase-06/COMPLETION_REPORT.md` |
-| 7-10  | NOT_PLANNED | Await explicit `PLAN PHASE 7`               |
+| 7     | APPROVED    | `docs/phases/phase-07/COMPLETION_REPORT.md` |
+| 8-10  | NOT_PLANNED | Await the separate `PLAN PHASE 8` command   |

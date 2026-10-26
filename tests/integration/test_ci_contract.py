@@ -50,7 +50,7 @@ def test_actions_are_pinned_to_full_commit_shas() -> None:
 
 
 @pytest.mark.integration
-def test_workflow_runs_all_phase_six_quality_gates() -> None:
+def test_workflow_runs_all_phase_seven_quality_gates() -> None:
     workflow_text = WORKFLOW_PATH.read_text(encoding="utf-8")
     normalized_workflow_text = " ".join(workflow_text.split())
     required_commands = (
@@ -75,7 +75,7 @@ def test_workflow_runs_all_phase_six_quality_gates() -> None:
         "docker compose build inference",
         "docker compose up -d --wait inference",
         '"deployment and not dataset and not cloud"',
-        "install -d -m 0777 artifacts/cloud-objects",
+        "install -d -m 0777 artifacts/cloud-objects artifacts/monitoring",
         "docker compose build airflow",
         "docker compose up -d --wait airflow",
         '"airflow and not dataset and not cloud"',

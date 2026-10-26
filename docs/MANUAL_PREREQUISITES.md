@@ -265,6 +265,69 @@ local staging deployment, and rollback drill were exercised separately.
 The manual GitHub staging workflow remains separate from local staging and is
 not reported as exercised until it runs from the default branch.
 
+## Phase 7 monitoring prerequisites
+
+Complete or explicitly accept these before `START PHASE 7` implementation:
+
+- [x] Merge the owner-approved, passing Phase 6 PR 12 into `main` and verify
+  the required check on the merged revision.
+- [x] Confirm the exact approved Phase 6 loopback release may receive bounded
+  Phase 7 replay probes.
+- [x] Accept that FD001 monitoring uses static simulated cycle replay and is
+  not live, real-time, production, or field evidence.
+- [x] Keep NASA test rows prohibited from training and configuration selection.
+- [x] Accept that without new approved labeled training data, an actual
+  retraining request may validly end as no-change or
+  `blocked_no_new_training_data`.
+- [x] Approve ignored local monitoring evidence under
+  `artifacts/monitoring/`.
+- [x] Approve the reviewed Phase 7 forward migration in the existing
+  development/test Supabase project only after local migration tests pass.
+- [x] Approve private derived-bucket writes only under content-addressed
+  `reports/monitoring/`, `reports/retraining/`, and generated integration
+  prefixes.
+- [x] Confirm no Supabase Auth, Realtime, Cron, public endpoint, paid add-on,
+  managed metrics platform, or paging integration will be provisioned.
+- [x] Keep all Supabase, PostgreSQL, MLflow, GitHub, and staging configuration
+  in ignored local files or approved secret stores.
+- [x] Confirm `KJSK-Koushik` remains the human reviewer for any challenger
+  eligibility result.
+
+`START PHASE 7` will accept these recommended values unless the owner changes
+one first. It will not approve a new release, alias change, deployment,
+production action, public service, or paid resource.
+
+The owner accepted these defaults with `START PHASE 7` on 2026-09-07. Phase 6
+PR 12 was merged the same day. GitHub Actions run `34081887096` passed all 28
+steps on exact merge commit `cdad44f8d3c4347c5aea46bf2e6ccc3381cca68c`.
+
+On 2026-10-24 the approved development project was restored from inactivity
+without provisioning a paid resource. The reviewed Phase 7 migration was
+applied through the project connector, which recorded version
+`20261024063026`; the local CLI-generated source remains
+`20260907042647_phase_07_monitoring.sql`. They contain the same reviewed SQL.
+Hosted metadata verification uses scoped SQL because this connector cannot
+assume the runtime role; direct restricted-role adapter tests run locally.
+
+Container audits discovered older dependencies outside the refreshed development
+lock. Phase 7 therefore requires slim Airflow 3.3.2, pinned runtime packages, and
+separate installed-image audits. A local Airflow database backup is retained
+under ignored monitoring artifacts before the patch-version migration. Rebuilding
+and restarting the approved actual staging service for installer-only security
+fixes requires owner confirmation; its model release ID must remain unchanged.
+
+The owner has now explicitly approved that installer-only local staging patch.
+On 2026-10-25 Docker startup was blocked by inaccessible stale sockets and
+then lingering exited Windows processes. Runtime socket folders were preserved
+as backups; no implementation-agent factory reset or volume deletion was used.
+The owner's Windows restart resolved the blocker. Existing project containers
+and images were confirmed present. The patched actual image passed its Python
+dependency audit and exact-model parity before and after replacing only the
+loopback staging container. No further restart or patch approval is required.
+
+Use uv 0.13.4 or later. The project-owned patched Windows executable is available
+at `artifacts/security-tools/bin/uv.exe`; it does not replace shared system tools.
+
 ## Phase 8 agent prerequisites
 
 - [ ] Select an LLM provider and approve its data-handling terms.

@@ -300,6 +300,41 @@ metapackage is intentionally absent and `pip-audit` remains mandatory.
 - Keep pull-request CI credential-free and deployment-free. Use a separate
   manual protected `staging` environment for deployment workflow evidence.
 
+## Phase 7 controls
+
+- Bind every reference, replay window, policy, report, label attachment,
+  alert, request, and evaluation to immutable identifiers and SHA-256 evidence.
+- Validate data quality and lineage before any drift, performance, or trigger
+  decision; fail closed on invalid evidence.
+- Keep complete telemetry and prediction dumps out of PostgreSQL, reports,
+  logs, Git, and MLflow metadata. Persist bounded aggregates and private object
+  references only.
+- Keep monitoring tables in private `ops`, outside the Data API, with denied
+  client roles, narrow runtime grants, and RLS defense in depth.
+- Publish report objects with put-if-absent and stored-byte digest verification.
+- Keep delayed labels separate from prediction generation and reject key,
+  partition, snapshot, or timing mismatches.
+- Rehash the fixed prediction values and verify target-file bytes against the
+  content-addressed feature manifest before delayed performance is calculated.
+- Bind fixed performance baselines into the request's policy digest; never use
+  an unverified caller-supplied degradation boolean as the decision.
+- Give the trigger and challenger controllers no registry-alias, deployment,
+  rollback, production, or secret-reading authority.
+- Treat report content as data. No report field can execute code, change a
+  gate, or provide instructions to a later agent.
+- Keep the inference image credential-free and loopback-only. Monitoring uses
+  server-side credentials outside that runtime.
+- Keep pull-request CI cloud-credential-free and deployment-free; classify
+  hosted verification separately.
+- Audit installed Python dependencies in both built images, not only the
+  development environment. Use the minimal pinned Airflow image and require
+  compatibility checks; do not ignore advisory findings from unused providers.
+- Use uv 0.13.4 or later for project package operations. Earlier bundled CA
+  roots are affected by GHSA-hq85-5cpj-mr62. The workstation's shared tool is
+  not silently overwritten; a patched workspace-owned copy may be used.
+- Redact authorization headers, DSNs, private URLs, signed links, absolute
+  paths, and unrestricted errors from monitoring evidence.
+
 ## References
 
 - [Supabase API security](https://supabase.com/docs/guides/api/securing-your-api)

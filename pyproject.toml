@@ -42,6 +42,7 @@ publish-fd001 = "predictive_maintenance.cloud.cli:main"
 run-fd001-etl = "predictive_maintenance.etl.cli:main"
 evaluate-fd001-advanced = "predictive_maintenance.modeling.phase5_cli:main"
 prepare-fd001-release = "predictive_maintenance.release.cli:main"
+monitor-fd001 = "predictive_maintenance.monitoring.cli:main"
 train-fd001-baselines = "predictive_maintenance.modeling.cli:main"
 validate-fd001 = "predictive_maintenance.data.cli:main"
 

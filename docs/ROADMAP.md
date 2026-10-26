@@ -58,7 +58,13 @@ remote CI, documentation, evidence, and severity requirements are satisfied.
   human-approved staging release. Local or ephemeral staging is not production.
 - Phase 6 also establishes technology-neutral screen designs. It adds no
   frontend framework or working dashboard.
-- Phase 7 establishes a conventional monitored MLOps workflow.
+- Phase 7 has implemented a conventional monitored MLOps workflow over
+  immutable FD001 cycle replay. It separates quality, distribution shift,
+  loopback service probes, and delayed performance; triggers create
+  evaluation-only candidate requests, never automatic promotion. Local,
+  actual-replay, hosted, container-security, and completion-CI evidence passed;
+  owner approval was received on 2026-10-25. Phase 8 remains unplanned until
+  the separate `PLAN PHASE 8` command.
 - Phase 8 compares agents with that fixed conventional baseline.
 - Phase 9 implements and connects one screen at a time, only after that screen's
   versioned backend contracts have passed their owning phases.

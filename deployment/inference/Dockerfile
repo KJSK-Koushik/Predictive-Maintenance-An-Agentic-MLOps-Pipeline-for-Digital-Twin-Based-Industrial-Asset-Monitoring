@@ -19,6 +19,8 @@ RUN groupadd --system --gid 10001 inference \
 WORKDIR /opt/app
 COPY deployment/inference/runtime-requirements.txt /tmp/runtime-requirements.txt
 RUN python -m pip install --disable-pip-version-check --no-cache-dir \
+        pip==26.2.2 setuptools==84.1.0 wheel==0.47.0 \
+    && python -m pip install --disable-pip-version-check --no-cache-dir \
         -r /tmp/runtime-requirements.txt \
     && rm /tmp/runtime-requirements.txt
 
